@@ -817,14 +817,33 @@ function editHistoryDay(date){
   setView('log');setTab('day');toast('Dane dnia zaladowane do edycji');
 }
 function renderStats(){
-  let pnl=0,w=0,l=0,bad=0,tr=0,work=0,rrSum=0,rrCount=0;
-  const tradeRows=[];
-  keys('journal_trading_').forEach(k=>{const x=load(k);if(!x)return;const date=k.replace('journal_trading_','');const n=parseFloat(x.pnl);if(!isNaN(n)){pnl+=n;tr++;if(n>0)w++;if(n<0)l++}if(x.rules==='nie')bad++;tradeRows.push({date,x,n})});
-  keys('journal_workout_').forEach(k=>{const x=load(k);if(!x||!x.did)return;work++;const t=(x.types||[]).join(' ').toLowerCase();if(t.includes('ply'))swim++;if(t.includes('rower'))bike++;if(t.includes('bieg'))run++;if(t.includes('si'))gym++;const customTypes=load('custom_workout_types',[]);customTypes.forEach(function(ct){if(t.includes(ct.name.toLowerCase())){}});});
-  $('#sPnl').textContent=fmtPnl(pnl);$('#sWr').textContent=(w+l?Math.round(w/(w+l)*100):0)+'%';$('#sTrades').textContent=tr;$('#sBad').textContent=bad;$('#sWorkouts').textContent=work;$('#sAvgRr').textContent=rrCount?'1:'+(rrSum/rrCount).toFixed(1):'-';
-  const list=$('#statsTradesList');
+  var pnl=0,w=0,l=0,bad=0,tr=0,work=0,rrSum=0,rrCount=0;
+  var tradeRows=[];
+  keys('journal_trading_').forEach(function(k){
+    var x=load(k);if(!x)return;
+    var date=k.replace('journal_trading_','');
+    var n=parseFloat(x.pnl);
+    if(!isNaN(n)){pnl+=n;tr++;if(n>0)w++;if(n<0)l++;}
+    if(x.rules==='nie')bad++;
+    if(x.rr){var rp=String(x.rr).split(':');var rv=rp.length>1?parseFloat(rp[1]):parseFloat(rp[0]);if(!isNaN(rv)&&rv>0){rrSum+=rv;rrCount++;}}
+    tradeRows.push({date:date,x:x,n:n});
+  });
+  keys('journal_workout_').forEach(function(k){var x=load(k);if(!x||!x.did)return;work++;});
+  var sPnl=$('#sPnl');if(sPnl)sPnl.textContent=fmtPnl(pnl);
+  var sWr=$('#sWr');if(sWr)sWr.textContent=(w+l?Math.round(w/(w+l)*100):0)+'%';
+  var sTr=$('#sTrades');if(sTr)sTr.textContent=tr;
+  var sBd=$('#sBad');if(sBd)sBd.textContent=bad;
+  var sWk=$('#sWorkouts');if(sWk)sWk.textContent=work;
+  var sRr=$('#sAvgRr');if(sRr)sRr.textContent=rrCount?'1:'+(rrSum/rrCount).toFixed(1):'-';
+  var list=$('#statsTradesList');
   if(list){
-    list.innerHTML=tradeRows.length?tradeRows.slice(0,12).map(({date,x,n})=>'<div class="trade-row" onclick="setView(\'history\');setTimeout(()=>openHistoryDetail(\''+date+'\'),0)"><strong>'+fmt(date)+'</strong><div><b>'+esc(x.pair||'Trade')+'</b><br><small>'+esc([x.rr?('RR '+x.rr):'',x.rules?('zasady: '+x.rules):'',x.emotions&&x.emotions.length?x.emotions.join(', '):''].filter(Boolean).join(' / '))+'</small></div><span class="pnl '+pnlClass(x.pnl)+'">'+(x.pnl?fmtPnl(x.pnl):'-')+'</span></div>').join(''):'<p class="sub">Brak zapisanych tradeow.</p>';
+    var lang=localStorage.getItem('app_lang')||'pl';
+    var isEn=lang==='en';
+    list.innerHTML=tradeRows.length?tradeRows.map(function(row){
+      var d=row.date,x=row.x;
+      var meta=[x.rr?'RR '+x.rr:'',x.rules?((isEn?'rules: ':'zasady: ')+tv(x.rules)):'',x.emotions&&x.emotions.length?tvList(x.emotions):''].filter(Boolean).join(' / ');
+      return '<div class="trade-row" onclick="openHistoryDetail(\''+d+'\')"><strong>'+fmt(d)+'</strong><div><b>'+esc(x.pair||'Trade')+'</b><br><small>'+esc(meta)+'</small></div><span class="pnl '+pnlClass(x.pnl)+'">'+(x.pnl?fmtPnl(x.pnl):'-')+'</span></div>';
+    }).join(''):'<p class="sub">'+(isEn?'No trades recorded.':'Brak zapisanych tradów.')+'</p>';
   }
 }
 let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
