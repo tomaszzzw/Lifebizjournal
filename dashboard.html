@@ -296,7 +296,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
             <div class="goal-list" id="goals"></div>
           </div>
           <div class="card">
-            <div class="card-head"><div class="title" id="title-struggles">Co jest trudne?</div><span class="tag trade">mindset</span></div>
+            <div class="card-head"><div class="title" id="title-struggles">Current Struggles</div><span class="tag trade">mindset</span></div>
             <div class="field"><textarea id="struggles" placeholder="Co teraz jest najtrudniejsze? FOMO, zmęczenie, brak snu, objętość treningów..."></textarea></div>
             <button class="save" onclick="saveNote('struggles')" id="btn-struggles">Zapisz</button>
           </div>
@@ -365,7 +365,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
 
     <section class="view" id="view-history">
       <div class="card">
-        <div class="card-head"><div><div class="title" id="title-history">Historia</div><div class="sub" id="sub-history">Dziennik, trading i treningi w jednym miejscu</div></div><button onclick="openHistorySettings()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 12px;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);letter-spacing:.5px" id="btn-history-settings">&#9998; Widok</button><span class="tag">archive</span></div>
+        <div class="card-head"><div><div class="title" id="title-history">Historia</div><div class="sub" id="sub-history">Dziennik, trading i treningi w jednym miejscu</div></div><button onclick="openHistorySettings()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 12px;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);letter-spacing:.5px" id="btn-history-settings">&#9998; Widok</button><span class="tag">Archive</span></div>
         <div class="history" id="historyList"></div>
         <div class="detail-box" id="historyDetail"></div>
       </div>
@@ -382,7 +382,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
           <div class="cal-stats" id="calStats"></div>
         </div>
         <div class="cal-grid">
-          <div class="cal-dow">Pon</div><div class="cal-dow">Wt</div><div class="cal-dow">Sr</div><div class="cal-dow">Czw</div><div class="cal-dow">Pt</div><div class="cal-dow">Sob</div><div class="cal-dow">Nd</div>
+          <div class="cal-dow" id="cal-d1">Pon</div><div class="cal-dow" id="cal-d2">Wt</div><div class="cal-dow" id="cal-d3">Sr</div><div class="cal-dow" id="cal-d4">Czw</div><div class="cal-dow" id="cal-d5">Pt</div><div class="cal-dow" id="cal-d6">Sob</div><div class="cal-dow" id="cal-d7">Nd</div>
         </div>
         <div class="cal-grid" id="tradeCalendar"></div>
       </div>
@@ -390,11 +390,11 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
 
     <section class="view" id="view-stats">
       <div class="grid">
-        <div class="card"><div class="title">Trading stats</div><div class="metrics" style="margin-top:12px"><div class="metric"><b id="sPnl">$0</b><span>Total PNL</span></div><div class="metric"><b id="sWr">0%</b><span>Win rate</span></div><div class="metric"><b id="sTrades">0</b><span>Sesje</span></div><div class="metric"><b id="sBad">0</b><span>Złamane zasady</span></div><div class="metric"><b id="sAvgRr">-</b><span>Avg RR</span></div></div></div>
-        <div class="card"><div class="title">Training stats</div><div class="metrics" style="margin-top:12px"><div class="metric"><b id="sWorkouts">0</b><span>Sesje</span></div></div></div>
+        <div class="card"><div class="title" id="title-trading-stats">Trading stats</div><div class="metrics" style="margin-top:12px"><div class="metric"><b id="sPnl">$0</b><span>Total PNL</span></div><div class="metric"><b id="sWr">0%</b><span>Win rate</span></div><div class="metric"><b id="sTrades">0</b><span id="lbl-sesje">Sesje</span></div><div class="metric"><b id="sBad">0</b><span id="lbl-zlam">Złamane zasady</span></div><div class="metric"><b id="sAvgRr">-</b><span>Avg RR</span></div></div></div>
+        <div class="card"><div class="title" id="title-training-stats">Training stats</div><div class="metrics" style="margin-top:12px"><div class="metric"><b id="sWorkouts">0</b><span id="lbl-sesje2">Sesje</span></div></div></div>
       </div>
       <div class="card" style="margin-top:14px">
-        <div class="card-head"><div><div class="title">Zagrane trade'y</div><div class="sub">Ostatnie sesje z dziennika tradingowego</div></div><span class="tag trade">trades</span></div>
+        <div class="card-head"><div><div class="title" id="title-trades">Zagrane trade'y</div><div class="sub" id="sub-trades">Ostatnie sesje z dziennika tradingowego</div></div><span class="tag trade">Trades</span></div>
         <div class="trade-list" id="statsTradesList"></div>
       </div>
     </section>
@@ -438,7 +438,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
 
     <section class="view" id="view-dailystatus">
       <div class="card" style="margin-bottom:14px">
-        <div class="card-head"><div><div class="title">Daily Status</div><div class="sub">Historia Readiness punktów — każdy dzień</div></div><span class="tag">goalmaxxing</span></div>
+        <div class="card-head"><div><div class="title">Daily Status</div><div class="sub" id="sub-dailystatus">Historia Readiness punktów — każdy dzień</div></div><span class="tag" id="tag-goalmaxxing">Goalmaxxing</span></div>
         <div id="ds-list" style="margin-top:8px"></div>
       </div>
     </section>
@@ -697,7 +697,7 @@ function renderDash(){
     $('#coachTitle').textContent=td&&td.rules==='nie'?'Reset. Jutro zasady na pierwszym miejscu.':wd&&wd.did?'Pracuj dalej! Jesteś blisko zapełnienia koła!':'Każdy dzień to dane. Nie trać dnia.';
   }
   const log=[];
-  if(wd&&wd.did)log.push(['Trening',(wd.types||[]).join(' + ')||'Triathlon',wd.duration||wd.distance||'done','run']);
+  if(wd&&wd.did)log.push([localStorage.getItem('app_lang')==='en'?'Workout':'Trening',(wd.types||[]).map(function(t){return tv(t);}).join(' + ')||'done',wd.duration||wd.distance||'done','run']);
   if(td)log.push(['Trading',(td.pair||'Sesja')+' '+(td.rr?('RR '+td.rr):''),td.pnl?fmtPnl(td.pnl):'logged','trade']);
   if(nd)log.push(['Journal',nd.notes?nd.notes.slice(0,58):'Dzień zapisany',nd.dayRating||'done','']);
   $('#todayLog').innerHTML=log.length?log.map(x=>'<div class="log-row"><time>'+x[0]+'</time><span>'+x[1]+'</span><span class="tag '+x[3]+'">'+x[2]+'</span></div>').join(''):('<div class="sub">'+(localStorage.getItem('app_lang')==='en'?'Nothing logged yet. Start with a workout or quick review.':'Jeszcze nic dziś nie wpisane. Zacznij od treningu albo krótkiego review.')+'</div>');
@@ -848,10 +848,13 @@ function renderStats(){
 }
 let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
 const calMonths=['Styczen','Luty','Marzec','Kwiecien','Maj','Czerwiec','Lipiec','Sierpien','Wrzesien','Pazdziernik','Listopad','Grudzien'];
+const calMonthsEN=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function calMove(delta){calMonth+=delta;if(calMonth<0){calMonth=11;calYear--}if(calMonth>11){calMonth=0;calYear++}renderCalendar()}
 function renderCalendar(){
   const grid=$('#tradeCalendar');if(!grid)return;
-  $('#calTitle').textContent=calMonths[calMonth].toUpperCase()+' '+calYear;
+  var _calLang=localStorage.getItem('app_lang')||'pl';
+  var _calM=_calLang==='en'?calMonthsEN[calMonth]:calMonths[calMonth];
+  $('#calTitle').textContent=_calM.toUpperCase()+' '+calYear;
   const first=new Date(calYear,calMonth,1), offset=(first.getDay()+6)%7, days=new Date(calYear,calMonth+1,0).getDate(), now=new Date();
   let html='', pnl=0,w=0,l=0,tradeDays=0;
   for(let i=0;i<offset;i++)html+='<div class="trade-day empty"></div>';
@@ -1008,8 +1011,7 @@ function renderDailyStatus(){
     '</div>';
   });
   c.innerHTML='<div style="display:flex;gap:12px;margin-bottom:16px;font-size:12px;color:var(--muted)">'+
-    '<span>Średnia: <b style="color:#fff">'+(goalKeys.length?Math.round(goalKeys.reduce(function(s,k){var d=load(k,{});return s+getUserGoals().filter(function(g){return d[g.id];}).length;},0)/goalKeys.length*pointsPerGoal(getUserGoals().length)):0)+' pkt</b></span>'+
-    '<span>Dni: <b style="color:#fff">'+goalKeys.length+'</b></span>'+
+    (localStorage.getItem('app_lang')==='en'?'Avg: ':'Śr: ')+'<b style="color:#fff">'+(goalKeys.length?Math.round(goalKeys.reduce(function(s,k){var d=load(k,{});return s+getUserGoals().filter(function(g){return d[g.id];}).length;},0)/goalKeys.length*pointsPerGoal(getUserGoals().length)):0)+(localStorage.getItem('app_lang')==='en'?' pts':' pkt')+'</b></span><span>'+(localStorage.getItem('app_lang')==='en'?'Days: ':'Dni: ')+'<b style="color:#fff">'+goalKeys.length+'</b></span>'+
   '</div>'+rows.join('');
   var hist=load('journal_struggles_hist',[]);
   if(hist.length){
@@ -1154,7 +1156,7 @@ function setLang(lang){
   var tw=document.getElementById('title-workout');if(tw)tw.textContent=lang==='en'?'Workout':'Trening dnia';
   var tl=document.getElementById('title-log');if(tl)tl.textContent=lang==='en'?'Daily log':'Dziennik dnia';
   var to=document.getElementById('title-overview');if(to)to.textContent=lang==='en'?'Day overview':'Przegląd dnia';
-  var ts=document.getElementById('title-struggles');if(ts)ts.textContent=lang==='en'?'Current struggles':'Co jest trudne?';
+  var ts=document.getElementById('title-struggles');if(ts)ts.textContent=lang==='en'?'Current Struggles':'Co jest trudne?';
   var tg=document.getElementById('title-goals');if(tg)tg.textContent=lang==='en'?'Goalmaxxing':'Goalmaxxing';
   var lc=document.getElementById('lbl-criteria');if(lc)lc.textContent=lang==='en'?'Entry Criteria':'Entry Kryteria';
   var bac=document.getElementById('btn-add-criteria');if(bac)bac.textContent=lang==='en'?'+ Add':'+ Dodaj';
@@ -1212,6 +1214,25 @@ function setLang(lang){
   // Re-render history with correct language
   var hv=document.getElementById('view-history');
   if(hv&&hv.classList.contains('active'))renderHistory();
+  // Stats labels
+  var tts=document.getElementById('title-trading-stats');if(tts)tts.textContent=lang==='en'?'Trading stats':'Trading stats';
+  var ttr=document.getElementById('title-training-stats');if(ttr)ttr.textContent=lang==='en'?'Training stats':'Training stats';
+  var ls=document.getElementById('lbl-sesje');if(ls)ls.textContent=lang==='en'?'Sessions':'Sesje';
+  var ls2=document.getElementById('lbl-sesje2');if(ls2)ls2.textContent=lang==='en'?'Sessions':'Sesje';
+  var lz=document.getElementById('lbl-zlam');if(lz)lz.textContent=lang==='en'?'Broken rules':'Złamane zasady';
+   var ttrades=document.getElementById('title-trades');if(ttrades)ttrades.textContent=lang==='en'?'Traded sessions':'Zagrane Tradey';
+  var strades=document.getElementById('sub-trades');if(strades)strades.textContent=lang==='en'?'Recent sessions from trading journal':'Ostatnie sesje z dziennika tradingowego';
+  // Re-render stats with correct language
+  var sv=document.getElementById('view-stats');if(sv&&sv.classList.contains('active'))renderStats();
+  var sdv=document.getElementById('view-dailystatus');if(sdv&&sdv.classList.contains('active'))renderDailyStatus();
+  // Calendar days
+  var calDays=lang==='en'?['Mon','Tue','Wed','Thu','Fri','Sat','Sun']:['Pon','Wt','Sr','Czw','Pt','Sob','Nd'];
+  for(var _i=1;_i<=7;_i++){var _d=document.getElementById('cal-d'+_i);if(_d)_d.textContent=calDays[_i-1];}
+  // Re-render calendar title
+  renderCalendar();
+  // Daily status sub
+  var sds=document.getElementById('sub-dailystatus');if(sds)sds.textContent=lang==='en'?'Readiness history — every day':'Historia Readiness punktów — każdy dzień';
+  var tgm=document.getElementById('tag-goalmaxxing');if(tgm)tgm.textContent='Goalmaxxing';
 }
 
 (function(){
