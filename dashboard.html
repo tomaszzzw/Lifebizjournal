@@ -452,9 +452,55 @@ const $$=(s,root=document)=>Array.from(root.querySelectorAll(s));
 const today=()=>{const d=new Date();return d.toISOString().slice(0,10)};
 const fmt=d=>d?d.split('-').reverse().join('.'):'-';
 const load=(k,f=null)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}};
-const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const _saveLoc=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 function toast(t,tEn){var lang=localStorage.getItem('app_lang')||'pl';var el=$('#toast');el.textContent=(lang==='en'&&tEn)?tEn:t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1900)}
 function keys(prefix){let out=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(prefix))out.push(k)}return out.sort().reverse()}
+/* ── SUPABASE SYNC ── */
+const SUPA_URL = 'https://hnhvewxfwdpcdcxkxbdw.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaHZld3hmd2RwY2RjeGt4YmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjI5MjYsImV4cCI6MjA5NDA5ODkyNn0.113ebL6tBa3BgoKGSciqllCszw4BWb9En51BhGW08ng';
+const sbToken = localStorage.getItem('sb_access_token');
+const sbUserId = localStorage.getItem('sb_user_id');
+
+// Override save to also push to Supabase
+
+async function sbPush(k, v) {
+  if(!sbToken || !sbUserId) return;
+  const fullKey = sbUserId + '_' + k;
+  try {
+    await fetch(SUPA_URL + '/rest/v1/journal_data', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + sbToken,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({user_id: sbUserId, data_key: fullKey, data_value: JSON.stringify(v)})
+    });
+  } catch(e) {}
+}
+
+// Replace save with Supabase-aware version
+var save = function(k,v) { localStorage.setItem(k, JSON.stringify(v)); if(k.startsWith('journal_') || k.startsWith('user_') || k.startsWith('history_') || k.startsWith('custom_')) sbPush(k,v); };
+
+async function sbSyncFromServer() {
+  if(!sbToken || !sbUserId) return;
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/journal_data?user_id=eq.' + sbUserId + '&select=data_key,data_value&limit=1000', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + sbToken }
+    });
+    const rows = await res.json();
+    if(Array.isArray(rows)) {
+      rows.forEach(function(r) {
+        const localKey = r.data_key.replace(sbUserId + '_', '');
+        if(!localStorage.getItem(localKey)) {
+          localStorage.setItem(localKey, r.data_value);
+        }
+      });
+    }
+  } catch(e) { console.log('Supabase sync error:', e); }
+}
+
 function pnlClass(n){n=parseFloat(n);return !n?'zero':n>0?'pos':'neg'}
 function fmtPnl(n){n=parseFloat(n);if(isNaN(n))return '$0';return (n>=0?'+':'')+'$'+n.toFixed(0)}
 function getPick(name){const wrap=document.querySelector('[data-pick="'+name+'"]');if(!wrap)return null;const vals=$$('.selected',wrap).map(b=>b.dataset.val);return wrap.classList.contains('multi')?vals:(vals[0]||null)}
@@ -1666,7 +1712,7 @@ function boot(){
   if(nickEl&&savedNick)nickEl.textContent=savedNick;
   loadCustomEmotions();loadCustomWorkoutTypes();loadCustomFeelings();loadCriteria();
   setDefaultDates();renderGoals();renderDash();renderStats();renderCalendar();toggleWorkoutExtra();renderStravaLinkArea();var _bl=localStorage.getItem('app_lang')||'pl';setLang(_bl);}
-boot();
+async function startApp(){await sbSyncFromServer();boot();}startApp();
 </script>
 
 <div id="goal-editor-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
