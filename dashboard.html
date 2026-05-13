@@ -519,7 +519,7 @@ function setView(v){
   }
   $$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));
   $$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
-  if(v==='history')renderHistory();if(v==='stats')renderStats();if(v==='calendar')renderCalendar();renderDash();
+  if(v==='history')renderHistory();if(v==='stats')renderStats();if(v==='calendar')renderCalendar();if(v==='connect')loadStravaActivities();renderDash();
 }
 function setTab(t){$$('.form-panel').forEach(x=>x.classList.toggle('active',x.id==='tab-'+t));$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t))}
 $$('.nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
@@ -1368,14 +1368,202 @@ function renderStravaLinkArea(){
     window.history.replaceState({},'',window.location.pathname);
     var lang=localStorage.getItem('app_lang')||'pl';
     toast(lang==='en'?'Strava connected ✓':'Strava połączona ✓');
-    // Switch to training view
-    setTimeout(function(){setView('connect');},400);
+    // Switch to training view and load activities
+    setTimeout(function(){setView('connect');loadStravaActivities();},400);
   } else if(params.get('strava_error')==='1'){
     window.history.replaceState({},'',window.location.pathname);
     var lang2=localStorage.getItem('app_lang')||'pl';
     toast(lang2==='en'?'Strava connection failed':'Błąd połączenia ze Stravą');
   }
 })();
+
+/* ── STRAVA ACTIVITIES AUTO-FETCH ── */
+
+// Map Strava sport types to emoji + Polish/English label
+var STRAVA_TYPE_MAP = {
+  'Run':         {em:'🏃', pl:'Bieganie',        en:'Running'},
+  'Ride':        {em:'🚴', pl:'Rower',            en:'Cycling'},
+  'Swim':        {em:'🏊', pl:'Pływanie',         en:'Swimming'},
+  'WeightTraining':{em:'💪',pl:'Siłowy',          en:'Strength'},
+  'Workout':     {em:'💪', pl:'Trening',          en:'Workout'},
+  'Walk':        {em:'🚶', pl:'Spacer',           en:'Walk'},
+  'Hike':        {em:'🥾', pl:'Hiking',           en:'Hiking'},
+  'VirtualRide': {em:'🚴', pl:'Rower (virtual)',  en:'Virtual Ride'},
+  'VirtualRun':  {em:'🏃', pl:'Bieganie (virtual)',en:'Virtual Run'},
+  'Kayaking':    {em:'🛶', pl:'Kajak',            en:'Kayaking'},
+  'Crossfit':    {em:'🏋️', pl:'Crossfit',         en:'Crossfit'},
+  'Yoga':        {em:'🧘', pl:'Yoga',             en:'Yoga'},
+  'Soccer':      {em:'⚽', pl:'Piłka nożna',      en:'Soccer'},
+  'Tennis':      {em:'🎾', pl:'Tenis',            en:'Tennis'},
+};
+
+function stravaTypeInfo(type){
+  return STRAVA_TYPE_MAP[type] || {em:'🏋️', pl:type||'Trening', en:type||'Workout'};
+}
+
+function fmtSeconds(s){
+  s=Math.round(s||0);
+  var h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
+  if(h>0) return h+'h '+String(m).padStart(2,'0')+'min';
+  return m+'min '+String(sec).padStart(2,'0')+'s';
+}
+
+function fmtPace(mps){
+  // mps = meters per second → min/km
+  if(!mps||mps<=0)return null;
+  var secPerKm = 1000/mps;
+  var min=Math.floor(secPerKm/60), sec=Math.round(secPerKm%60);
+  return min+':'+String(sec).padStart(2,'0')+'/km';
+}
+
+function fmtDist(m){
+  if(!m)return null;
+  return (m/1000).toFixed(2)+' km';
+}
+
+async function stravaRefreshToken(){
+  var rt=localStorage.getItem('strava_refresh_token');
+  if(!rt)return null;
+  try{
+    var res=await fetch('/api/strava-refresh',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({refresh_token:rt})
+    });
+    var data=await res.json();
+    if(data.access_token){
+      localStorage.setItem('strava_access_token',data.access_token);
+      if(data.refresh_token)localStorage.setItem('strava_refresh_token',data.refresh_token);
+      return data.access_token;
+    }
+  }catch(e){}
+  return null;
+}
+
+async function fetchStravaActivities(forceRefresh){
+  var token=localStorage.getItem('strava_access_token');
+  if(!token)return null;
+
+  // Try fetch
+  var res=await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=30',{
+    headers:{'Authorization':'Bearer '+token}
+  });
+
+  // Token expired → refresh and retry
+  if(res.status===401){
+    token=await stravaRefreshToken();
+    if(!token)return null;
+    res=await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=30',{
+      headers:{'Authorization':'Bearer '+token}
+    });
+  }
+
+  if(!res.ok)return null;
+  return await res.json();
+}
+
+async function loadStravaActivities(){
+  var c=document.getElementById('sf-list');
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+
+  // If not connected, show manual list
+  var token=localStorage.getItem('strava_access_token');
+  if(!token){ renderSFList(); return; }
+
+  // Show loading
+  if(c)c.innerHTML='<div style="color:var(--muted);text-align:center;padding:48px 0;font-size:13px">⏳ '+(isEn?'Loading activities from Strava...':'Ładowanie aktywności ze Stravy...')+'</div>';
+
+  var acts=await fetchStravaActivities();
+
+  if(!acts||!Array.isArray(acts)){
+    if(c)c.innerHTML='<div style="color:var(--red);text-align:center;padding:32px 0;font-size:13px">'+(isEn?'Could not load Strava activities. Try reconnecting.':'Nie udało się pobrać aktywności. Spróbuj ponownie połączyć Stravę.')+'</div>';
+    return;
+  }
+
+  if(!acts.length){
+    if(c)c.innerHTML='<div style="color:var(--muted);text-align:center;padding:48px 0;font-size:14px">'+(isEn?'No activities found on Strava yet.':'Brak aktywności na Stravie.')+'</div>';
+    return;
+  }
+
+  var editLbl=isEn?'Edit':'Edytuj';
+  var delLbl=isEn?'Delete':'Usuń';
+  var stravaLbl=isEn?'Open on Strava':'Otwórz na Stravie';
+
+  var html=acts.map(function(a){
+    var info=stravaTypeInfo(a.sport_type||a.type);
+    var typeName=isEn?info.en:info.pl;
+    var date=(a.start_date_local||'').slice(0,10);
+    var stats=[];
+    if(a.distance>0)stats.push('📍 '+fmtDist(a.distance));
+    if(a.moving_time)stats.push('⏱ '+fmtSeconds(a.moving_time));
+    var pace=fmtPace(a.average_speed);
+    if(pace)stats.push('⚡ '+pace);
+    if(a.average_heartrate)stats.push('❤️ '+Math.round(a.average_heartrate)+' bpm');
+    if(a.total_elevation_gain>0)stats.push('⛰ '+Math.round(a.total_elevation_gain)+'m');
+    if(a.calories)stats.push('🔥 '+a.calories+' kcal');
+    var stravaUrl='https://www.strava.com/activities/'+a.id;
+
+    return '<div class="card" style="margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">'
+        +'<div style="flex:1">'
+          +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
+            +'<span style="font-size:24px">'+info.em+'</span>'
+            +'<div>'
+              +'<div style="font-weight:700;font-size:15px;color:#fff">'+esc(a.name||typeName)+'</div>'
+              +'<div style="font-size:11px;color:var(--muted)">'+typeName+' · '+fmt(date)+'</div>'
+            +'</div>'
+          +'</div>'
+          +(stats.length?'<div style="display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-bottom:8px">'+stats.map(function(s){return'<span>'+s+'</span>';}).join('')+'</div>':'')
+          +'<a href="'+stravaUrl+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;background:#fc4c02;border-radius:6px;padding:5px 12px;color:#fff;font-size:11px;font-weight:700;text-decoration:none" onmouseover="this.style.opacity=.8" onmouseout="this.style.opacity=1"><svg width="11" height="11" viewBox="0 0 24 24" fill="white"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>'+stravaLbl+'</a>'
+        +'</div>'
+        +'<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'
+          +'<span style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Strava</span>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+
+  // Also show manual entries below if any
+  var manualKeys=sfKeys();
+  if(manualKeys.length){
+    var sep='<div style="margin:18px 0 12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:800">'+(isEn?'Manual entries':'Wpisy ręczne')+'</div>';
+    // render manual entries inline
+    var TYPE_EM_EN={'Swimming':'🏊','Cycling':'🚴','Running':'🏃','Strength':'💪','Other':'🏋️'};
+    var manualHtml=manualKeys.map(function(k){
+      var e=sfLoad(k);if(!e)return'';
+      var em=TYPE_EM[e.type]||TYPE_EM_EN[e.type]||'🏋️';
+      var ms=[];
+      if(e.dist)ms.push('📍 '+e.dist);
+      if(e.time)ms.push('⏱ '+e.time);
+      if(e.pace)ms.push('⚡ '+e.pace);
+      if(e.hr)ms.push('❤️ '+e.hr+' bpm');
+      if(e.elev)ms.push('⛰ '+e.elev+'m');
+      if(e.kcal)ms.push('🔥 '+e.kcal+' kcal');
+      return '<div class="card" style="margin-bottom:10px">'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">'
+          +'<div style="flex:1">'
+            +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
+              +'<span style="font-size:24px">'+em+'</span>'
+              +'<div><div style="font-weight:700;font-size:15px;color:#fff">'+esc(e.type)+'</div><div style="font-size:11px;color:var(--muted)">'+fmt(e.date)+'</div></div>'
+            +'</div>'
+            +(ms.length?'<div style="display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-bottom:8px">'+ms.map(function(s){return'<span>'+s+'</span>';}).join('')+'</div>':'')
+            +(e.notes?'<div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:8px">'+esc(e.notes)+'</div>':'')
+            +(e.link?'<a href="'+esc(e.link)+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;background:#fc4c02;border-radius:6px;padding:5px 12px;color:#fff;font-size:11px;font-weight:700;text-decoration:none">'+stravaLbl+'</a>':'')
+          +'</div>'
+          +'<div style="display:flex;gap:8px;flex-shrink:0">'
+            +'<button data-sfid="'+e.id+'" class="sf-edit-btn" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:5px 10px;color:var(--muted);font-size:11px;cursor:pointer">'+editLbl+'</button>'
+            +'<button data-sfid="'+e.id+'" class="sf-del-btn" style="background:rgba(255,60,60,0.08);border:1px solid rgba(255,60,60,.2);border-radius:6px;padding:5px 10px;color:#e06060;font-size:11px;cursor:pointer">'+delLbl+'</button>'
+          +'</div>'
+        +'</div>'
+        +(e.img?'<div style="margin-top:12px"><img src="'+esc(e.img)+'" style="max-width:100%;border-radius:8px;border:1px solid rgba(255,255,255,.1)" onerror="this.style.display=\'none\'"></div>':'')
+      +'</div>';
+    }).join('');
+    html+=sep+manualHtml;
+  }
+
+  if(c)c.innerHTML=html;
+}
 
 function doLogout(){
   if(!confirm('Wylogować się?'))return;
