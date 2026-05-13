@@ -569,7 +569,7 @@ function renderGoals(){
   $('#goals').innerHTML=goals.map(function(g){return '<label class="goal"><input type="checkbox" data-goal="'+g.id+'" '+(saved[g.id]?'checked':'')+'><span>'+g.label+'</span><em>'+g.cat+'</em></label>';}).join('');
   $$('#goals input').forEach(function(i){i.onchange=function(){var data={};$$('#goals input').forEach(function(x){data[x.dataset.goal]=x.checked;});save('journal_goals_'+day,data);renderDash();};});
 }
-function goalProgress(){var goals=getUserGoals(),d=load('journal_goals_'+today(),{});return goals.filter(function(g){return d[g.id];}).length;}
+function goalProgress(){var goals=getUserGoals(),d=load('journal_goals_'+today(),{});var done=goals.filter(function(g){return d[g.id];}).length;return goals.length>0?Math.min(100,Math.round(done/goals.length*100)):0;}
 function openGoalEditor(){
   var goals=getUserGoals();
   var overlay=document.getElementById('goal-editor-overlay');
@@ -580,7 +580,7 @@ function closeGoalEditor(){document.getElementById('goal-editor-overlay').style.
 function renderGoalEditorRows(goals){
   var list=document.getElementById('goal-editor-list');
   list.innerHTML=goals.map(function(g,i){
-    return '<div style="display:flex;gap:8px;align-items:center">'+
+    return '<div data-gid="'+esc(g.id)+'" style="display:flex;gap:8px;align-items:center">'+
       '<input value="'+esc(g.label)+'" placeholder="Nazwa celu" class="goal-label-inp" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:8px 11px;color:#fff;font-size:13px;font-family:var(--font);outline:none">'+
       '<input value="'+esc(g.cat)+'" placeholder="kategoria" class="goal-cat-inp" style="width:90px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:8px 11px;color:var(--muted);font-size:11px;font-family:var(--font);outline:none">'+
       '<button data-ridx="'+i+'" class="goal-rm-btn" style="background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.2);border-radius:6px;width:28px;height:28px;color:#e06060;cursor:pointer;font-size:14px;flex-shrink:0">×</button>'+
@@ -609,10 +609,12 @@ function removeGoalRow(i){
 }
 function getEditorGoals(){
   var rows=document.querySelectorAll('#goal-editor-list > div'),goals=[];
-  rows.forEach(function(row,i){
+  rows.forEach(function(row){
     var inps=row.querySelectorAll('input');
     var label=inps[0].value.trim(),cat=inps[1].value.trim();
-    if(label)goals.push({id:'g_'+i+'_'+Date.now(),label:label,cat:cat||'custom'});
+    var existingId=row.getAttribute('data-gid');
+    var id=existingId||(label.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'')+'_'+Date.now());
+    if(label)goals.push({id:id,label:label,cat:cat||'custom'});
   });
   return goals;
 }
@@ -653,19 +655,19 @@ function toggleWorkoutExtra(){const did=getPick('wDid');const el=$('#workoutExtr
 function saveWorkout(){const date=$('#wDate').value||today();const did=getPick('wDid');if(!did){toast('Zaznacz czy trenowałeś','Select if you trained');return}const otherType=$('#wOtherType')?$('#wOtherType').value.trim():'';save('journal_workout_'+date,{date,did:did==='yes',types:did==='yes'?getPick('wTypes'):[],otherType:otherType||null,duration:did==='yes'?$('#wDuration').value.trim():'',intensity:did==='yes'?getPick('wIntensity'):null,difficulty:did==='yes'?getPick('wRpe'):null,feeling:did==='yes'?getPick('wFeeling'):null,notes:did==='yes'?$('#wNotes').value.trim():'',savedAt:Date.now()});clearDirty();resetLogForm();toast('Trening zapisany ✓','Workout saved ✓');renderDash();renderStats();}
 function renderDash(){
   const day=today(), nd=load('journal_new_'+day), td=load('journal_trading_'+day), wd=load('journal_workout_'+day);
-  const gp=goalProgress();var _gl=getUserGoals().length;$('#goalCount').textContent=gp+' / '+_gl+' complete';$('#dayProgress').style.width=Math.max(10,Math.round(gp/_gl*100))+'%';
+  var _gl=getUserGoals().length;var _gd=load('journal_goals_'+day,{});var _done=getUserGoals().filter(function(g){return _gd[g.id];}).length;const gp=_gl>0?Math.min(100,Math.round(_done/_gl*100)):0;$('#goalCount').textContent=_done+' / '+_gl+' complete';$('#dayProgress').style.width=gp+'%';
   var _lng=localStorage.getItem('app_lang')||'pl';
   var _loc=_lng==='en'?'en-GB':'pl-PL';
   var _todayEl=$('#todayDate');if(_todayEl)_todayEl.textContent=new Date().toLocaleDateString(_loc,{weekday:'long',day:'numeric',month:'long'});
   $('#mWorkouts').textContent=wd&&wd.did?1:0;
   const pnlVal=td&&td.pnl?fmtPnl(td.pnl):'$0';const pnlNum=td&&td.pnl?parseFloat(td.pnl):0;
   const pnlEl=$('#mPnl');pnlEl.textContent=pnlVal;pnlEl.style.color=pnlNum>0?'#63e18e':pnlNum<0?'#ff726d':'';
-  var score=Math.min(100,gp*pointsPerGoal(getUserGoals().length));
+  var score=gp; // gp is already 0-100
   $('#scoreNum').textContent=score;
   var _sl=localStorage.getItem('app_lang')||'pl';
   var _st=_sl==='en'?
     (function(){
-      var total=getUserGoals().length, done=gp;
+      var total=getUserGoals().length, done=_done;
       var left=total-done;
       if(done===0)return 'Mark goals to see your score';
       if(done===total)return 'Perfect day! 🔥';
@@ -677,7 +679,7 @@ function renderDash(){
       return 'Outstanding! Just '+left+' more 🔥';
     })():
     (function(){
-      var total=getUserGoals().length, done=gp;
+      var total=getUserGoals().length, done=_done;
       var left=total-done;
       if(done===0)return 'Zaznacz cele aby zobaczyć wynik';
       if(done===total)return 'Perfekcyjny dzień! 🔥';
@@ -692,9 +694,9 @@ function renderDash(){
   var ring=$('.ring');if(ring){ring.style.background='conic-gradient(var(--green) 0 '+score+'%,rgba(255,255,255,.08) '+score+'% 100%)';}
   var _lang=localStorage.getItem('app_lang')||'pl';
   if(_lang==='en'){
-    $('#coachTitle').textContent=td&&td.rules==='nie'?'Reset. Rules first tomorrow.':wd&&wd.did?'Keep going! You are close to filling the ring!':'Every day is data. Make it count.';
+    $('#coachTitle').textContent='Keep going! You are close to filling the ring!';
   } else {
-    $('#coachTitle').textContent=td&&td.rules==='nie'?'Reset. Jutro zasady na pierwszym miejscu.':wd&&wd.did?'Pracuj dalej! Jesteś blisko zapełnienia koła!':'Każdy dzień to dane. Nie trać dnia.';
+    $('#coachTitle').textContent='Pracuj dalej! Jesteś blisko zapełnienia koła!';
   }
   const log=[];
   if(wd&&wd.did)log.push([localStorage.getItem('app_lang')==='en'?'Workout':'Trening',(wd.types||[]).map(function(t){return tv(t);}).join(' + ')||'done',wd.duration||wd.distance||'done','run']);
@@ -1012,25 +1014,36 @@ function renderDailyStatus(){
   const rows=goalKeys.map(k=>{
     const date=k.replace('journal_goals_','');
     const data=load(k,{});
-    var _ugoals=getUserGoals();var completed=_ugoals.filter(function(g){return data[g.id];}).length;
-    const score=completed*20;
-    const pct=score+'%';
+    // Count how many goals were checked that day (keys with true value)
+    var checkedIds=Object.keys(data).filter(function(id){return data[id];});
+    var total=Object.keys(data).length||getUserGoals().length;
+    var completed=checkedIds.length;
+    // Score is always out of 100, capped
+    var score=total>0?Math.min(100,Math.round(completed/total*100)):0;
+    var pct=score+'%';
     const color=score>=80?'#63e18e':score>=40?'#f0c040':'#ff726d';
-    var goalItems=_ugoals.map(function(g){return '<span style="font-size:11px;padding:3px 8px;border-radius:20px;background:'+(data[g.id]?'rgba(99,225,142,0.15)':'rgba(255,255,255,0.05)')+';color:'+(data[g.id]?'#63e18e':'var(--muted)')+'">'+g.label+'</span>';}).join('');
     return '<div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)">'+
       '<div style="min-width:90px;font-size:12px;color:var(--muted)">'+fmt(date)+'</div>'+
       '<div style="min-width:52px;text-align:center;font-size:22px;font-weight:800;color:'+color+'">'+score+'</div>'+
       '<div style="flex:1">'+
-        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">'+
+        '<div style="display:flex;align-items:center;gap:6px">'+
           '<div style="flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px"><div style="width:'+pct+';height:6px;background:'+color+';border-radius:3px;transition:width .4s"></div></div>'+
-          '<span style="font-size:11px;color:'+color+'">'+completed+'/'+_ugoals.length+'</span>'+
+          '<span style="font-size:11px;color:'+color+'">'+completed+'/'+total+'</span>'+
         '</div>'+
-        '<div style="display:flex;flex-wrap:wrap;gap:5px">'+goalItems+'</div>'+
       '</div>'+
     '</div>';
   });
+  // Avg score across all days (always out of 100)
+  var avgScore=goalKeys.length?Math.round(goalKeys.reduce(function(s,k){
+    var d=load(k,{});
+    var ids=Object.keys(d);
+    var tot=ids.length||1;
+    var done=ids.filter(function(id){return d[id];}).length;
+    return s+Math.min(100,Math.round(done/tot*100));
+  },0)/goalKeys.length):0;
+  var isEn=localStorage.getItem('app_lang')==='en';
   c.innerHTML='<div style="display:flex;gap:12px;margin-bottom:16px;font-size:12px;color:var(--muted)">'+
-    (localStorage.getItem('app_lang')==='en'?'Avg: ':'Śr: ')+'<b style="color:#fff">'+(goalKeys.length?Math.round(goalKeys.reduce(function(s,k){var d=load(k,{});return s+getUserGoals().filter(function(g){return d[g.id];}).length;},0)/goalKeys.length*pointsPerGoal(getUserGoals().length)):0)+(localStorage.getItem('app_lang')==='en'?' pts':' pkt')+'</b></span><span>'+(localStorage.getItem('app_lang')==='en'?'Days: ':'Dni: ')+'<b style="color:#fff">'+goalKeys.length+'</b></span>'+
+    (isEn?'Avg: ':'Śr: ')+'<b style="color:#fff">'+avgScore+(isEn?' pts':' pkt')+'</b>&nbsp;&nbsp;'+(isEn?'Days: ':'Dni: ')+'<b style="color:#fff">'+goalKeys.length+'</b>'+
   '</div>'+rows.join('');
   var hist=load('journal_struggles_hist',[]);
   if(hist.length){
@@ -1285,8 +1298,11 @@ function setLang(lang){
     var sfTypeBtns=sfTypeSeg.querySelectorAll('button');
     sfTypeBtns.forEach(function(b,i){if(lang==='en'&&sfTypeEN[i])b.textContent=sfTypeEN[i];else if(lang==='pl'&&sfTypePL[i])b.textContent=sfTypePL[i];});
   }
-  // sf-list re-render (edit/delete buttons)
-  renderSFList();
+  // sf-list re-render — jeśli jesteśmy w zakładce Trening, odśwież aktywności
+  var cv=document.getElementById('view-connect');
+  if(cv&&cv.classList.contains('active')){
+    loadStravaActivities();
+  }
 }
 
 (function(){
