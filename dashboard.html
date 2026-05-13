@@ -154,6 +154,32 @@ textarea{min-height:94px;resize:vertical;line-height:1.55}
 .day-pnl{font-size:16px;font-weight:900;color:#fff}
 .trade-day.win .day-pnl{color:#63e18e}.trade-day.loss .day-pnl{color:#ff726d}
 .day-meta{margin-top:4px;font-size:10px;color:#7588b8;line-height:1.45}
+/* AI Coach notification */
+#coach-notify{position:fixed;right:28px;bottom:28px;width:300px;background:linear-gradient(145deg,#1e1a14,#161310);border:1px solid rgba(214,154,83,.4);border-radius:16px;padding:20px 22px 16px;box-shadow:0 24px 64px rgba(0,0,0,.6);z-index:999;opacity:0;transform:translateY(20px) scale(.96);transition:opacity .4s cubic-bezier(.2,.8,.2,1),transform .4s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+#coach-notify.show{opacity:1;transform:none;pointer-events:all}
+#coach-notify .cn-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#coach-notify .cn-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,rgba(214,154,83,.3),rgba(166,214,111,.2));border:1px solid rgba(214,154,83,.4);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+#coach-notify .cn-label{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2)}
+#coach-notify .cn-role{font-size:10px;color:var(--muted);margin-top:2px}
+#coach-notify .cn-msg{font-size:13px;line-height:1.65;color:var(--text)}
+#coach-notify .cn-msg b{color:var(--gold2)}
+#coach-notify .cn-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+#coach-notify .cn-btn{border:1px solid transparent;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:var(--font)}
+#coach-notify .cn-close{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);color:var(--muted)}
+#coach-notify .cn-open{background:rgba(214,154,83,.18);border-color:rgba(214,154,83,.4);color:var(--gold2)}
+/* Chat messages */
+.coach-msg{display:flex;gap:10px;animation:rise .28s cubic-bezier(.2,.8,.2,1)}
+.coach-msg.user{flex-direction:row-reverse}
+.coach-msg .cm-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+.coach-msg.ai .cm-av{background:linear-gradient(135deg,rgba(214,154,83,.25),rgba(166,214,111,.15));border:1px solid rgba(214,154,83,.3)}
+.coach-msg .cm-bubble{max-width:80%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.6;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);color:var(--text)}
+.coach-msg.user .cm-bubble{background:rgba(214,154,83,.12);border-color:rgba(214,154,83,.25);color:var(--gold2);border-radius:14px 4px 14px 14px}
+.coach-msg.ai .cm-bubble{border-radius:4px 14px 14px 14px}
+.cn-typing{display:inline-flex;gap:4px;align-items:center;padding:4px 0}
+.cn-typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:typingDot 1.2s infinite}
+.cn-typing span:nth-child(2){animation-delay:.2s}
+.cn-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingDot{0%,60%,100%{opacity:.3;transform:scale(1)}30%{opacity:1;transform:scale(1.3)}}
 .toast{position:fixed;right:24px;bottom:24px;background:var(--panel3);border:1px solid var(--line2);border-radius:var(--radius);padding:11px 14px;color:var(--text);font-size:12px;opacity:0;transform:translateY(8px);transition:.22s;z-index:20}
 .toast.show{opacity:1;transform:none}
 @media(max-width:980px){
@@ -236,6 +262,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
       <button data-view="stats" data-i18n="nav_stats">📊 Statystyki</button>
       <button data-view="connect" data-i18n="nav_train">🏃 Trening</button>
       <button data-view="dailystatus" data-i18n="nav_daily">📈 Daily Status</button>
+      <button data-view="coach" data-i18n="nav_coach">🤖 AI Coach</button>
     </nav>
     <div class="side-bottom">
       <!-- Theme + Language -->
@@ -442,6 +469,20 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
         <div id="ds-list" style="margin-top:8px"></div>
       </div>
     </section>
+
+    <section class="view" id="view-coach">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head">
+          <div><div class="title" id="coach-chat-title">AI Coach</div><div class="sub" id="coach-chat-sub">Napisz o swoich problemach tradingowych</div></div>
+          <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(214,154,83,.12);border:1px solid rgba(214,154,83,.3);border-radius:999px;padding:4px 12px;font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--gold2);text-transform:uppercase">AI</span>
+        </div>
+        <div id="coach-messages" style="min-height:320px;max-height:480px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:8px 0 16px"></div>
+        <div style="display:flex;gap:10px;margin-top:8px;border-top:1px solid var(--line);padding-top:14px">
+          <textarea id="coach-input" rows="3" style="flex:1;resize:none;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:var(--radius);color:var(--text);padding:11px 12px;outline:none;font-family:var(--font);font-size:13px;line-height:1.55"></textarea>
+          <button id="coach-send-btn" style="align-self:flex-end;background:linear-gradient(135deg,rgba(214,154,83,.25),rgba(166,214,111,.15));border:1px solid rgba(214,154,83,.4);border-radius:var(--radius);padding:11px 20px;color:var(--gold2);font-size:12px;font-weight:800;cursor:pointer;font-family:var(--font)">Wyślij ↑</button>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 <div class="toast" id="toast"></div>
@@ -641,7 +682,7 @@ function saveNote(id){
   toast('Zapisano ✓');
 }
 function saveDay(){const date=$('#dDate').value||today();save('journal_new_'+date,{date,dayRating:getPick('dRating'),notes:$('#dNotes').value.trim(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Dzień zapisany ✓','Day saved ✓');renderDash();}
-function saveTrade(){const date=$('#tDate').value||today();save('journal_trading_'+date,{date,pair:$('#tPair').value.trim(),pnl:$('#tPnl').value,rr:$('#tRr').value.trim(),rules:getPick('tRules'),emotions:getPick('tEmotions'),sessionRating:getPick('tSession'),chartUrl:$('#tChartUrl').value.trim(),notes:$('#tNotes').value.trim(),criteria:getSelectedCriteria(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Trading zapisany ✓','Trading saved ✓');renderDash();renderCalendar();renderStats();setTimeout(function(){checkRulesAfterSave({date:date,rules:getPick('tRules')});},2000);}
+function saveTrade(){const date=$('#tDate').value||today();const _rules=getPick('tRules');const _pnl=$('#tPnl').value;save('journal_trading_'+date,{date,pair:$('#tPair').value.trim(),pnl:_pnl,rr:$('#tRr').value.trim(),rules:_rules,emotions:getPick('tEmotions'),sessionRating:getPick('tSession'),chartUrl:$('#tChartUrl').value.trim(),notes:$('#tNotes').value.trim(),criteria:getSelectedCriteria(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Trading zapisany ✓','Trading saved ✓');renderDash();renderCalendar();renderStats();setTimeout(function(){checkRulesAfterSave({date:date,rules:_rules,pnl:_pnl});},800);}
 
 function toggleOtherField(btn){
   var field=document.getElementById('other-type-field');
@@ -1059,6 +1100,7 @@ window.setView=function(v){
   _origSetView(v);
   if(v==='connect'){renderSFList();renderStravaLinkArea();}
   if(v==='dailystatus')renderDailyStatus();
+  if(v==='coach')initCoachChat();
 };
 $$('.nav button').forEach(b=>b.onclick=()=>window.setView(b.dataset.view));
 
@@ -1103,7 +1145,7 @@ function toggleTheme(){
 const TRANSLATIONS = {
   pl: {
     nav_dash:'🏠 Dashboard', nav_new:'✏️ Nowy wpis', nav_history:'📖 Historia', nav_cal:'📅 Kalendarz', nav_stats:'📊 Statystyki',
-    nav_train:'🏃 Trening', nav_daily:'📈 Daily Status',
+    nav_train:'🏃 Trening', nav_daily:'📈 Daily Status', nav_coach:'🤖 AI Coach',
     tab_day:'Dzień', tab_trade:'Trading', tab_workout:'Trening', tab_tomorrow:'Plan jutro',
     coach_title_default:'Log the session, then move.',
     coach_sub:'Zapisz dzisiaj trening, stan głowy i trading. Małe dane codziennie tworzą brutalnie dobry obraz tego, czy naprawdę idziesz w stronę formy.',
@@ -1118,7 +1160,7 @@ const TRANSLATIONS = {
   },
   en: {
     nav_dash:'🏠 Dashboard', nav_new:'✏️ New entry', nav_history:'📖 History', nav_cal:'📅 Calendar', nav_stats:'📊 Statistics',
-    nav_train:'🏃 Training', nav_daily:'📈 Daily Status',
+    nav_train:'🏃 Training', nav_daily:'📈 Daily Status', nav_coach:'🤖 AI Coach',
     tab_day:'Day', tab_trade:'Trading', tab_workout:'Workout', tab_tomorrow:'Plan tomorrow',
     coach_title_default:'Log the session, then move.',
     coach_sub:'Log your workout, mindset and trading today. Small data daily builds a brutally clear picture.',
@@ -1139,7 +1181,7 @@ function setLang(lang){
   var t=TRANSLATIONS[lang];
   // Nav
   var navBtns=document.querySelectorAll('.nav button[data-view]');
-  var navKeys=['nav_dash','nav_new','nav_history','nav_cal','nav_stats','nav_train','nav_daily'];
+  var navKeys=['nav_dash','nav_new','nav_history','nav_cal','nav_stats','nav_train','nav_daily','nav_coach'];
   navBtns.forEach(function(b,i){if(navKeys[i]&&t[navKeys[i]])b.textContent=t[navKeys[i]];});
   // Tabs
   var tabs=document.querySelectorAll('.tab[data-tab]');
@@ -2061,6 +2103,240 @@ function boot(){
   setDefaultDates();renderGoals();renderDash();renderStats();renderCalendar();toggleWorkoutExtra();renderStravaLinkArea();var _bl=localStorage.getItem('app_lang')||'pl';setLang(_bl);}
 async function startApp(){await sbSyncFromServer();boot();}startApp();
 </script>
+<script>
+/* ══════ AI COACH JS ══════ */
+var _coachTimer=null;
+function showCoachNotify(msg){
+  var el=document.getElementById('coach-notify');
+  var mel=document.getElementById('coach-notify-msg');
+  if(!el||!mel)return;
+  mel.innerHTML=msg;
+  el.classList.add('show');
+  if(_coachTimer)clearTimeout(_coachTimer);
+  _coachTimer=setTimeout(closeCoachNotify,9000);
+}
+function closeCoachNotify(){
+  var el=document.getElementById('coach-notify');
+  if(el)el.classList.remove('show');
+}
+function getRulesStreak(){
+  var streak=0,d=new Date();
+  for(var i=0;i<60;i++){
+    var ds=d.toISOString().slice(0,10);
+    var td=load('journal_trading_'+ds);
+    if(td&&td.rules==='tak'){streak++;d.setDate(d.getDate()-1);}
+    else if(td&&td.rules)break;
+    else d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+function getWorkoutStreak(){
+  var streak=0,d=new Date();
+  for(var i=0;i<60;i++){
+    var ds=d.toISOString().slice(0,10);
+    var wd=load('journal_workout_'+ds);
+    if(wd&&wd.did){streak++;d.setDate(d.getDate()-1);}
+    else break;
+  }
+  return streak;
+}
+function getLossStreak(){
+  var streak=0,keys2=[];
+  for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('journal_trading_'))keys2.push(k);}
+  keys2.sort().reverse();
+  for(var j=0;j<keys2.length;j++){
+    var x=load(keys2[j]);
+    if(!x||x.pnl===''||x.pnl===null||x.pnl===undefined)continue;
+    var n=parseFloat(x.pnl);
+    if(isNaN(n))continue;
+    if(n<0)streak++;else break;
+  }
+  return streak;
+}
+function getWorkoutsThisWeek(){
+  var count=0,d=new Date();
+  for(var i=0;i<7;i++){var ds=d.toISOString().slice(0,10);var wd=load('journal_workout_'+ds);if(wd&&wd.did)count++;d.setDate(d.getDate()-1);}
+  return count;
+}
+function getGoals100Streak(){
+  var streak=0,d=new Date();
+  for(var i=0;i<60;i++){
+    var ds=d.toISOString().slice(0,10);
+    var gd=load('journal_goals_'+ds);
+    if(!gd){d.setDate(d.getDate()-1);continue;}
+    var goals=getUserGoals();
+    var done=goals.filter(function(g){return gd[g.id];}).length;
+    if(done===goals.length&&goals.length>0){streak++;d.setDate(d.getDate()-1);}
+    else break;
+  }
+  return streak;
+}
+function checkRulesAfterSave(data){
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  var rules=data.rules;
+  var pnl=data.pnl!==undefined?parseFloat(data.pnl):null;
+  var rs=getRulesStreak();
+  var ls=getLossStreak();
+  var msg='';
+  if(rules==='nie'){
+    msg=isEn?'⚠️ <b>Rules broken.</b> One bad trade doesn\'t define you. What went wrong? Write it down.':'⚠️ <b>Zasady złamane.</b> Jeden zły trade Cię nie definiuje. Co poszło nie tak? Zapisz zanim zapomnisz.';
+  } else if(rs>=3&&rules==='tak'){
+    msg=isEn?'🔥 <b>'+rs+' days rules in a row!</b> This is discipline. You are building your edge.':'🔥 <b>'+rs+' dni z rzędu zasad!</b> To dyscyplina. Właśnie tak budujesz swój edge.';
+  } else if(!isNaN(pnl)&&pnl>0&&rules==='tak'){
+    msg=isEn?'✅ <b>Profit and rules.</b> That is professional trading.':'✅ <b>Profit i zasady.</b> Tak wygląda profesjonalny trading.';
+  } else if(!isNaN(pnl)&&pnl<0&&rules==='tak'){
+    msg=isEn?'💪 <b>Loss, rules kept.</b> Clean execution regardless of outcome.':'💪 <b>Strata, zasady zachowane.</b> Profesjonalizm — execution bez względu na wynik.';
+  } else if(ls>=3){
+    msg=isEn?'📉 <b>'+ls+' losses in a row.</b> Reduce size or take a break.':'📉 <b>'+ls+' straty z rzędu.</b> Zmniejsz size lub zrób przerwę.';
+  }
+  if(msg)setTimeout(function(){showCoachNotify(msg);},800);
+}
+function checkWorkoutAfterSave(data){
+  if(!data||!data.did)return;
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  var ws=getWorkoutStreak();
+  var ww=getWorkoutsThisWeek();
+  var rpe=data.difficulty?parseInt(data.difficulty):0;
+  var msg='';
+  if(ws>=5){
+    msg=isEn?'🏆 <b>'+ws+' workouts in a row!</b> Body and mind at full capacity.':'🏆 <b>'+ws+' treningów z rzędu!</b> Ciało i głowa na pełnych obrotach.';
+  } else if(ww>=5){
+    msg=isEn?'🏆 <b>'+ww+' workouts this week!</b> Elite consistency.':'🏆 <b>'+ww+' treningów w tygodniu!</b> Elitarna konsekwencja.';
+  } else if(rpe>=8){
+    msg=isEn?'🔥 <b>Heavy session done.</b> You just raised your pain threshold.':'🔥 <b>Ciężka sesja zaliczona.</b> Właśnie podniosłeś swój próg bólu.';
+  } else {
+    msg=isEn?'💪 <b>Activity logged.</b> Regular training lowers cortisol and sharpens decisions at the charts.':'💪 <b>Aktywność zapisana.</b> Regularne treningi obniżają kortyzol i poprawiają decyzje przy wykresie.';
+  }
+  if(msg)setTimeout(function(){showCoachNotify(msg);},800);
+}
+function checkGoalsAfterSave(){
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  var goals=getUserGoals();
+  var gd=load('journal_goals_'+today(),{});
+  var done=goals.filter(function(g){return gd[g.id];}).length;
+  var total=goals.length;
+  var s100=getGoals100Streak();
+  var msg='';
+  if(done===total&&total>0&&s100>=3){
+    msg=isEn?'⚡ <b>'+s100+' perfect days in a row!</b> You are in the zone.':'⚡ <b>'+s100+' dni z rzędu na 100%!</b> Jesteś w strefie. Nie przerywaj.';
+  } else if(done===total&&total>0){
+    msg=isEn?'🎯 <b>Perfect day!</b> All goals done. This is the standard.':'🎯 <b>Perfekcyjny dzień!</b> Wszystkie cele zaliczone. To jest standard.';
+  } else if(total>0&&done/total<0.5&&done>0){
+    msg=isEn?'📌 <b>Tough day.</b> Tomorrow you come back stronger.':'📌 <b>Trudny dzień.</b> Jutro wracasz mocniejszy.';
+  }
+  if(msg)setTimeout(function(){showCoachNotify(msg);},600);
+}
+/* Hook saveWorkout */
+var _origSaveWorkout2=window.saveWorkout;
+window.saveWorkout=function(){
+  _origSaveWorkout2();
+  var date=document.getElementById('wDate')?document.getElementById('wDate').value||today():today();
+  var data=load('journal_workout_'+date)||{};
+  checkWorkoutAfterSave(data);
+};
+/* Hook goals checkboxes */
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.dataset&&e.target.dataset.goal!==undefined){
+    setTimeout(checkGoalsAfterSave,400);
+  }
+});
+
+/* ── COACH CHAT ── */
+var coachHistory=[];
+function buildCoachContext(){
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  var lines=[];
+  var d=new Date();
+  for(var i=0;i<7;i++){
+    var ds=d.toISOString().slice(0,10);
+    var td=load('journal_trading_'+ds);
+    if(td)lines.push('Trading '+ds+': PNL='+(td.pnl||'?')+' Rules='+(td.rules||'?')+' Session='+(td.sessionRating||'?'));
+    var wd=load('journal_workout_'+ds);
+    if(wd&&wd.did)lines.push('Workout '+ds+': '+(Array.isArray(wd.types)?wd.types.join(','):'')+' RPE='+(wd.difficulty||'?'));
+    d.setDate(d.getDate()-1);
+  }
+  var goals=getUserGoals();
+  var gd=load('journal_goals_'+today(),{});
+  var done=goals.filter(function(g){return gd[g.id];}).length;
+  return 'You are an elite trading psychology and performance coach. Be direct, concise, no fluff. Max 100 words per response.\n\nUser data (last 7 days):\n'+lines.join('\n')+'\nGoals today: '+done+'/'+goals.length+'\nRules streak: '+getRulesStreak()+' days\nWorkout streak: '+getWorkoutStreak()+' days\nLoss streak: '+getLossStreak()+'\n\nRespond in '+(isEn?'English':'Polish')+'.';
+}
+function addCoachMsg(role,html){
+  var c=document.getElementById('coach-messages');
+  if(!c)return;
+  var div=document.createElement('div');
+  div.className='coach-msg '+(role==='ai'?'ai':'user');
+  div.innerHTML='<div class="cm-av">'+(role==='ai'?'🤖':'👤')+'</div><div class="cm-bubble">'+html+'</div>';
+  c.appendChild(div);
+  c.scrollTop=c.scrollHeight;
+}
+function showTyping(){
+  var c=document.getElementById('coach-messages');
+  if(!c)return;
+  var div=document.createElement('div');
+  div.className='coach-msg ai';div.id='coach-typing-el';
+  div.innerHTML='<div class="cm-av">🤖</div><div class="cm-bubble"><div class="cn-typing"><span></span><span></span><span></span></div></div>';
+  c.appendChild(div);c.scrollTop=c.scrollHeight;
+}
+function hideTyping(){var el=document.getElementById('coach-typing-el');if(el)el.remove();}
+function initCoachChat(){
+  var c=document.getElementById('coach-messages');
+  if(!c||c.children.length>0)return;
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  var rs=getRulesStreak(),ws=getWorkoutStreak();
+  var goals=getUserGoals();
+  var gd=load('journal_goals_'+today(),{});
+  var done=goals.filter(function(g){return gd[g.id];}).length;
+  var txt=isEn
+    ?'Hey. I\'m your AI Coach. I see your data:<br><br>📋 Rules streak: <b>'+rs+' days</b><br>💪 Workout streak: <b>'+ws+' days</b><br>🎯 Goals today: <b>'+done+'/'+goals.length+'</b><br><br>What\'s on your mind?'
+    :'Hej. Jestem Twoim AI Coachem. Widzę Twoje dane:<br><br>📋 Seria zasad: <b>'+rs+' dni</b><br>💪 Seria treningów: <b>'+ws+' dni</b><br>🎯 Cele dziś: <b>'+done+'/'+goals.length+'</b><br><br>Co Cię trapi?';
+  addCoachMsg('ai',txt);
+  var btn=document.getElementById('coach-send-btn');
+  if(btn)btn.onclick=sendCoachMessage;
+  var inp=document.getElementById('coach-input');
+  if(inp){
+    inp.placeholder=isEn?'Write about your trading problems...':'Napisz o swoich problemach tradingowych...';
+    inp.onkeydown=function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendCoachMessage();}};
+  }
+}
+async function sendCoachMessage(){
+  var inp=document.getElementById('coach-input');
+  var btn=document.getElementById('coach-send-btn');
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  if(!inp||!inp.value.trim())return;
+  var msg=inp.value.trim();
+  inp.value='';
+  addCoachMsg('user',msg);
+  coachHistory.push({role:'user',content:msg});
+  if(btn){btn.disabled=true;btn.textContent=isEn?'...':'...';}
+  showTyping();
+  try{
+    var res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system:buildCoachContext(),
+        messages:coachHistory.slice(-10)
+      })
+    });
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'...';
+    hideTyping();
+    addCoachMsg('ai',reply);
+    coachHistory.push({role:'assistant',content:reply});
+  }catch(e){
+    hideTyping();
+    addCoachMsg('ai',isEn?'Connection error. Try again.':'Błąd połączenia. Spróbuj ponownie.');
+  }
+  if(btn){btn.disabled=false;btn.textContent=isEn?'Send ↑':'Wyślij ↑';}
+}
+
+</script>
 
 <div id="goal-editor-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
   <div style="background:#1a1f2e;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:28px;width:480px;max-width:94vw">
@@ -2153,6 +2429,19 @@ async function startApp(){await sbSyncFromServer();boot();}startApp();
       <input id="criteria-input" class="input" placeholder="np. FVG, Supply Zone, BOS..." style="margin-top:6px">
     </div>
     <button onclick="saveCriteria()" style="width:100%;padding:12px;background:rgba(214,154,83,.2);border:1px solid rgba(214,154,83,.4);border-radius:10px;color:var(--gold2);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)" id="criteria-modal-save">Dodaj</button>
+  </div>
+</div>
+
+<div id="coach-notify">
+  <div class="cn-header">
+    <div class="cn-avatar">🤖</div>
+    <div><div class="cn-label">AI Coach</div><div class="cn-role">Progressive Overload</div></div>
+    <button onclick="closeCoachNotify()" style="margin-left:auto;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0">&times;</button>
+  </div>
+  <div class="cn-msg" id="coach-notify-msg"></div>
+  <div class="cn-footer">
+    <button class="cn-btn cn-close" onclick="closeCoachNotify()">Zamknij</button>
+    <button class="cn-btn cn-open" onclick="closeCoachNotify();window.setView('coach')">Porozmawiaj →</button>
   </div>
 </div>
 </body>
