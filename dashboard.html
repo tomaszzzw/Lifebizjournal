@@ -2324,14 +2324,28 @@ async function sendCoachMessage(){
         messages:coachHistory.slice(-10)
       })
     });
-    var data=await res.json();
-    var reply=(data.content&&data.content[0]&&data.content[0].text)||'...';
+    var text=await res.text();
+    var data;
+    try{data=JSON.parse(text);}catch(pe){
+      hideTyping();
+      addCoachMsg('ai','Parse error: '+text.slice(0,200));
+      if(btn){btn.disabled=false;btn.textContent=isEn?'Send':'Wysij';}
+      return;
+    }
+    var reply='';
+    if(data.content&&data.content[0]&&data.content[0].text){
+      reply=data.content[0].text;
+    }else if(data.error){
+      reply='API error: '+JSON.stringify(data.error);
+    }else{
+      reply=JSON.stringify(data).slice(0,300);
+    }
     hideTyping();
     addCoachMsg('ai',reply);
     coachHistory.push({role:'assistant',content:reply});
   }catch(e){
     hideTyping();
-    addCoachMsg('ai',isEn?'Connection error. Try again.':'Błąd połączenia. Spróbuj ponownie.');
+    addCoachMsg('ai','Error: '+e.message);
   }
   if(btn){btn.disabled=false;btn.textContent=isEn?'Send ↑':'Wyślij ↑';}
 }
