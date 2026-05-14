@@ -155,16 +155,34 @@ textarea{min-height:94px;resize:vertical;line-height:1.55}
 .trade-day.win .day-pnl{color:#63e18e}.trade-day.loss .day-pnl{color:#ff726d}
 .day-meta{margin-top:4px;font-size:10px;color:#7588b8;line-height:1.45}
 /* AI Coach notification */
-#coach-notify{position:fixed;right:28px;bottom:28px;width:300px;background:linear-gradient(145deg,#1e1a14,#161310);border:1px solid rgba(214,154,83,.4);border-radius:16px;padding:20px 22px 16px;box-shadow:0 24px 64px rgba(0,0,0,.6);z-index:999;opacity:0;transform:translateY(20px) scale(.96);transition:opacity .4s cubic-bezier(.2,.8,.2,1),transform .4s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+/* ── Day Analysis Modal ── */
+#day-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:1000;opacity:0;transition:opacity .35s cubic-bezier(.2,.8,.2,1);pointer-events:none;display:flex;align-items:center;justify-content:center;padding:24px}
+#day-modal-overlay.show{opacity:1;pointer-events:all}
+#day-modal{width:100%;max-width:560px;max-height:85vh;overflow-y:auto;background:var(--panel2,linear-gradient(160deg,#1c1812,#141210));border:1px solid rgba(var(--gold-rgb,214,154,83),.3);border-radius:22px;padding:28px 30px 24px;box-shadow:0 40px 100px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06);transform:translateY(24px) scale(.96);transition:transform .38s cubic-bezier(.2,.8,.2,1);position:relative}
+#day-modal-overlay.show #day-modal{transform:none}
+#day-modal .dm-close{position:absolute;top:18px;right:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:50%;width:30px;height:30px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;line-height:1}
+#day-modal .dm-close:hover{background:rgba(255,255,255,.15);color:#fff}
+#day-modal .dm-date{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+#day-modal .dm-score{font-size:48px;font-weight:900;line-height:1;margin-bottom:16px}
+#day-modal .dm-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+#day-modal .dm-pill{font-size:11px;padding:4px 11px;border-radius:20px;font-weight:700}
+#day-modal .dm-section{margin-bottom:20px}
+#day-modal .dm-section-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);margin-bottom:8px}
+#day-modal .dm-ai-box{background:rgba(var(--gold-rgb,214,154,83),.07);border:1px solid rgba(var(--gold-rgb,214,154,83),.2);border-radius:12px;padding:16px 18px;font-size:13px;line-height:1.75;color:var(--text)}
+#day-modal .dm-ai-box b{color:var(--gold2)}
+#day-modal .dm-loading{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;padding:20px 0}
+.dm-card-row{cursor:pointer;transition:background .18s}
+.dm-card-row:hover{background:rgba(255,255,255,.03)}
+#coach-notify{position:fixed;right:32px;bottom:32px;width:360px;background:linear-gradient(145deg,#201b13,#171310);border:1px solid rgba(214,154,83,.45);border-radius:20px;padding:24px 26px 20px;box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 0 1px rgba(214,154,83,.1),inset 0 1px 0 rgba(255,255,255,.06);z-index:999;opacity:0;transform:translateY(28px) scale(.94);transition:opacity .5s cubic-bezier(.2,.8,.2,1),transform .5s cubic-bezier(.2,.8,.2,1);pointer-events:none}
 #coach-notify.show{opacity:1;transform:none;pointer-events:all}
 #coach-notify .cn-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-#coach-notify .cn-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,rgba(214,154,83,.3),rgba(166,214,111,.2));border:1px solid rgba(214,154,83,.4);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+#coach-notify .cn-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,rgba(214,154,83,.35),rgba(166,214,111,.25));border:1px solid rgba(214,154,83,.5);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 4px 16px rgba(214,154,83,.2)}
 #coach-notify .cn-label{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2)}
 #coach-notify .cn-role{font-size:10px;color:var(--muted);margin-top:2px}
-#coach-notify .cn-msg{font-size:13px;line-height:1.65;color:var(--text)}
+#coach-notify .cn-msg{font-size:14px;line-height:1.7;color:var(--text);margin-top:4px}
 #coach-notify .cn-msg b{color:var(--gold2)}
 #coach-notify .cn-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
-#coach-notify .cn-btn{border:1px solid transparent;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:var(--font)}
+#coach-notify .cn-btn{border:1px solid transparent;border-radius:10px;padding:9px 18px;font-size:12px;font-weight:800;cursor:pointer;font-family:var(--font);transition:all .18s}
 #coach-notify .cn-close{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);color:var(--muted)}
 #coach-notify .cn-open{background:rgba(214,154,83,.18);border-color:rgba(214,154,83,.4);color:var(--gold2)}
 /* Chat messages */
@@ -227,11 +245,11 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
 
 
 .detail-modal-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0; }
-.detail-modal-item { background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px; }
-.detail-modal-item label { font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px; }
+.detail-modal-item { background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 16px;transition:background .15s; }
+.detail-modal-item label { font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px; }
 .detail-modal-item span { font-size:14px;font-weight:600;color:var(--text); }
-.detail-modal-note { background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 16px;margin-top:10px; }
-.detail-modal-note b { font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px; }
+.detail-modal-note { background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 16px;margin-top:10px; }
+.detail-modal-note b { font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;font-weight:800; }
 .detail-modal-note p { font-size:13px;color:var(--text);line-height:1.7;margin:0; }
 
 
@@ -261,7 +279,8 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
       <button data-view="calendar" data-i18n="nav_cal">📅 Kalendarz</button>
       <button data-view="stats" data-i18n="nav_stats">📊 Statystyki</button>
       <button data-view="connect" data-i18n="nav_train">🏃 Trening</button>
-      <button data-view="dailystatus" data-i18n="nav_daily">📈 Daily Status</button>
+      <button data-view="dailystatus" data-i18n="nav_daily">📈 Dzienny Status</button>
+      <button data-view="summary" data-i18n="nav_summary">📝 Podsumowanie dnia</button>
       <button data-view="coach" data-i18n="nav_coach">🤖 AI Coach</button>
     </nav>
     <div class="side-bottom">
@@ -370,7 +389,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
             <div class="card-head"><div class="title" id="title-workout">Trening dnia</div><span class="tag run" id="tag-workout">Workout</span></div>
             <div class="form-grid">
               <div class="field"><label id="lbl-wdate">Data</label><input class="input" type="date" id="wDate"></div>
-              <div class="field"><label id="lbl-wdid">Czy trenowałem dziś?</label><div class="seg" data-pick="wDid"><button data-val="yes" data-pl="Tak, trenowałem" data-en="Yes, I trained">Tak, trenowałem</button><button data-val="no" data-pl="Nie trenowałem" data-en="No workout today">Nie trenowałem</button></div></div>
+              <div class="field"><label id="lbl-wdid">Czy trenowałem dziś?</label><div class="seg" data-pick="wDid"><button data-val="yes" data-pl="Tak, trenowałem" data-en="Yes, I trained">Tak, trenowałem</button><button data-val="no" data-pl="Nie trenowałem" data-en="No workout today">Nie trenowałem</button><button data-val="rest" data-pl="🛌 Rest Day" data-en="🛌 Rest Day">🛌 Rest Day</button></div></div>
             </div>
             <div class="workout-extra" id="workoutExtra">
               <div class="field"><label id="lbl-wtypes">Rodzaj treningu (możesz wybrać kilka)</label><div class="seg multi" data-pick="wTypes" id="wTypes-seg"><button data-val="Plywanie" data-pl="Pływanie" data-en="Swimming">Pływanie</button><button data-val="Jazda na rowerze" data-pl="Jazda na rowerze" data-en="Cycling">Jazda na rowerze</button><button data-val="Bieganie" data-pl="Bieganie" data-en="Running">Bieganie</button><button data-val="Trening silowy" data-pl="Trening siłowy" data-en="Gym">Trening siłowy</button><button data-val="Cardio" data-pl="Cardio" data-en="Cardio">Cardio</button><button data-val="Crossfit" data-pl="Crossfit" data-en="Crossfit">Crossfit</button><button data-val="Stretching / Joga" data-pl="Stretching / Joga" data-en="Stretching / Yoga">Stretching / Joga</button><button id="btn-add-workout-type" onclick="openAddWorkoutType()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font)">+ Dodaj</button></div></div>
@@ -467,6 +486,16 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
       <div class="card" style="margin-bottom:14px">
         <div class="card-head"><div><div class="title">Daily Status</div><div class="sub" id="sub-dailystatus">Historia Readiness punktów — każdy dzień</div></div><span class="tag" id="tag-goalmaxxing">Goalmaxxing</span></div>
         <div id="ds-list" style="margin-top:8px"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-summary">
+      <div class="card">
+        <div class="card-head">
+          <div><div class="title" id="summary-title">Podsumowanie dnia</div><div class="sub" id="summary-sub">Historia Twoich dni — AI analiza</div></div>
+          <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(214,154,83,.12);border:1px solid rgba(214,154,83,.3);border-radius:999px;padding:4px 12px;font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--gold2);text-transform:uppercase">AI</span>
+        </div>
+        <div id="summary-list" style="margin-top:8px"></div>
       </div>
     </section>
 
@@ -693,7 +722,7 @@ function toggleOtherField(btn){
 }
 
 function toggleWorkoutExtra(){const did=getPick('wDid');const el=$('#workoutExtra');if(el)el.classList.toggle('open',did==='yes')}
-function saveWorkout(){const date=$('#wDate').value||today();const did=getPick('wDid');if(!did){toast('Zaznacz czy trenowałeś','Select if you trained');return}const otherType=$('#wOtherType')?$('#wOtherType').value.trim():'';save('journal_workout_'+date,{date,did:did==='yes',types:did==='yes'?getPick('wTypes'):[],otherType:otherType||null,duration:did==='yes'?$('#wDuration').value.trim():'',intensity:did==='yes'?getPick('wIntensity'):null,difficulty:did==='yes'?getPick('wRpe'):null,feeling:did==='yes'?getPick('wFeeling'):null,notes:did==='yes'?$('#wNotes').value.trim():'',savedAt:Date.now()});clearDirty();resetLogForm();toast('Trening zapisany ✓','Workout saved ✓');renderDash();renderStats();}
+function saveWorkout(){const date=$('#wDate').value||today();const did=getPick('wDid');if(!did){toast('Zaznacz czy trenowałeś','Select if you trained');return}const otherType=$('#wOtherType')?$('#wOtherType').value.trim():'';save('journal_workout_'+date,{date,did:did==='yes',rest:did==='rest',types:did==='yes'?getPick('wTypes'):[],otherType:otherType||null,duration:did==='yes'?$('#wDuration').value.trim():'',intensity:did==='yes'?getPick('wIntensity'):null,difficulty:did==='yes'?getPick('wRpe'):null,feeling:did==='yes'?getPick('wFeeling'):null,notes:did==='yes'?$('#wNotes').value.trim():'',savedAt:Date.now()});clearDirty();resetLogForm();toast('Trening zapisany ✓','Workout saved ✓');renderDash();renderStats();}
 function renderDash(){
   const day=today(), nd=load('journal_new_'+day), td=load('journal_trading_'+day), wd=load('journal_workout_'+day);
   var _gl=getUserGoals().length;var _gd=load('journal_goals_'+day,{});var _done=getUserGoals().filter(function(g){return _gd[g.id];}).length;const gp=_gl>0?Math.min(100,Math.round(_done/_gl*100)):0;$('#goalCount').textContent=_done+' / '+_gl+' complete';$('#dayProgress').style.width=gp+'%';
@@ -803,12 +832,14 @@ function openHistoryDetail(date){
   };
 
   var html='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">';
-  html+='<div><div style="font-size:18px;font-weight:700;color:#fff">'+fmt(date)+'</div>';
-  html+='<div style="font-size:11px;color:var(--muted);margin-top:3px">'+L.report+'</div></div>';
+  html+='<div>';
+  html+='<div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px">'+fmt(date)+'</div>';
+  html+='<div style="font-size:11px;color:var(--muted)">'+L.report+'</div>';
+  html+='</div>';
   html+='<div style="display:flex;gap:8px;align-items:center">';
-  html+='<button id="hd-edit-btn" data-date="'+date+'" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:7px 16px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">'+L.edit+'</button>';
-  html+='<button id="hd-del-btn" data-date="'+date+'" style="background:rgba(224,96,96,.1);border:1px solid rgba(224,96,96,.25);border-radius:8px;padding:7px 16px;color:#e06060;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">'+L.del+'</button>';
-  html+='<button id="hd-close-btn" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;padding:0 4px">&times;</button>';
+  html+='<button id="hd-edit-btn" data-date="'+date+'" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:7px 16px;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">'+L.edit+'</button>';
+  html+='<button id="hd-del-btn" data-date="'+date+'" style="background:rgba(224,96,96,.08);border:1px solid rgba(224,96,96,.2);border-radius:8px;padding:7px 16px;color:#e06060;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">'+L.del+'</button>';
+  html+='<button id="hd-close-btn" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:50%;width:30px;height:30px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>';
   html+='</div></div>';
 
   html+='<div class="detail-modal-grid">';
@@ -1101,6 +1132,7 @@ window.setView=function(v){
   if(v==='connect'){renderSFList();renderStravaLinkArea();}
   if(v==='dailystatus')renderDailyStatus();
   if(v==='coach')initCoachChat();
+  if(v==='summary')renderSummaryList();
 };
 $$('.nav button').forEach(b=>b.onclick=()=>window.setView(b.dataset.view));
 
@@ -1145,7 +1177,7 @@ function toggleTheme(){
 const TRANSLATIONS = {
   pl: {
     nav_dash:'🏠 Dashboard', nav_new:'✏️ Nowy wpis', nav_history:'📖 Historia', nav_cal:'📅 Kalendarz', nav_stats:'📊 Statystyki',
-    nav_train:'🏃 Trening', nav_daily:'📈 Daily Status', nav_coach:'🤖 AI Coach',
+    nav_train:'🏃 Trening', nav_daily:'📈 Dzienny Status', nav_summary:'📝 Podsumowanie dnia', nav_coach:'🤖 AI Coach',
     tab_day:'Dzień', tab_trade:'Trading', tab_workout:'Trening', tab_tomorrow:'Plan jutro',
     coach_title_default:'Log the session, then move.',
     coach_sub:'Zapisz dzisiaj trening, stan głowy i trading. Małe dane codziennie tworzą brutalnie dobry obraz tego, czy naprawdę idziesz w stronę formy.',
@@ -1160,7 +1192,7 @@ const TRANSLATIONS = {
   },
   en: {
     nav_dash:'🏠 Dashboard', nav_new:'✏️ New entry', nav_history:'📖 History', nav_cal:'📅 Calendar', nav_stats:'📊 Statistics',
-    nav_train:'🏃 Training', nav_daily:'📈 Daily Status', nav_coach:'🤖 AI Coach',
+    nav_train:'🏃 Training', nav_daily:'📈 Daily Status', nav_summary:'📝 Summary', nav_coach:'🤖 AI Coach',
     tab_day:'Day', tab_trade:'Trading', tab_workout:'Workout', tab_tomorrow:'Plan tomorrow',
     coach_title_default:'Log the session, then move.',
     coach_sub:'Log your workout, mindset and trading today. Small data daily builds a brutally clear picture.',
@@ -1181,7 +1213,7 @@ function setLang(lang){
   var t=TRANSLATIONS[lang];
   // Nav
   var navBtns=document.querySelectorAll('.nav button[data-view]');
-  var navKeys=['nav_dash','nav_new','nav_history','nav_cal','nav_stats','nav_train','nav_daily','nav_coach'];
+  var navKeys=['nav_dash','nav_new','nav_history','nav_cal','nav_stats','nav_train','nav_daily','nav_summary','nav_coach'];
   navBtns.forEach(function(b,i){if(navKeys[i]&&t[navKeys[i]])b.textContent=t[navKeys[i]];});
   // Tabs
   var tabs=document.querySelectorAll('.tab[data-tab]');
@@ -2104,6 +2136,321 @@ function boot(){
 async function startApp(){await sbSyncFromServer();boot();}startApp();
 </script>
 <script>
+/* ══════════════════════════════════════════
+   PODSUMOWANIE DNIA + FIXES
+══════════════════════════════════════════ */
+
+/* ── Fix: getLostRulesStreak (consecutive broken rules) ── */
+function getBrokenRulesStreak(){
+  var streak=0,d=new Date();
+  for(var i=0;i<60;i++){
+    var ds=d.toISOString().slice(0,10);
+    var td=load('journal_trading_'+ds);
+    if(td&&td.rules==='nie'){streak++;d.setDate(d.getDate()-1);}
+    else if(td&&td.rules==='tak'){break;}
+    else{d.setDate(d.getDate()-1);}
+    if(i>30)break;
+  }
+  return streak;
+}
+
+/* ── After-save check with EN/PL fix and broken rules lesson ── */
+function checkRulesAfterSave(data){
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  var rules=data.rules;
+  var pnl=data.pnl!==undefined&&data.pnl!==''?parseFloat(data.pnl):null;
+  var rs=getRulesStreak();
+  var bs=getBrokenRulesStreak();
+  var msg='';
+
+  if(bs>=3){
+    // 3+ broken days — big lesson
+    msg=isEn
+      ?'🚨 <b>3 days breaking rules in a row.</b> This is not bad luck — this is a pattern. Stop. Review your rules. Are they realistic? Do you understand WHY each rule exists? No trade tomorrow until you write down what is causing this.'
+      :'🚨 <b>3 dni z rzędu złamanych zasad.</b> To nie pech — to wzorzec. Zatrzymaj się. Przejrzyj zasady. Czy są realistyczne? Czy rozumiesz DLACZEGO każda zasada istnieje? Żaden trade jutro dopóki nie zapiszesz co powoduje ten problem.';
+  } else if(bs>=2){
+    msg=isEn
+      ?'⚠️ <b>2 days breaking rules.</b> Patterns form fast. One more and it becomes a habit. What is triggering this?'
+      :'⚠️ <b>2 dni z rzędu złamanych zasad.</b> Wzorce tworzą się szybko. Jeszcze jeden i staje się nawykiem. Co to wywołuje?';
+  } else if(rules==='nie'){
+    msg=isEn
+      ?'⚠️ <b>Rules broken.</b> One bad trade doesn\'t define you. What went wrong? Write it down before you forget.'
+      :'⚠️ <b>Zasady złamane.</b> Jeden zły trade Cię nie definiuje. Co poszło nie tak? Zapisz zanim zapomnisz.';
+  } else if(rs>=3&&rules==='tak'){
+    msg=isEn
+      ?'🔥 <b>'+rs+' days rules in a row!</b> This is discipline. You are building your edge.'
+      :'🔥 <b>'+rs+' dni z rzędu zasad!</b> To dyscyplina. Właśnie tak budujesz swój edge.';
+  } else if(pnl!==null&&!isNaN(pnl)&&pnl>0&&rules==='tak'){
+    msg=isEn
+      ?'✅ <b>Profit and rules.</b> That is professional trading.'
+      :'✅ <b>Profit i zasady.</b> Tak wygląda profesjonalny trading.';
+  } else if(pnl!==null&&!isNaN(pnl)&&pnl>0&&rules==='nie'){
+    msg=isEn
+      ?'🔴 <b>Profit but rules broken.</b> This is dangerous. Winning while breaking rules teaches your brain that rules don\'t matter. This WILL hurt you in the future.'
+      :'🔴 <b>Profit, ale zasady złamane.</b> To jest niebezpieczne. Wygrywanie przy złamaniu zasad uczy mózg że zasady nie mają znaczenia. To SIĘ zemści w przyszłości.';
+  } else if(pnl!==null&&!isNaN(pnl)&&pnl<0&&rules==='tak'){
+    msg=isEn
+      ?'💪 <b>Loss, rules kept.</b> Professional execution regardless of outcome.'
+      :'💪 <b>Strata, zasady zachowane.</b> Profesjonalny execution bez względu na wynik.';
+  } else if(getLossStreak()>=3){
+    msg=isEn
+      ?'📉 <b>'+getLossStreak()+' losses in a row.</b> Reduce size or take a break.'
+      :'📉 <b>'+getLossStreak()+' straty z rzędu.</b> Zmniejsz size lub zrób przerwę.';
+  }
+  if(msg)setTimeout(function(){showCoachNotify(msg);},800);
+}
+
+/* ── Summary list renderer ── */
+function renderSummaryList(){
+  var c=document.getElementById('summary-list');
+  if(!c)return;
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+
+  // Collect all days that have any data
+  var daysSet={};
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(!k)continue;
+    var m=k.match(/^journal_(trading|workout|goals)_(\d{4}-\d{2}-\d{2})$/);
+    if(m)daysSet[m[2]]=true;
+  }
+  var days=Object.keys(daysSet).sort().reverse().slice(0,30);
+
+  if(!days.length){
+    c.innerHTML='<div style="color:var(--muted);text-align:center;padding:40px 0;font-size:13px">'+(isEn?'No data yet. Start logging your days.':'Brak danych. Zacznij logować swoje dni.')+'</div>';
+    return;
+  }
+
+  c.innerHTML=days.map(function(date){
+    var td=load('journal_trading_'+date);
+    var wd=load('journal_workout_'+date);
+    var gd=load('journal_goals_'+date,null);
+    var goals=getUserGoals();
+
+    // ── Score bar ──
+    var goalsDone=0,goalsTotal=goals.length;
+    if(gd&&goalsTotal>0){goalsDone=goals.filter(function(g){return gd[g.id];}).length;}
+    var score=goalsTotal>0?Math.min(100,Math.round(goalsDone/goalsTotal*100)):null;
+    var scoreColor=score===null?'var(--muted)':score>=80?'#63e18e':score>=40?'#f0c040':'#ff726d';
+
+    // ── Trading pill ──
+    var tradingHtml='';
+    if(td){
+      var ruleOk=td.rules==='tak';
+      var pnlNum=td.pnl!==undefined&&td.pnl!==''?parseFloat(td.pnl):null;
+      var pnlStr=pnlNum!==null&&!isNaN(pnlNum)?(pnlNum>=0?'+':'')+pnlNum.toFixed(0)+'$':'';
+      var rulesColor=ruleOk?'#63e18e':'#ff726d';
+      var rulesLabel=ruleOk?(isEn?'Rules ✓':'Zasady ✓'):(isEn?'Rules ✗':'Zasady ✗');
+      tradingHtml='<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:'+rulesColor+'">'+rulesLabel+'</span>';
+      if(pnlStr)tradingHtml+=' <span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:'+(pnlNum>=0?'#63e18e':'#ff726d')+'">'+pnlStr+'</span>';
+    }
+
+    // ── Workout pill ──
+    var workoutHtml='';
+    if(wd){
+      if(wd.rest){
+        workoutHtml='<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted)">🛌 Rest Day</span>';
+      } else if(wd.did){
+        var wTypes=Array.isArray(wd.types)&&wd.types.length?wd.types.join(', '):(isEn?'Workout':'Trening');
+        workoutHtml='<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(99,225,142,.1);border:1px solid rgba(99,225,142,.25);color:#63e18e">💪 '+wTypes+'</span>';
+      } else {
+        workoutHtml='<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--muted)">'+(isEn?'No workout':'Bez treningu')+'</span>';
+      }
+    }
+
+    // ── AI lesson button (only for broken rules) ──
+    var aiBtn='';
+    if(td&&td.rules==='nie'){
+      aiBtn='<button onclick="loadDayLesson(\''+date+'\')" style="font-size:10px;padding:3px 10px;border-radius:20px;background:rgba(214,154,83,.12);border:1px solid rgba(214,154,83,.3);color:var(--gold2);cursor:pointer;font-family:var(--font);font-weight:700">🤖 '+(isEn?'AI lesson':'Lekcja AI')+'</button>';
+    }
+
+    var scoreBar=score!==null
+      ?'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
+        +'<div style="flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px"><div style="width:'+score+'%;height:5px;background:'+scoreColor+';border-radius:3px"></div></div>'
+        +'<span style="font-size:11px;color:'+scoreColor+'">'+goalsDone+'/'+goalsTotal+'</span>'
+      +'</div>'
+      :'';
+
+    return '<div class="card dm-card-row" style="margin-bottom:10px" onclick="openDayModal(\''+date+'\')">'      +'<div style="display:flex;align-items:flex-start;gap:14px">'      +'<div style="min-width:90px">'        +'<div style="font-size:12px;color:var(--muted)">'+fmt(date)+'</div>'        +(score!==null?'<div style="font-size:22px;font-weight:800;color:'+scoreColor+'">'+score+'</div>':'')      +'</div>'      +'<div style="flex:1">'        +scoreBar        +'<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">'          +tradingHtml          +workoutHtml        +'</div>'      +'</div>'      +'<div style="color:var(--muted);font-size:18px;align-self:center;padding-left:8px">›</div>'      +'</div>'    +'</div>';
+  }).join('');
+}
+
+/* ── Load AI lesson for a specific day ── */
+async function loadDayLesson(date){
+  var el=document.getElementById('lesson-'+date);
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  if(!el)return;
+  el.innerHTML='<div style="color:var(--muted);font-size:12px">⏳ '+(isEn?'Loading...':'Ładuję...')+'</div>';
+
+  var td=load('journal_trading_'+date);
+  var wd=load('journal_workout_'+date);
+  var bs=getBrokenRulesStreak();
+  var pnl=td&&td.pnl!==''?parseFloat(td.pnl):null;
+
+  var context='Trading date: '+date+'\nRules: '+(td?td.rules:'unknown')+'\nPNL: '+(pnl!==null?pnl:'N/A')+'\nSession: '+(td?td.sessionRating||'N/A':'N/A')+'\nEmotions: '+(td?(Array.isArray(td.emotions)?td.emotions.join(','):td.emotions||'N/A'):'N/A')+'\nNotes: '+(td?td.notes||'none':'none')+'\nConsecutive broken rules days: '+bs;
+
+  var sysPrompt=isEn
+    ?'You are a tough but fair trading coach. The trader broke their rules. Write a specific 3-4 sentence lesson about WHY rules exist in trading and what the psychological trap is that caused this. Be direct. No fluff. If they had profit while breaking rules, emphasize how dangerous this is.'
+    :'Jesteś wymagającym ale sprawiedliwym traderem-coachem. Trader złamał zasady. Napisz konkretną lekcję 3-4 zdania o tym DLACZEGO zasady istnieją w tradingu i jaka pułapka psychologiczna to wywołała. Bądź bezpośredni. Bez owijania w bawełnę. Jeśli mieli profit przy złamaniu zasad, podkreśl jak to jest niebezpieczne.';
+
+  try{
+    var res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:sysPrompt,messages:[{role:'user',content:context}]})});
+    var text=await res.text();
+    var data=JSON.parse(text);
+    var reply=data.content&&data.content[0]?data.content[0].text:'...';
+    el.innerHTML='<div style="background:rgba(214,154,83,.08);border:1px solid rgba(214,154,83,.2);border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.65;color:var(--text)"><span style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2)">🤖 '+(isEn?'AI Lesson':'Lekcja AI')+'</span><br><br>'+reply.replace(/\n/g,'<br>')+'</div>';
+  }catch(e){
+    el.innerHTML='<div style="color:var(--red);font-size:12px">Error: '+e.message+'</div>';
+  }
+}
+
+/* ══════════════════════════════════════════
+   DAY ANALYSIS MODAL
+══════════════════════════════════════════ */
+
+function openDayModal(date){
+  var overlay=document.getElementById('day-modal-overlay');
+  var mc=document.getElementById('day-modal-content');
+  if(!overlay||!mc)return;
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+
+  var td=load('journal_trading_'+date);
+  var wd=load('journal_workout_'+date);
+  var gd=load('journal_goals_'+date,null);
+  var goals=getUserGoals();
+  var goalsDone=0,goalsTotal=goals.length;
+  if(gd&&goalsTotal>0)goalsDone=goals.filter(function(g){return gd[g.id];}).length;
+  var score=goalsTotal>0?Math.min(100,Math.round(goalsDone/goalsTotal*100)):null;
+  var scoreColor=score===null?'var(--muted)':score>=80?'#63e18e':score>=40?'#f0c040':'#ff726d';
+
+  // Pills
+  var pills=[];
+  if(td){
+    var rOk=td.rules==='tak';
+    pills.push('<span class="dm-pill" style="background:'+(rOk?'rgba(99,225,142,.12)':'rgba(255,114,109,.12)')+';border:1px solid '+(rOk?'rgba(99,225,142,.3)':'rgba(255,114,109,.3)')+';color:'+(rOk?'#63e18e':'#ff726d')+'">'+(rOk?(isEn?'Rules ✓':'Zasady ✓'):(isEn?'Rules ✗':'Zasady ✗'))+'</span>');
+    if(td.pnl!==''&&td.pnl!==undefined&&td.pnl!==null){
+      var p=parseFloat(td.pnl);var ps=(!isNaN(p)?(p>=0?'+':'')+p.toFixed(0)+'$':'');
+      if(ps)pills.push('<span class="dm-pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:'+(!isNaN(p)&&p>=0?'#63e18e':'#ff726d')+'">'+ps+'</span>');
+    }
+    if(td.sessionRating)pills.push('<span class="dm-pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted)">'+td.sessionRating+'</span>');
+  }
+  if(wd){
+    if(wd.rest)pills.push('<span class="dm-pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted)">🛌 Rest Day</span>');
+    else if(wd.did){var wt=Array.isArray(wd.types)&&wd.types.length?wd.types.join(', '):(isEn?'Workout':'Trening');pills.push('<span class="dm-pill" style="background:rgba(99,225,142,.1);border:1px solid rgba(99,225,142,.25);color:#63e18e">💪 '+wt+'</span>');}
+  }
+
+  // Goals list
+  var goalsHtml='';
+  if(gd&&goalsTotal>0){
+    goalsHtml=goals.map(function(g){
+      var done=gd[g.id];
+      return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px">'
+        +'<span style="font-size:14px">'+(done?'✅':'⬜')+'</span>'
+        +'<span style="color:'+(done?'var(--text)':'var(--muted)')+'">'+esc(g.label)+'</span>'
+      +'</div>';
+    }).join('');
+  }
+
+  // User notes — from journal_new_ (day), journal_trading_ (trading), journal_workout_ (workout)
+  var nd=load('journal_new_'+date);
+  var dayNote=nd&&nd.notes?nd.notes:'';
+  var tradingNote=td&&td.notes?td.notes:'';
+  var workoutNote=wd&&wd.notes?wd.notes:'';
+  var noteSection=function(label,txt){
+    if(!txt||!txt.trim())return'';
+    return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;margin-bottom:8px">'
+      +'<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px">'+label+'</div>'
+      +'<div style="font-size:13px;line-height:1.6;color:var(--text)">'+esc(txt)+'</div>'
+    +'</div>';
+  };
+  var userNotesHtml=noteSection(isEn?'DAY':'DZIEŃ',dayNote)+noteSection('TRADING',tradingNote)+noteSection(isEn?'WORKOUT':'TRENING',workoutNote);
+
+  mc.innerHTML=
+    '<div class="dm-date">'+fmt(date)+'</div>'
+    +(score!==null?'<div class="dm-score" style="color:'+scoreColor+'">'+score+'<span style="font-size:20px;font-weight:400;color:var(--muted)"> pts</span></div>':'')
+    +(pills.length?'<div class="dm-pills">'+pills.join('')+'</div>':'')
+    +(goalsHtml?'<div class="dm-section"><div class="dm-section-title">'+(isEn?'Goals':'Cele')+'</div>'+goalsHtml+'</div>':'')
+    +(userNotesHtml?'<div class="dm-section"><div class="dm-section-title">'+(isEn?'Your notes':'Twoje notatki')+'</div>'+userNotesHtml+'</div>':'')
+    +'<div class="dm-section">'
+      +'<div class="dm-section-title">AI Coach</div>'
+      +'<div id="dm-ai-content" class="dm-ai-box"><div class="dm-loading"><div class="cn-typing"><span></span><span></span><span></span></div>'+(isEn?'Analyzing your day...':'Analizuję Twój dzień...')+'</div></div>'
+    +'</div>';
+
+  overlay.classList.add('show');
+  document.body.style.overflow='hidden';
+
+  // Load AI analysis
+  loadDayModalAI(date, td, wd, gd, goals, goalsDone, score, isEn);
+}
+
+async function loadDayModalAI(date, td, wd, gd, goals, goalsDone, score, isEn){
+  var el=document.getElementById('dm-ai-content');
+  if(!el)return;
+
+  // Build context
+  var parts=[];
+  parts.push('Date: '+date);
+  if(score!==null)parts.push('Goals: '+goalsDone+'/'+goals.length+' ('+score+'%)');
+  if(gd&&goals.length){
+    var done=goals.filter(function(g){return gd[g.id];}).map(function(g){return g.label;});
+    var notDone=goals.filter(function(g){return !gd[g.id];}).map(function(g){return g.label;});
+    if(done.length)parts.push('Goals done: '+done.join(', '));
+    if(notDone.length)parts.push('Goals not done: '+notDone.join(', '));
+  }
+  if(td){
+    parts.push('Trading - Rules: '+(td.rules||'?')+', PNL: '+(td.pnl||'0')+'$, Session: '+(td.sessionRating||'?')+', Emotions: '+(Array.isArray(td.emotions)?td.emotions.join(','):(td.emotions||'?')));
+    if(td.notes)parts.push('Trading notes: '+td.notes);
+  }
+  if(wd){
+    if(wd.rest)parts.push('Workout: Rest Day (planned recovery)');
+    else if(wd.did)parts.push('Workout: '+(Array.isArray(wd.types)?wd.types.join(', '):'done')+', RPE: '+(wd.difficulty||'?')+', Feeling: '+(wd.feeling||'?'));
+    else parts.push('Workout: skipped');
+    if(wd.notes)parts.push('Workout notes: '+wd.notes);
+  }
+
+  var sys=isEn
+    ?'You are an elite performance coach. Write a personalized daily analysis in 4-6 sentences. Cover: 1) overall day quality, 2) trading assessment (rules + profit/loss - if profit with broken rules warn strongly about building bad habits), 3) fitness/recovery, 4) one specific actionable advice for tomorrow. Be direct, warm but honest. Use **bold** for key phrases.'
+    :'Jesteś elitarnym coachem wydajności. Napisz spersonalizowaną analizę dnia w 4-6 zdaniach. Uwzględnij: 1) ogólna jakość dnia, 2) ocenę tradingu (zasady + zysk/strata - jeśli zysk przy złamaniu zasad ostrzeż mocno o budowaniu złych nawyków), 3) aktywność fizyczna/regeneracja, 4) jedna konkretna rada na jutro. Bądź bezpośredni, ciepły ale uczciwy. Używaj **bold** dla kluczowych fraz.';
+
+  try{
+    var controller=new AbortController();
+    var timeout=setTimeout(function(){controller.abort();},20000);
+    var res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      signal:controller.signal,
+      body:JSON.stringify({system:sys,messages:[{role:'user',content:parts.join('\n')}]})
+    });
+    clearTimeout(timeout);
+    var text=await res.text();
+    var data;
+    try{data=JSON.parse(text);}catch(pe){if(el)el.innerHTML='<span style="color:var(--muted)">Parse error</span>';return;}
+    var reply='';
+    if(data.content&&data.content[0]&&data.content[0].text)reply=data.content[0].text;
+    else if(data.error)reply='<span style="color:#ff726d">'+JSON.stringify(data.error)+'</span>';
+    else reply='...';
+    reply=reply.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
+    if(el)el.innerHTML=reply;
+  }catch(e){
+    if(el)el.innerHTML='<span style="color:var(--muted)">'+(e.name==='AbortError'?(isEn?'Timeout — try again':'Timeout — spróbuj ponownie'):'Error: '+e.message)+'</span>';
+  }
+}
+
+function closeDayModal(){
+  var overlay=document.getElementById('day-modal-overlay');
+  if(overlay)overlay.classList.remove('show');
+  document.body.style.overflow='';
+}
+
+// Close on ESC
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDayModal();
+});
+
 /* ══════ AI COACH JS ══════ */
 var _coachTimer=null;
 function showCoachNotify(msg){
@@ -2113,20 +2460,24 @@ function showCoachNotify(msg){
   mel.innerHTML=msg;
   el.classList.add('show');
   if(_coachTimer)clearTimeout(_coachTimer);
-  _coachTimer=setTimeout(closeCoachNotify,9000);
+  _coachTimer=setTimeout(closeCoachNotify,15000);
 }
 function closeCoachNotify(){
   var el=document.getElementById('coach-notify');
   if(el)el.classList.remove('show');
 }
 function getRulesStreak(){
+  // Only count consecutive days WHERE a trade was logged AND rules=tak
+  // A day with no trade logged does NOT continue the streak
   var streak=0,d=new Date();
   for(var i=0;i<60;i++){
     var ds=d.toISOString().slice(0,10);
     var td=load('journal_trading_'+ds);
     if(td&&td.rules==='tak'){streak++;d.setDate(d.getDate()-1);}
-    else if(td&&td.rules)break;
-    else d.setDate(d.getDate()-1);
+    else if(td&&td.rules==='nie'){break;} // broke rules → stop
+    else if(td){break;} // trade logged but no rules value → stop
+    else{d.setDate(d.getDate()-1);} // no trade that day → skip (weekend etc)
+    if(i>30)break; // safety limit
   }
   return streak;
 }
@@ -2171,27 +2522,7 @@ function getGoals100Streak(){
   }
   return streak;
 }
-function checkRulesAfterSave(data){
-  var lang=localStorage.getItem('app_lang')||'pl';
-  var isEn=lang==='en';
-  var rules=data.rules;
-  var pnl=data.pnl!==undefined?parseFloat(data.pnl):null;
-  var rs=getRulesStreak();
-  var ls=getLossStreak();
-  var msg='';
-  if(rules==='nie'){
-    msg=isEn?'⚠️ <b>Rules broken.</b> One bad trade doesn\'t define you. What went wrong? Write it down.':'⚠️ <b>Zasady złamane.</b> Jeden zły trade Cię nie definiuje. Co poszło nie tak? Zapisz zanim zapomnisz.';
-  } else if(rs>=3&&rules==='tak'){
-    msg=isEn?'🔥 <b>'+rs+' days rules in a row!</b> This is discipline. You are building your edge.':'🔥 <b>'+rs+' dni z rzędu zasad!</b> To dyscyplina. Właśnie tak budujesz swój edge.';
-  } else if(!isNaN(pnl)&&pnl>0&&rules==='tak'){
-    msg=isEn?'✅ <b>Profit and rules.</b> That is professional trading.':'✅ <b>Profit i zasady.</b> Tak wygląda profesjonalny trading.';
-  } else if(!isNaN(pnl)&&pnl<0&&rules==='tak'){
-    msg=isEn?'💪 <b>Loss, rules kept.</b> Clean execution regardless of outcome.':'💪 <b>Strata, zasady zachowane.</b> Profesjonalizm — execution bez względu na wynik.';
-  } else if(ls>=3){
-    msg=isEn?'📉 <b>'+ls+' losses in a row.</b> Reduce size or take a break.':'📉 <b>'+ls+' straty z rzędu.</b> Zmniejsz size lub zrób przerwę.';
-  }
-  if(msg)setTimeout(function(){showCoachNotify(msg);},800);
-}
+/* checkRulesAfterSave moved below */
 function checkWorkoutAfterSave(data){
   if(!data||!data.did)return;
   var lang=localStorage.getItem('app_lang')||'pl';
@@ -2237,12 +2568,7 @@ window.saveWorkout=function(){
   var data=load('journal_workout_'+date)||{};
   checkWorkoutAfterSave(data);
 };
-/* Hook goals checkboxes */
-document.addEventListener('change',function(e){
-  if(e.target&&e.target.dataset&&e.target.dataset.goal!==undefined){
-    setTimeout(checkGoalsAfterSave,400);
-  }
-});
+/* Goals notifications disabled */
 
 /* ── COACH CHAT ── */
 var coachHistory=[];
@@ -2422,8 +2748,8 @@ async function sendCoachMessage(){
 
 
 <!-- HISTORY DETAIL MODAL -->
-<div id="history-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:800;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:20px" onclick="if(event.target===this)closeHistoryModal()">
-  <div style="background:#1a1f2e;border:1px solid rgba(255,255,255,.12);border-radius:18px;width:680px;max-width:96vw;max-height:88vh;overflow-y:auto;padding:28px;position:relative">
+<div id="history-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:800;align-items:center;justify-content:center;padding:24px" onclick="if(event.target===this)closeHistoryModal()">
+  <div style="background:var(--panel2,#181818);border:1px solid rgba(255,255,255,.1);border-radius:22px;width:640px;max-width:96vw;max-height:88vh;overflow-y:auto;padding:28px 30px 24px;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06)">
     <div id="history-modal-content"></div>
   </div>
 </div>
@@ -2443,6 +2769,14 @@ async function sendCoachMessage(){
       <input id="criteria-input" class="input" placeholder="np. FVG, Supply Zone, BOS..." style="margin-top:6px">
     </div>
     <button onclick="saveCriteria()" style="width:100%;padding:12px;background:rgba(214,154,83,.2);border:1px solid rgba(214,154,83,.4);border-radius:10px;color:var(--gold2);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)" id="criteria-modal-save">Dodaj</button>
+  </div>
+</div>
+
+<!-- DAY ANALYSIS MODAL -->
+<div id="day-modal-overlay" onclick="if(event.target===this)closeDayModal()">
+  <div id="day-modal">
+    <button class="dm-close" onclick="closeDayModal()">×</button>
+    <div id="day-modal-content"></div>
   </div>
 </div>
 
