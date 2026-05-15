@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>lifebizJournal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -29,14 +29,14 @@
 html{scroll-behavior:smooth;background:#11110f}
 body{
   color:var(--text);
-  font-family:'DM Sans',sans-serif;
+  font-family:'Plus Jakarta Sans',sans-serif;
   font-size:15px;
   line-height:1.6;
   background:radial-gradient(circle at 20% 0%,#2e1f0e 0,#151412 30%,#0d0d0c 70%);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
-h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.02em}
+h1,h2,h3,h4{font-family:'Fraunces',serif;letter-spacing:-.02em}
 
 /* ─── NAV ─── */
 nav{
@@ -47,7 +47,7 @@ nav{
   border-bottom:1px solid rgba(56,48,41,.6);
   backdrop-filter:blur(20px);
 }
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;color:var(--gold2);letter-spacing:-.03em}
+.logo{font-family:'Fraunces',serif;font-weight:800;font-size:19px;color:var(--gold2);letter-spacing:-.03em}
 .logo span{color:var(--muted);font-weight:400}
 .nav-links{display:flex;align-items:center;gap:6px}
 .nav-links a{
@@ -136,7 +136,7 @@ nav{
   animation:fadeUp .7s .4s ease both;
 }
 .stat{text-align:center}
-.stat-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--text)}
+.stat-num{font-family:'Fraunces',serif;font-size:28px;font-weight:800;color:var(--text)}
 .stat-label{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
 .stat-sep{width:1px;background:var(--line);align-self:stretch}
 
@@ -176,7 +176,7 @@ nav{
   padding:16px 14px;display:flex;flex-direction:column;gap:6px;
 }
 .ps-brand{padding:0 4px 14px;border-bottom:1px solid var(--line);margin-bottom:6px}
-.ps-brand-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--text)}
+.ps-brand-name{font-family:'Fraunces',serif;font-size:13px;font-weight:800;color:var(--text)}
 .ps-brand-sub{font-size:9px;color:var(--muted);margin-top:2px}
 .ps-pill{
   display:flex;align-items:center;justify-content:space-between;
@@ -218,7 +218,7 @@ nav{
   background:linear-gradient(115deg,transparent 45%,rgba(214,154,83,.07) 46%,transparent 62%);
 }
 .pm-eyebrow{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold2);font-weight:800}
-.pm-coach-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin:6px 0 4px;line-height:1.2}
+.pm-coach-title{font-family:'Fraunces',serif;font-size:16px;font-weight:800;margin:6px 0 4px;line-height:1.2}
 .pm-coach-sub{font-size:10px;color:var(--muted);line-height:1.5;max-width:520px}
 .pm-barline{height:6px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-top:12px}
 .pm-barline span{display:block;height:100%;width:64%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:999px}
@@ -231,7 +231,7 @@ nav{
 .pm-live{font-size:8px;border:1px solid rgba(165,214,111,.4);border-radius:999px;padding:2px 8px;color:var(--green)}
 .pm-today-date{font-size:9px;color:var(--soft)}
 .pm-today-nums{display:flex;gap:12px;margin-bottom:14px}
-.pm-big-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1}
+.pm-big-num{font-family:'Fraunces',serif;font-size:28px;font-weight:800;line-height:1}
 .pm-big-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
 .pm-today-log{display:grid;gap:6px}
 .pm-log-head{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:2px;display:flex;justify-content:space-between}
@@ -299,14 +299,14 @@ section{padding:100px 40px;max-width:1160px;margin:0 auto}
 }
 .step::before{
   content:attr(data-n);position:absolute;top:20px;right:20px;
-  font-family:'Syne',sans-serif;font-size:52px;font-weight:800;
+  font-family:'Fraunces',serif;font-size:52px;font-weight:800;
   color:rgba(255,255,255,.04);line-height:1;
 }
 .step-num{
   width:34px;height:34px;border-radius:9px;
   background:linear-gradient(135deg,var(--gold),#b87823);
   display:grid;place-items:center;
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#11110f;
+  font-family:'Fraunces',serif;font-size:14px;font-weight:800;color:#11110f;
   margin-bottom:18px;
 }
 .step h3{font-size:16px;font-weight:700;margin-bottom:10px}
@@ -506,13 +506,21 @@ footer .logo{font-size:16px}
 
 <!-- NAV -->
 <nav>
-  <div class="logo">lifebiz<span>Journal</span></div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="logo">lifebiz<span>Journal</span></div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button id="lang-pl-btn" onclick="setLandingLang('pl')" title="Polski" style="background:none;border:none;cursor:pointer;font-size:20px;opacity:1;transition:opacity .18s;padding:2px;border-radius:4px" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity=document.documentElement.dataset.lang==='pl'?'1':'.5'">🇵🇱</button>
+      <button id="lang-en-btn" onclick="setLandingLang('en')" title="English" style="background:none;border:none;cursor:pointer;font-size:20px;opacity:.5;transition:opacity .18s;padding:2px;border-radius:4px" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity=document.documentElement.dataset.lang==='en'?'1':'.5'">🇬🇧</button>
+    </div>
+  </div>
   <div class="nav-links">
-    <a href="#about">O nas</a>
-    <a href="#how">Jak działa</a>
-    <a href="#features">Funkcje</a>
-    <a href="#support">Support</a>
-    <a href="#survey">Ankieta</a>
+    <a href="#about" data-i18n="nav-about">O nas</a>
+    <a href="#how" data-i18n="nav-how">Jak działa</a>
+    <a href="#features" data-i18n="nav-features">Funkcje</a>
+    <a href="#support" data-i18n="nav-support">Support</a>
+    <a href="#survey" data-i18n="nav-survey">Ankieta</a>
+    <a href="#pricing" data-i18n="nav-pricing">Cennik</a>
+    <a href="#privacy" data-i18n="nav-privacy">Prywatność</a>
   </div>
   <div class="nav-cta">
     <button class="btn-ghost" onclick="openModal('login')">Zaloguj się</button>
@@ -522,20 +530,14 @@ footer .logo{font-size:16px}
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-badge"><span class="dot-live"></span>Teraz dostępny dla traderów</div>
-  <h1>Journal który<br><em>buduje Cię</em><br>jako tradera.</h1>
-  <p class="hero-sub">Śledź swoje trady, emocje, cele i codzienną rutynę — wszystko w jednym miejscu. Bo najlepsza inwestycja to inwestycja w siebie.</p>
+  <div class="hero-badge"><span class="dot-live"></span><span data-i18n="hero-badge">Teraz dostępny dla traderów</span></div>
+  <h1 data-i18n="hero-h1">Journal który<br><em>buduje Cię</em><br>jako tradera.</h1>
+  <p class="hero-sub" data-i18n="hero-sub">Śledź swoje trady, emocje, cele i codzienną rutynę — wszystko w jednym miejscu. Bo najlepsza inwestycja to inwestycja w siebie.</p>
   <div class="hero-buttons">
     <button class="btn-hero primary" onclick="openModal('signup')">Zacznij za darmo →</button>
     <a href="#how"><button class="btn-hero secondary">Jak to działa</button></a>
   </div>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">5k+</div><div class="stat-label">Traderów</div></div>
-    <div class="stat-sep"></div>
-    <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Satysfakcji</div></div>
-    <div class="stat-sep"></div>
-    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Wpisów</div></div>
-  </div>
+
 
   <div class="preview-wrap">
     <div class="preview-glow"></div>
@@ -553,34 +555,27 @@ footer .logo{font-size:16px}
         <!-- sidebar -->
         <div class="preview-sidebar">
           <div class="ps-brand">
-            <div class="ps-brand-name">Tom Dashboard</div>
-            <div class="ps-brand-sub">Triathlon, trading, discipline</div>
+            <div class="ps-brand-name">Cris Dashboard</div>
+            <div class="ps-brand-sub">Building better traders</div>
           </div>
           <div class="ps-pill"><span>Rising mode</span><span class="ps-dot"></span></div>
-          <div class="ps-nav-item active">Dashboard</div>
-          <div class="ps-nav-item">Nowy wpis</div>
-          <div class="ps-nav-item">Historia</div>
-          <div class="ps-nav-item">Kalendarz</div>
-          <div class="ps-nav-item">Statystyki</div>
-          <div class="ps-nav-item">✦ Treningi</div>
-          <div class="ps-nav-item">▦ Daily Status</div>
+          <div class="ps-nav-item active">🏠 Dashboard</div>
+          <div class="ps-nav-item">✏️ New entry</div>
+          <div class="ps-nav-item">📖 History</div>
+          <div class="ps-nav-item">📅 Calendar</div>
+          <div class="ps-nav-item">📊 Statistics</div>
+          <div class="ps-nav-item">🏃 Training</div>
+          <div class="ps-nav-item">📈 Daily Status</div>
+          <div class="ps-nav-item">📝 Summary</div>
+          <div class="ps-nav-item">🤖 AI Coach</div>
         </div>
         <!-- main -->
         <div class="preview-main">
-          <!-- topbar -->
-          <div class="pm-topbar">
-            <div class="pm-search">Search anything... swim, bike, run, trade, feeling</div>
-            <div class="pm-chips">
-              <div class="pm-chip streak">1 day streak</div>
-              <div class="pm-chip">11 maj</div>
-              <div class="pm-chip">Full day</div>
-            </div>
-          </div>
           <!-- coach -->
           <div class="pm-coach">
             <div class="pm-eyebrow">Progressive Overload Coach</div>
-            <div class="pm-coach-title">Training logged. Keep stacking.</div>
-            <div class="pm-coach-sub">Zapisz dzisiaj trening, stan głowy i trading. Małe dane codziennie tworzą brutalnie dobry obraz tego, czy naprawdę idziesz w stronę formy.</div>
+            <div class="pm-coach-title">Keep going! You are close to filling the ring!</div>
+            <div class="pm-coach-sub">Log your workout, mindset and trading today. Small data daily builds a brutally clear picture.</div>
             <div class="pm-barline"><span></span></div>
           </div>
           <!-- two columns -->
@@ -589,37 +584,27 @@ footer .logo{font-size:16px}
             <div class="pm-today">
               <div class="pm-today-head">
                 <div>
-                  <div class="pm-today-title">Today Overview</div>
-                  <div class="pm-today-date">poniedziałek, 11 maja</div>
+                  <div class="pm-today-title">Day Overview</div>
+                  <div class="pm-today-date">Friday, 15 May</div>
                 </div>
                 <div class="pm-live">live</div>
               </div>
               <div class="pm-today-nums">
                 <div>
-                  <div class="pm-big-num">1</div>
-                  <div class="pm-big-lbl">Treningi</div>
+                  <div class="pm-big-num">0</div>
+                  <div class="pm-big-lbl">Workouts</div>
                 </div>
                 <div>
                   <div class="pm-big-num" style="color:var(--green)">+$0</div>
-                  <div class="pm-big-lbl">PNL Dziś</div>
+                  <div class="pm-big-lbl">PNL Today</div>
                 </div>
               </div>
               <div class="pm-today-log">
-                <div class="pm-log-head"><span>Today's Log</span><span style="color:var(--soft);font-weight:400">auto from entries</span></div>
-                <div class="pm-log-row">
-                  <span class="pm-log-type">Trening</span>
-                  <span class="pm-log-val">Pływanie</span>
-                  <span class="pm-log-tag">45min</span>
-                </div>
+                <div class="pm-log-head"><span>Daily Log</span><span style="color:var(--soft);font-weight:400">auto from entries</span></div>
                 <div class="pm-log-row">
                   <span class="pm-log-type">Trading</span>
-                  <span class="pm-log-val">NQ</span>
+                  <span class="pm-log-val">Sesja</span>
                   <span class="pm-log-tag green">+$0</span>
-                </div>
-                <div class="pm-log-row">
-                  <span class="pm-log-type">Journal</span>
-                  <span class="pm-log-val" style="color:var(--muted)">Ogólnie dzień w sam sobie może być...</span>
-                  <span class="pm-log-tag">neutral</span>
                 </div>
               </div>
             </div>
@@ -628,15 +613,14 @@ footer .logo{font-size:16px}
               <div class="pm-goals-head">
                 <div>
                   <div class="pm-goals-title">Goalmaxxing</div>
-                  <div style="font-size:9px;color:var(--muted);margin-top:2px">4 / 5 complete</div>
+                  <div style="font-size:9px;color:var(--muted);margin-top:2px">2 / 4 complete</div>
                 </div>
                 <div class="pm-goals-count">day streak →</div>
               </div>
-              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>Mobilnosc</span><span class="pm-goal-tag">body</span></div>
-              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>Trening</span><span class="pm-goal-tag">triathlon</span></div>
-              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>Dobite Białko</span><span class="pm-goal-tag">fuel</span></div>
-              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>Czy optymalny sen</span><span class="pm-goal-tag">recovery</span></div>
-              <div class="pm-goal-row"><div class="pm-check"></div><span style="color:var(--muted)">Czy słuchałem się zasad</span><span class="pm-goal-tag">execution</span></div>
+              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>Did you eat good?</span><span class="pm-goal-tag">custom</span></div>
+              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>10k steps?</span><span class="pm-goal-tag">custom</span></div>
+              <div class="pm-goal-row"><div class="pm-check"></div><span style="color:var(--muted)">Sleep good?</span><span class="pm-goal-tag">custom</span></div>
+              <div class="pm-goal-row"><div class="pm-check"></div><span style="color:var(--muted)">Did you study something?</span><span class="pm-goal-tag">custom</span></div>
             </div>
           </div>
         </div>
@@ -647,38 +631,38 @@ footer .logo{font-size:16px}
 
 <!-- ABOUT -->
 <section id="about">
-  <div class="section-label">O nas</div>
-  <h2 class="section-title">Zbudowany przez traderów,<br>dla traderów.</h2>
-  <p class="section-sub">lifebizJournal to więcej niż journal. To Twój codzienny coach, który pomaga utrzymać dyscyplinę, świadomość i wzrost.</p>
+  <div class="section-label" data-i18n="about-label">O nas</div>
+  <h2 class="section-title" data-i18n="about-main-title">Zbudowany przez traderów,<br>dla traderów.</h2>
+  <p class="section-sub" data-i18n="about-desc">lifebizJournal to więcej niż journal. To Twój codzienny coach, który pomaga utrzymać dyscyplinę, świadomość i wzrost.</p>
 
   <div class="about-grid fade-in">
     <div class="about-text">
-      <p>Większość traderów skupia się wyłącznie na rynku — zapominając, że <strong>to oni sami są zmienną</strong>. Twój stan emocjonalny, sen, rutyna i nastawienie mają ogromny wpływ na Twoje decyzje.</p>
-      <p>lifebizJournal powstał z jednej prostej obserwacji: <strong>najlepsi traderzy prowadzą dzienniki.</strong> Nie dlatego, że muszą — ale dlatego, że to działa. Widzą wzorce, uczą się na błędach i budują konsekwentne procesy.</p>
-      <p>Obecnie skupiamy się głównie na <strong>tradingu</strong> — dzienniku sesji, emocjach, dyscyplinie i wynikach. Jednak to dopiero początek. Niedługo będziemy wprowadzali znacznie więcej możliwości dla każdego kto chce świadomie rozwijać siebie i swój biznes.</p>
+      <p data-i18n="about-p1">Większość traderów skupia się wyłącznie na rynku — zapominając, że <strong>to oni sami są zmienną</strong>. Twój stan emocjonalny, sen, rutyna i nastawienie mają ogromny wpływ na Twoje decyzje.</p>
+      <p data-i18n="about-p2">lifebizJournal powstał z jednej prostej obserwacji: <strong>najlepsi traderzy prowadzą dzienniki.</strong> Nie dlatego, że muszą — ale dlatego, że to działa. Widzą wzorce, uczą się na błędach i budują konsekwentne procesy.</p>
+      <p data-i18n="about-p3">Obecnie skupiamy się głównie na <strong>tradingu</strong> — dzienniku sesji, emocjach, dyscyplinie i wynikach. Jednak to dopiero początek. Niedługo będziemy wprowadzali znacznie więcej możliwości dla każdego kto chce świadomie rozwijać siebie i swój biznes.</p>
       <div class="about-pills">
-        <span class="pill">🧠 Psychologia tradingu</span>
-        <span class="pill">📊 Analiza wyników</span>
-        <span class="pill">🏃 Zdrowy tryb życia</span>
-        <span class="pill">🎯 Zarządzanie celami</span>
+        <span class="pill" data-i18n="pill1">🧠 Psychologia tradingu</span>
+        <span class="pill" data-i18n="pill2">📊 Analiza wyników</span>
+        <span class="pill" data-i18n="pill3">🏃 Zdrowy tryb życia</span>
+        <span class="pill" data-i18n="pill4">🎯 Zarządzanie celami</span>
       </div>
     </div>
     <div class="about-visual">
       <div class="av-card">
         <div class="av-icon gold">📓</div>
-        <div><div class="av-label">Codzienny journal</div><div class="av-desc">Zapisuj myśli, emocje i plany każdego dnia</div></div>
+        <div><div class="av-label" data-i18n="av1-label">Codzienny journal</div><div class="av-desc" data-i18n="av1-desc">Zapisuj myśli, emocje i plany każdego dnia</div></div>
       </div>
       <div class="av-card">
         <div class="av-icon green">📈</div>
-        <div><div class="av-label">Śledzenie tradów</div><div class="av-desc">Historia wpisów, P&L i analiza wzorców</div></div>
+        <div><div class="av-label" data-i18n="av2-label">Śledzenie tradów</div><div class="av-desc" data-i18n="av2-desc">Historia wpisów, P&L i analiza wzorców</div></div>
       </div>
       <div class="av-card">
         <div class="av-icon blue">🏃</div>
-        <div><div class="av-label">Aktywność fizyczna</div><div class="av-desc">Sport i regeneracja jako część procesu</div></div>
+        <div><div class="av-label" data-i18n="av3-label">Aktywność fizyczna</div><div class="av-desc" data-i18n="av3-desc">Sport i regeneracja jako część procesu</div></div>
       </div>
       <div class="av-card">
         <div class="av-icon purple">🎯</div>
-        <div><div class="av-label">System celów</div><div class="av-desc">Codzienne rytuały, które budują dyscyplinę</div></div>
+        <div><div class="av-label" data-i18n="av4-label">System celów</div><div class="av-desc" data-i18n="av4-desc">Codzienne rytuały, które budują dyscyplinę</div></div>
       </div>
     </div>
   </div>
@@ -686,230 +670,298 @@ footer .logo{font-size:16px}
 
 <!-- HOW IT WORKS -->
 <section id="how" style="padding-top:0">
-  <div class="section-label">Jak to działa</div>
-  <h2 class="section-title">Cztery kroki do świadomego tradingu.</h2>
+  <div class="section-label" data-i18n="how-label">Jak to działa</div>
+  <h2 class="section-title" data-i18n="how-title">Cztery kroki do świadomego tradingu.</h2>
 
   <div class="steps fade-in">
     <div class="step" data-n="1">
       <div class="step-num">1</div>
-      <h3>Zacznij dzień z planem</h3>
-      <p>Każde rano wypełniasz krótki check-in — jak śpisz, jaki masz poziom energii i co chcesz osiągnąć. Zero wymówek.</p>
+      <h3 data-i18n="how-step1-title">Zacznij dzień z planem</h3>
+      <p data-i18n="how-step1-desc">Każde rano wypełniasz krótki check-in — jak śpisz, jaki masz poziom energii i co chcesz osiągnąć. Zero wymówek.</p>
     </div>
     <div class="step" data-n="2">
       <div class="step-num">2</div>
-      <h3>Loguj swoje trady</h3>
-      <p>Wpisuj setup, wynik, emocje przed i po. System analizuje wzorce i pokazuje Ci kiedy handlujesz najlepiej.</p>
+      <h3 data-i18n="how-step2-title">Loguj swoje trady</h3>
+      <p data-i18n="how-step2-desc">Wpisuj setup, wynik, emocje przed i po. System analizuje wzorce i pokazuje Ci kiedy handlujesz najlepiej.</p>
     </div>
     <div class="step" data-n="3">
       <div class="step-num">3</div>
-      <h3>Dbaj o siebie</h3>
-      <p>Śledź sport, sen i regenerację. Najlepsi traderzy wiedzą, że ciało i umysł to fundament wszystkich decyzji.</p>
+      <h3 data-i18n="how-step3-title">Dbaj o siebie</h3>
+      <p data-i18n="how-step3-desc">Śledź sport, sen i regenerację. Najlepsi traderzy wiedzą, że ciało i umysł to fundament wszystkich decyzji.</p>
     </div>
     <div class="step" data-n="4">
       <div class="step-num">4</div>
-      <h3>Przeglądaj i rośnij</h3>
-      <p>Tygodniowe podsumowania, wykresy i wzorce. Widzisz co działa, co nie — i gdzie jest Twój edge.</p>
+      <h3 data-i18n="how-step4-title">Przeglądaj i rośnij</h3>
+      <p data-i18n="how-step4-desc">Tygodniowe podsumowania, wykresy i wzorce. Widzisz co działa, co nie — i gdzie jest Twój edge.</p>
     </div>
   </div>
 </section>
 
 <!-- FEATURES -->
 <section id="features" style="padding-top:0">
-  <div class="section-label">Funkcje</div>
-  <h2 class="section-title">Wszystko czego potrzebujesz.</h2>
+  <div class="section-label" data-i18n="feat-label">Co znajdziesz w dashboardzie</div>
+  <h2 class="section-title" data-i18n="feat-title">Wszystko w jednym miejscu.</h2>
+  <p class="section-sub" data-i18n="feat-sub">Każda zakładka to jeden element Twojej rutyny — połącz je razem i miej pełny obraz swojego rozwoju.</p>
 
-  <div class="features-grid fade-in">
+  <div class="features-grid fade-in" style="margin-top:48px">
     <div class="feat">
       <div class="feat-icon">📊</div>
-      <h3>Dashboard Dnia</h3>
-      <p>Przegląd wszystkich kluczowych metryk w jednym miejscu. Wynik dnia, realizacja celów, P&L i nastrój — na pierwszy rzut oka.</p>
+      <h3 data-i18n="f1-title">Dashboard</h3>
+      <p data-i18n="f1-desc">Widok główny z podsumowaniem dnia. Wynik Goalmaxxing, pasek postępu, streak, motywacyjny komunikat od AI Coacha i szybki podgląd dzisiejszych aktywności.</p>
     </div>
     <div class="feat">
-      <div class="feat-icon">🧠</div>
-      <h3>Emotional Tracker</h3>
-      <p>Śledź swoje emocje przed i po tradach. Odkrywaj kiedy fear of missing out lub revenge trading demolują Twoje wyniki.</p>
+      <div class="feat-icon">✏️</div>
+      <h3 data-i18n="f2-title">Nowy wpis</h3>
+      <p data-i18n="f2-desc">Trzy sekcje w jednym widoku — Dzień (nastrój, notatka), Trading (para, PNL, zasady, emocje, wykres) i Trening (typ, czas, intensywność, RPE). Wszystko w 2 minuty.</p>
     </div>
     <div class="feat">
       <div class="feat-icon">🎯</div>
-      <h3>Goalmaxxing System</h3>
-      <p>Ustaw 5 kluczowych nawyków i zaznaczaj je każdego dnia. Buduj streak, utrzymuj dyscyplinę. Małe kroki, duże rezultaty.</p>
+      <h3 data-i18n="f3-title">Goalmaxxing</h3>
+      <p data-i18n="f3-desc">Ustaw swoje dzienne nawyki i zaznaczaj je każdego dnia. System liczy wynik 0–100 pkt i buduje streak. Zmiana nazwy celu nie usuwa historii.</p>
     </div>
     <div class="feat">
       <div class="feat-icon">📅</div>
-      <h3>Kalendarz & Historia</h3>
-      <p>Pełna historia wpisów z możliwością filtrowania. Wróć do dowolnego dnia i przejrzyj co czułeś i co zrobiłeś.</p>
+      <h3 data-i18n="f4-title">Kalendarz & Historia</h3>
+      <p data-i18n="f4-desc">Pełna historia wpisów. Kliknij dowolny dzień i otworzysz szczegółowy raport — dane, notatki, wykres. Edytuj lub usuń wpis w jednym kliknięciu.</p>
     </div>
-    <div class="feat feat-wide">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap">
-        <div>
-          <div class="feat-icon">🏃</div>
-          <h3>Moduł Sportowy</h3>
-          <p style="max-width:480px">Loguj treningi, dystans, tempo i HR. Integracja ze Stravą (link). Sprawdź czy Twoje wyniki tradingowe są lepsze w dni gdy ćwiczysz — bo zazwyczaj są.</p>
-        </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <div style="text-align:center;padding:16px 20px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px">
-            <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--green)">+34%</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:4px">P&L w dni treningowe</div>
-          </div>
-          <div style="text-align:center;padding:16px 20px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px">
-            <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--gold2)">2.4×</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:4px">Win rate po sporcie</div>
-          </div>
-        </div>
-      </div>
+    <div class="feat">
+      <div class="feat-icon">📈</div>
+      <h3 data-i18n="f5-title">Dzienny Status</h3>
+      <p data-i18n="f5-desc">Historia Goalmaxxing punktów każdego dnia — wykres postępu, realizacja celów, streak perfekcyjnych dni. Widzisz czy naprawdę budujesz dyscyplinę czy tylko myślisz że budujesz.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🏃</div>
+      <h3 data-i18n="f6-title">Trening + Strava</h3>
+      <p data-i18n="f6-desc">Loguj treningi ręcznie lub połącz konto Strava — aktywności wczytują się automatycznie. Dystans, tempo, tętno, przewyższenie. Rest Day też się liczy.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📝</div>
+      <h3 data-i18n="f7-title">Podsumowanie dnia</h3>
+      <p data-i18n="f7-desc">Lista wszystkich Twoich dni z wynikami. Kliknij dzień → AI generuje spersonalizowaną analizę — ocenia trading, trening i cele i daje konkretną radę na jutro.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🤖</div>
+      <h3 data-i18n="f8-title">AI Coach</h3>
+      <p data-i18n="f8-desc">Chat z AI który zna Twoje dane — ostatnie 7 dni tradingu, treningów i celów. Napisz o problemie, dostań konkretną odpowiedź. Plus automatyczne powiadomienia po każdym zapisanym wpisie.</p>
     </div>
   </div>
 </section>
 
 <!-- SUPPORT -->
 <section id="support" style="padding-top:0">
-  <div class="section-label">Support</div>
-  <h2 class="section-title">Masz pytania? Mamy odpowiedzi.</h2>
+  <div class="section-label" data-i18n="sup-label">Support</div>
+  <h2 class="section-title" data-i18n="sup-title">Masz pytania? Mamy odpowiedzi.</h2>
 
   <div class="support-grid fade-in">
     <div class="faq">
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Czy lifebizJournal jest darmowy? <span class="arr">+</span></div>
-        <div class="faq-a">Tak — podstawowy plan jest w pełni darmowy. W przyszłości planujemy plan Pro z zaawansowaną analityką i AI coachingiem.</div>
+        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq1-q">Czy lifebizJournal jest darmowy?</span> <span class="arr">+</span></div>
+        <div class="faq-a" data-i18n="faq1-a">Dostęp do lifebizJournal kosztuje 40 zł miesięcznie — jedna prosta oferta, bez ukrytych planów. Anuluj kiedy chcesz.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Na jakich rynkach mogę handlować? <span class="arr">+</span></div>
-        <div class="faq-a">lifebizJournal jest agnostyczny względem rynku — możesz logować trady na Forex, futures, crypto, akcjach i opcjach. Ważne są Twoje dane, nie broker.</div>
+        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq2-q">Na jakich rynkach mogę handlować?</span> <span class="arr">+</span></div>
+        <div class="faq-a" data-i18n="faq2-a">lifebizJournal jest agnostyczny względem rynku — możesz logować trady na Forex, futures, crypto, akcjach i opcjach. Ważne są Twoje dane, nie broker.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Czy moje dane są bezpieczne? <span class="arr">+</span></div>
-        <div class="faq-a">Absolutnie. Dane są szyfrowane i przechowywane lokalnie w Twojej przeglądarce. Nie sprzedajemy ani nie udostępniamy żadnych danych osobom trzecim.</div>
+        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq3-q">Czy moje dane są bezpieczne?</span> <span class="arr">+</span></div>
+        <div class="faq-a" data-i18n="faq3-a">Absolutnie. Dane są szyfrowane i przechowywane lokalnie w Twojej przeglądarce. Nie sprzedajemy ani nie udostępniamy żadnych danych osobom trzecim.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Czy będą inne moduły poza tradingiem? <span class="arr">+</span></div>
-        <div class="faq-a">Tak! Planujemy rozszerzenie dla innych przedsiębiorców — e-commerce, freelancerów, startupowców. Na razie skupiamy się na dopieszczeniu modułu tradingowego.</div>
+        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq4-q">Czy będą inne moduły poza tradingiem?</span> <span class="arr">+</span></div>
+        <div class="faq-a" data-i18n="faq4-a">Tak! Planujemy rozszerzenie dla innych przedsiębiorców — e-commerce, freelancerów, startupowców. Na razie skupiamy się na dopieszczeniu modułu tradingowego.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Jak skontaktować się z supportem? <span class="arr">+</span></div>
-        <div class="faq-a">Napisz do nas przez formularz obok lub wyślij email na support@lifebizjournal.app. Odpowiadamy zazwyczaj w ciągu 24h.</div>
+        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq5-q">Jak skontaktować się z supportem?</span> <span class="arr">+</span></div>
+        <div class="faq-a" data-i18n="faq5-a">Napisz do nas przez formularz obok lub wyślij email na support@lifebizjournal.app. Odpowiadamy zazwyczaj w ciągu 24h.</div>
       </div>
     </div>
 
     <div class="contact-card">
-      <h3>Napisz do nas</h3>
-      <p>Masz pytanie, sugestię lub bug report? Daj nam znać — naprawdę czytamy każdą wiadomość.</p>
+      <h3><span data-i18n="sup-contact-title">Napisz do nas</span></h3>
+      <p><span data-i18n="sup-contact-sub">Masz pytanie, sugestię lub bug report? Daj nam znać — naprawdę czytamy każdą wiadomość.</span></p>
       <div class="field">
-        <label>Imię</label>
-        <input type="text" id="contact-name" placeholder="Twoje imię">
+        <label data-i18n="sup-name">Imię</label>
+        <input type="text" id="contact-name" placeholder="Twoje imię" data-i18n-placeholder="sup-name-ph">
       </div>
       <div class="field">
-        <label>Email</label>
-        <input type="email" id="contact-email" placeholder="twoj@email.com">
+        <label data-i18n="sup-email">Email</label>
+        <input type="email" id="contact-email" placeholder="twoj@email.com" data-i18n-placeholder="sup-email-ph">
       </div>
       <div class="field">
-        <label>Wiadomość</label>
-        <textarea class="textarea-field" id="contact-msg" placeholder="Opisz swoje pytanie lub problem..."></textarea>
+        <label data-i18n="sup-msg">Wiadomość</label>
+        <textarea class="textarea-field" id="contact-msg" placeholder="Opisz swoje pytanie lub problem..." data-i18n-placeholder="sup-msg-ph"></textarea>
       </div>
-      <button class="btn-form" onclick="sendSupport()">Wyślij wiadomość →</button>
+      <button class="btn-form" onclick="sendSupport()"><span data-i18n="sup-send">Wyślij wiadomość →</span></button>
     </div>
   </div>
 </section>
 
 <!-- SURVEY -->
 <section id="survey" style="padding-top:0">
-  <div class="section-label">Ankieta</div>
-  <h2 class="section-title">Pomóż nam budować lepszy produkt.</h2>
-  <p class="section-sub">Twoja opinia jest dla nas bezcenna. Zajmie to 2 minuty — obiecujemy.</p>
+  <div class="section-label" data-i18n="sur-label">Ankieta</div>
+  <h2 class="section-title" data-i18n="sur-title">Pomóż nam budować lepszy produkt.</h2>
+  <p class="section-sub" data-i18n="sur-sub">Twoja opinia jest dla nas bezcenna. Zajmie to 2 minuty — obiecujemy.</p>
 
   <div class="survey-wrap fade-in">
     <div class="survey-progress"><div class="survey-progress-bar" id="survey-bar" style="width:20%"></div></div>
 
     <div class="survey-step active" id="sq-1">
-      <div class="survey-q">1 / 5 — Jak długo traderujesz?</div>
+      <div class="survey-q" data-i18n="sq1">1 / 5 — Jak długo traderujesz?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Dopiero zaczynam (0-6 miesięcy)</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Ponad rok</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> 3-5 lat</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Powyżej 5 lat — weteran 🧙</button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq1-opt1">Dopiero zaczynam (0-6 miesięcy)</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq1-opt2">Ponad rok</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq1-opt3b">3-5 lat</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq1-opt4">Powyżej 5 lat — weteran 🧙</span></button>
       </div>
       <div class="survey-nav">
         <span></span>
-        <button class="survey-next" onclick="surveyNext()">Dalej →</button>
+        <button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Dalej →</span></button>
       </div>
     </div>
 
     <div class="survey-step" id="sq-2">
-      <div class="survey-q">2 / 5 — Na jakim rynku głównie handlujesz?</div>
+      <div class="survey-q" data-i18n="sq2">2 / 5 — Na jakim rynku głównie handlujesz?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Futures / Kontrakty</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Forex</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Krypto</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Akcje / Opcje</button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq2-opt1">Futures / Kontrakty</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq2-opt2">Forex</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq2-opt3">Krypto</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq2-opt4">Akcje / Opcje</span></button>
       </div>
       <div class="survey-nav">
-        <button class="survey-back" onclick="surveyBack()">← Wstecz</button>
-        <button class="survey-next" onclick="surveyNext()">Dalej →</button>
+        <button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Wstecz</span></button>
+        <button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Dalej →</span></button>
       </div>
     </div>
 
     <div class="survey-step" id="sq-3">
-      <div class="survey-q">3 / 5 — Co jest dla Ciebie największym wyzwaniem?</div>
+      <div class="survey-q" data-i18n="sq3">3 / 5 — Co jest dla Ciebie największym wyzwaniem?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Dyscyplina i trzymanie się planu</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Zarządzanie emocjami podczas tradów</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Analiza błędów i nauka z nich</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Konsekwentna rutyna i work-life balance</button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq3-opt1">Dyscyplina i trzymanie się planu</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq3-opt2">Zarządzanie emocjami podczas tradów</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq3-opt3">Analiza błędów i nauka z nich</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq3-opt4">Konsekwentna rutyna i work-life balance</span></button>
       </div>
       <div class="survey-nav">
-        <button class="survey-back" onclick="surveyBack()">← Wstecz</button>
-        <button class="survey-next" onclick="surveyNext()">Dalej →</button>
+        <button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Wstecz</span></button>
+        <button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Dalej →</span></button>
       </div>
     </div>
 
     <div class="survey-step" id="sq-4">
-      <div class="survey-q">4 / 5 — Czy aktywność fizyczna jest częścią Twojej rutyny?</div>
+      <div class="survey-q" data-i18n="sq4">4 / 5 — Czy aktywność fizyczna jest częścią Twojej rutyny?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Tak, regularnie (4+ razy w tygodniu)</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Czasami (1-3 razy)</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Rzadko, ale chcę to zmienić</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Nie — trading to mój sport 😅</button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq4-opt1">Tak, regularnie (4+ razy w tygodniu)</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq4-opt2">Czasami (1-3 razy)</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq4-opt3">Rzadko, ale chcę to zmienić</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq4-opt4">Nie — trading to mój sport 😅</span></button>
       </div>
       <div class="survey-nav">
-        <button class="survey-back" onclick="surveyBack()">← Wstecz</button>
-        <button class="survey-next" onclick="surveyNext()">Dalej →</button>
+        <button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Wstecz</span></button>
+        <button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Dalej →</span></button>
       </div>
     </div>
 
     <div class="survey-step" id="sq-5">
-      <div class="survey-q">5 / 5 — Czego najbardziej oczekujesz od lifebizJournal?</div>
+      <div class="survey-q" data-i18n="sq5">5 / 5 — Czego najbardziej oczekujesz od lifebizJournal?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Lepsza analiza moich tradów</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> System nawyków i rutyna</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Śledzenie emocji i psychologii</button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> Holistyczny widok: trading + życie</button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq5-opt1">Lepsza analiza moich tradów</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq5-opt2">System nawyków i rutyna</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq5-opt3">Śledzenie emocji i psychologii</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq5-opt4">Holistyczny widok: trading + życie</span></button>
       </div>
       <div class="survey-nav">
-        <button class="survey-back" onclick="surveyBack()">← Wstecz</button>
-        <button class="survey-next" onclick="surveySubmit()">Wyślij 🚀</button>
+        <button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Wstecz</span></button>
+        <button class="survey-next" onclick="surveySubmit()"><span data-i18n="sq-submit">Wyślij 🚀</span></button>
       </div>
     </div>
 
     <div class="survey-step" id="sq-done">
       <div class="survey-done">
         <div class="big">🏆</div>
-        <h3>Dzięki za Twoją opinię!</h3>
-        <p>Twoje odpowiedzi pomogą nam zbudować narzędzie które naprawdę spełni Twoje potrzeby. Dajemy z siebie 110%.</p>
-        <button class="btn-hero primary" style="margin-top:24px;width:auto" onclick="openModal('signup')">Dołącz teraz →</button>
+        <h3 data-i18n="sq-thanks">Dzięki za Twoją opinię!</h3>
+        <p data-i18n="sq-thanks-sub">Twoje odpowiedzi pomogą nam zbudować narzędzie które naprawdę spełni Twoje potrzeby. Dajemy z siebie 110%.</p>
+        <button class="btn-hero primary" style="margin-top:24px;width:auto" onclick="openModal('signup')"><span data-i18n="sq-join">Dołącz teraz →</span></button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="logo">lifebiz<span>Journal</span></div>
-  <div class="footer-links">
-    <a href="#about">O nas</a>
-    <a href="#how">Jak działa</a>
-    <a href="#support">Support</a>
-    <a href="#survey">Ankieta</a>
+<!-- ─── PRICING ─── -->
+<section id="pricing" style="padding:100px 40px;max-width:1160px;margin:0 auto">
+  <div class="fade-in">
+    <div class="section-label" data-i18n="price-label">Cennik</div>
+    <h2 class="section-title" data-i18n="price-title">Jedna prosta oferta.</h2>
+    <p class="section-sub" data-i18n="price-sub">Bez ukrytych opłat, bez planów premium. Wszystko w jednej cenie.</p>
   </div>
-  <div class="footer-copy">© 2025 lifebizJournal. Wszelkie prawa zastrzeżone.</div>
+  <div class="fade-in" style="margin-top:56px;display:flex;justify-content:center">
+    <div style="background:linear-gradient(160deg,#1c1812,#161310);border:1px solid rgba(214,154,83,.4);border-radius:24px;padding:48px 52px;max-width:460px;width:100%;text-align:center;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.5)">
+      <!-- glow -->
+      <div style="position:absolute;inset:-1px;border-radius:24px;background:linear-gradient(135deg,rgba(214,154,83,.15),transparent 60%);pointer-events:none"></div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(214,154,83,.1);border:1px solid rgba(214,154,83,.3);border-radius:999px;padding:5px 14px;font-size:11px;color:var(--gold2);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px"><span data-i18n="price-badge">⚡ Pełny dostęp</span></div>
+      <div id="landing-price" style="display:flex;align-items:baseline;justify-content:center;gap:4px;margin:4px 0"><span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:54px;font-weight:700;line-height:1;color:var(--text)">$10</span><span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;color:var(--muted);font-weight:500;margin-left:3px">/mo</span></div>
+      <div data-i18n="price-period" style="font-size:13px;color:var(--muted);margin-top:6px;margin-bottom:36px">miesięcznie · anuluj kiedy chcesz</div>
+      <div style="display:grid;gap:12px;margin-bottom:36px;text-align:left">
+        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr1">Trading Journal — pełna historia</span></div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr2">Goalmaxxing — dzienne cele</span></div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr3">Trening Log + integracja Strava</span></div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr4">AI Coach — analiza i powiadomienia</span></div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr5">Podsumowanie dnia — AI raport</span></div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr6">Statystyki, Kalendarz, Daily Status</span></div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr7">Dwujęzyczny interfejs (PL/EN)</span></div>
+      </div>
+      <button class="btn-hero primary" style="width:100%;height:54px;font-size:16px" onclick="openModal('signup')"><span data-i18n="price-cta">Zacznij teraz →</span></button>
+      <div data-i18n="price-note" style="margin-top:16px;font-size:12px;color:var(--muted)">Bezpieczna płatność · Bez zobowiązań</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRIVACY ─── -->
+<section id="privacy" style="padding:100px 40px;max-width:860px;margin:0 auto">
+  <div class="fade-in">
+    <div class="section-label" data-i18n="priv-label">Polityka prywatności</div>
+    <h2 class="section-title" data-i18n="priv-title">Twoje dane,<br>Twoja własność.</h2>
+  </div>
+  <div class="fade-in" style="margin-top:48px;display:grid;gap:16px">
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
+      <h3 data-i18n="prv1-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">📦 Co zbieramy</h3>
+      <p data-i18n="prv1-desc" style="font-size:14px;color:var(--muted);line-height:1.75">Zbieramy tylko dane które sam wprowadzasz — wpisy tradingowe, treningowe, notatki i cele. Do logowania używamy Supabase (email + hasło). Nie zbieramy danych o Twoim urządzeniu, zachowaniu na stronie ani nie sprzedajemy żadnych danych.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
+      <h3 data-i18n="prv2-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">🔒 Jak przechowujemy dane</h3>
+      <p data-i18n="prv2-desc" style="font-size:14px;color:var(--muted);line-height:1.75">Dane są przechowywane w Supabase — europejska infrastruktura, szyfrowanie w spoczynku i w tranzycie. Dane lokalne (cele, ustawienia) są przechowywane w Twoim localStorage i nie opuszczają Twojej przeglądarki.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
+      <h3 data-i18n="prv3-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">🤖 AI Coach i Strava</h3>
+      <p data-i18n="prv3-desc" style="font-size:14px;color:var(--muted);line-height:1.75">AI Coach używa Anthropic API — Twoje dane są wysyłane do analizy ale nie są używane do trenowania modeli. Integracja Strava działa na zasadzie OAuth — możesz ją odłączyć w każdej chwili z poziomu dashboardu.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
+      <h3 data-i18n="prv4-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">🗑️ Usuwanie konta</h3>
+      <p data-i18n="prv4-desc" style="font-size:14px;color:var(--muted);line-height:1.75">Możesz usunąć swoje konto i wszystkie dane w dowolnym momencie kontaktując się z nami przez email. Dane zostaną trwale usunięte w ciągu 7 dni roboczych.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
+      <h3 data-i18n="prv5-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">📧 Kontakt</h3>
+      <p style="font-size:14px;color:var(--muted);line-height:1.75">Pytania dotyczące prywatności: <a href="mailto:kontakt@lifebizjournal.pl" style="color:var(--gold2);text-decoration:none">kontakt@lifebizjournal.pl</a><br>Ostatnia aktualizacja: maj 2026</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid var(--line);padding:48px 40px;max-width:1160px;margin:0 auto">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px">
+    <div>
+      <div class="logo" style="font-size:18px;margin-bottom:6px">lifebiz<span>Journal</span></div>
+      <div data-i18n="footer-tagline" style="font-size:12px;color:var(--muted)">Buduj siebie jako tradera. Codziennie.</div>
+    </div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <a href="#about" data-i18n="nav-about" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">O nas</a>
+      <a href="#how" data-i18n="nav-how" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Jak działa</a>
+      <a href="#features" data-i18n="nav-features" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Funkcje</a>
+      <a href="#pricing" data-i18n="nav-pricing" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Cennik</a>
+      <a href="#support" data-i18n="nav-support" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Support</a>
+      <a href="#privacy" data-i18n="nav-privacy" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Prywatność</a>
+    </div>
+    <div style="font-size:12px;color:var(--soft)">© 2026 lifebizJournal</div>
+  </div>
 </footer>
 
 <!-- LOGIN / SIGNUP MODAL -->
@@ -923,15 +975,15 @@ footer .logo{font-size:16px}
       <button class="tab-modal" id="tab-signup" onclick="switchTab('signup')">Rejestracja</button>
     </div>
     <div id="form-login">
-      <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="twoj@email.com" autocomplete="email"></div>
+      <div class="field"><label data-i18n="sup-email">Email</label><input type="email" id="login-email" placeholder="twoj@email.com" data-i18n-placeholder="sup-email-ph" autocomplete="email"></div>
       <div class="field"><label>Hasło</label><input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"></div>
       <div id="login-error" style="color:#ef7a68;font-size:12px;margin-bottom:10px;display:none"></div>
       <button class="btn-form" id="login-btn" onclick="doLogin()">Zaloguj się →</button>
       <div class="modal-footer">Nie masz konta? <a href="#" onclick="switchTab('signup')" style="color:var(--gold2)">Zarejestruj się</a></div>
     </div>
     <div id="form-signup" style="display:none">
-      <div class="field"><label>Imię</label><input type="text" id="signup-name" placeholder="Twoje imię"></div>
-      <div class="field"><label>Email</label><input type="email" id="signup-email" placeholder="twoj@email.com" autocomplete="email"></div>
+      <div class="field"><label data-i18n="sup-name">Imię</label><input type="text" id="signup-name" placeholder="Twoje imię" data-i18n-placeholder="sup-name-ph"></div>
+      <div class="field"><label data-i18n="sup-email">Email</label><input type="email" id="signup-email" placeholder="twoj@email.com" data-i18n-placeholder="sup-email-ph" autocomplete="email"></div>
       <div class="field"><label>Hasło</label><input type="password" id="signup-password" placeholder="Min. 8 znaków" autocomplete="new-password"></div>
       <div id="signup-error" style="color:#ef7a68;font-size:12px;margin-bottom:10px;display:none"></div>
       <button class="btn-form" id="signup-btn" onclick="doSignup()">Utwórz konto →</button>
@@ -1124,6 +1176,250 @@ document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
 
 // ESC close modal
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+</script>
+<script>
+/* ══════════════════════════════════════════
+   LANDING PAGE — PL/EN + USD PRICE
+══════════════════════════════════════════ */
+
+var LANDING_TRANSLATIONS = {
+  'nav-about':    {pl:'O nas',           en:'About'},
+  'nav-how':      {pl:'Jak działa',      en:'How it works'},
+  'nav-features': {pl:'Funkcje',         en:'Features'},
+  'nav-support':  {pl:'Support',         en:'Support'},
+  'nav-survey':   {pl:'Ankieta',         en:'Survey'},
+  'nav-pricing':  {pl:'Cennik',          en:'Pricing'},
+  'nav-privacy':  {pl:'Prywatność',      en:'Privacy'},
+  'nav-login':    {pl:'Zaloguj się',     en:'Log in'},
+  'nav-signup':   {pl:'Zarejestruj się', en:'Sign up'},
+  'hero-badge':   {pl:'Teraz dostępny dla traderów', en:'Now available for traders'},
+  'hero-h1':      {pl:'Journal który<br><em>buduje Cię</em><br>jako tradera.', en:'The journal that<br><em>builds you</em><br>as a trader.'},
+  'hero-sub':     {pl:'Śledź swoje trady, emocje, cele i codzienną rutynę — wszystko w jednym miejscu. Bo najlepsza inwestycja to inwestycja w siebie.', en:'Track your trades, emotions, goals and daily routine — all in one place. Because the best investment is investing in yourself.'},
+  'hero-cta':     {pl:'Zacznij za darmo →', en:'Get started free →'},
+  'hero-how':     {pl:'Jak to działa',     en:'How it works'},
+  'about-label':       {pl:'O nas', en:'About'},
+  'about-main-title':  {pl:'Zbudowany przez traderów,<br>dla traderów.', en:'Built by traders,<br>for traders.'},
+  'about-desc':        {pl:'lifebizJournal to więcej niż journal. To Twój codzienny coach, który pomaga utrzymać dyscyplinę, świadomość i wzrost.', en:'lifebizJournal is more than a journal. It is your daily coach, helping you maintain discipline, awareness and growth.'},
+  'about-p1':          {pl:'Większość traderów skupia się wyłącznie na rynku — zapominając, że <strong>to oni sami są zmienną</strong>. Twój stan emocjonalny, sen, rutyna i nastawienie mają ogromny wpływ na Twoje decyzje.', en:'Most traders focus only on the market — forgetting that <strong>they themselves are the variable</strong>. Your emotional state, sleep, routine and mindset have a huge impact on your decisions.'},
+  'about-p2':          {pl:'lifebizJournal powstał z jednej prostej obserwacji: <strong>najlepsi traderzy prowadzą dzienniki.</strong> Nie dlatego, że muszą — ale dlatego, że to działa. Widzą wzorce, uczą się na błędach i budują konsekwentne procesy.', en:'lifebizJournal was born from one simple observation: <strong>the best traders keep journals.</strong> Not because they have to — but because it works. They see patterns, learn from mistakes and build consistent processes.'},
+  'about-p3':          {pl:'Obecnie skupiamy się głównie na <strong>tradingu</strong> — dzienniku sesji, emocjach, dyscyplinie i wynikach. Jednak to dopiero początek.', en:'We currently focus mainly on <strong>trading</strong> — session journal, emotions, discipline and results. But this is just the beginning.'},
+  'how-label':    {pl:'Jak to działa',  en:'How it works'},
+  'how-title':    {pl:'Cztery kroki do świadomego tradingu.', en:'Four steps to conscious trading.'},
+  'how-step1-title': {pl:'Zacznij dzień z planem',   en:'Start the day with a plan'},
+  'how-step1-desc':  {pl:'Każde rano wypełniasz krótki check-in — jak śpisz, jaki masz poziom energii i co chcesz osiągnąć. Zero wymówek.', en:'Every morning fill in a quick check-in — how you slept, your energy level and what you want to achieve. No excuses.'},
+  'how-step2-title': {pl:'Loguj swoje trady',        en:'Log your trades'},
+  'how-step2-desc':  {pl:'Wpisuj setup, wynik, emocje przed i po. System analizuje wzorce i pokazuje Ci kiedy handlujesz najlepiej.', en:'Enter setup, result, emotions before and after. The system analyzes patterns and shows you when you trade best.'},
+  'how-step3-title': {pl:'Dbaj o siebie',            en:'Take care of yourself'},
+  'how-step3-desc':  {pl:'Śledź sport, sen i regenerację. Najlepsi traderzy wiedzą, że ciało i umysł to fundament wszystkich decyzji.', en:'Track sport, sleep and recovery. The best traders know that body and mind are the foundation of all decisions.'},
+  'how-step4-title': {pl:'Przeglądaj i rośnij',      en:'Review and grow'},
+  'how-step4-desc':  {pl:'Tygodniowe podsumowania, wykresy i wzorce. Widzisz co działa, co nie — i gdzie jest Twój edge.', en:'Weekly summaries, charts and patterns. See what works, what does not — and where your edge is.'},
+  'feat-label':   {pl:'Co znajdziesz w dashboardzie', en:'Inside the dashboard'},
+  'feat-title':   {pl:'Wszystko w jednym miejscu.',   en:'Everything in one place.'},
+  'feat-sub':     {pl:'Każda zakładka to jeden element Twojej rutyny — połącz je razem i miej pełny obraz swojego rozwoju.', en:'Each tab is one element of your routine — combine them and get a complete picture of your growth.'},
+  'price-label':  {pl:'Cennik',              en:'Pricing'},
+  'price-title':  {pl:'Jedna prosta oferta.', en:'One simple offer.'},
+  'price-sub':    {pl:'Bez ukrytych opłat, bez planów premium. Wszystko w jednej cenie.', en:'No hidden fees, no premium tiers. Everything at one price.'},
+  'price-badge':  {pl:'Pełny dostęp',        en:'Full access'},
+  'price-period': {pl:'/ miesiąc · anuluj kiedy chcesz', en:'/ month · cancel anytime'},
+  'price-cta':    {pl:'Zacznij teraz →',     en:'Start now →'},
+  'price-note':   {pl:'Bezpieczna płatność · Bez zobowiązań', en:'Secure payment · No commitment'},
+  'priv-label':   {pl:'Polityka prywatności',      en:'Privacy policy'},
+  'priv-title':   {pl:'Twoje dane,<br>Twoja własność.', en:'Your data,<br>your property.'},
+  'sup-label':    {pl:'Support', en:'Support'},
+  'sup-title':    {pl:'Masz pytania? Mamy odpowiedzi.', en:'Questions? We have answers.'},
+  'sup-contact-title': {pl:'Napisz do nas', en:'Contact us'},
+  'sup-contact-sub':   {pl:'Masz pytanie, sugestię lub bug report? Daj nam znać — naprawdę czytamy każdą wiadomość.', en:'Have a question, suggestion or bug report? Let us know — we read every message.'},
+  'sur-label': {pl:'Ankieta',    en:'Survey'},
+  'sur-title': {pl:'Pomóż nam budować lepszy produkt.', en:'Help us build a better product.'},
+  'sur-sub':   {pl:'Twoja opinia jest dla nas bezcenna. Zajmie to 2 minuty — obiecujemy.', en:'Your feedback is invaluable. It takes 2 minutes — we promise.'},
+  // ABOUT feature cards
+  'av1-label': {pl:'Codzienny journal',   en:'Daily journal'},
+  'av1-desc':  {pl:'Zapisuj myśli, emocje i plany każdego dnia', en:'Record your thoughts, emotions and plans every day'},
+  'av2-label': {pl:'Śledzenie tradów',    en:'Trade tracking'},
+  'av2-desc':  {pl:'Historia wpisów, P&L i analiza wzorców', en:'Entry history, P&L and pattern analysis'},
+  'av3-label': {pl:'Aktywność fizyczna',  en:'Physical activity'},
+  'av3-desc':  {pl:'Sport i regeneracja jako część procesu', en:'Sport and recovery as part of the process'},
+  'av4-label': {pl:'System celów',        en:'Goal system'},
+  'av4-desc':  {pl:'Codzienne rytuały, które budują dyscyplinę', en:'Daily rituals that build discipline'},
+  // About pills
+  'pill1': {pl:'🧠 Psychologia tradingu', en:'🧠 Trading psychology'},
+  'pill2': {pl:'📊 Analiza wyników',      en:'📊 Performance analysis'},
+  'pill3': {pl:'🏃 Zdrowy tryb życia',    en:'🏃 Healthy lifestyle'},
+  'pill4': {pl:'🎯 Zarządzanie celami',   en:'🎯 Goal management'},
+  // Feature cards
+  'f1-title': {pl:'Dashboard',          en:'Dashboard'},
+  'f1-desc':  {pl:'Widok główny z podsumowaniem dnia. Wynik Goalmaxxing, pasek postępu, streak, motywacyjny komunikat od AI Coacha i szybki podgląd dzisiejszych aktywności.', en:'Main view with daily summary. Goalmaxxing score, progress bar, streak, motivational AI Coach message and quick overview of today.'},
+  'f2-title': {pl:'Nowy wpis',          en:'New entry'},
+  'f3-title': {pl:'Goalmaxxing',        en:'Goalmaxxing'},
+  'f4-title': {pl:'Kalendarz & Historia', en:'Calendar & History'},
+  'f5-title': {pl:'Dzienny Status',     en:'Daily Status'},
+  'f6-title': {pl:'Trening + Strava',   en:'Workout + Strava'},
+  'f7-title': {pl:'Podsumowanie dnia',  en:'Day Summary'},
+  'f8-title': {pl:'AI Coach',           en:'AI Coach'},
+  // Pricing list
+  'pr1': {pl:'Trading Journal — pełna historia',  en:'Trading Journal — full history'},
+  'pr2': {pl:'Goalmaxxing — dzienne cele',         en:'Goalmaxxing — daily goals'},
+  'pr3': {pl:'Trening Log + integracja Strava',   en:'Workout Log + Strava integration'},
+  'pr4': {pl:'AI Coach — analiza i powiadomienia', en:'AI Coach — analysis and notifications'},
+  'pr5': {pl:'Podsumowanie dnia — AI raport',     en:'Day Summary — AI report'},
+  'pr6': {pl:'Statystyki, Kalendarz, Daily Status', en:'Stats, Calendar, Daily Status'},
+  'pr7': {pl:'Dwujęzyczny interfejs (PL/EN)',     en:'Bilingual interface (PL/EN)'},
+  // Privacy
+  'prv1-title': {pl:'📦 Co zbieramy',            en:'📦 What we collect'},
+  'prv2-title': {pl:'🔒 Jak przechowujemy dane', en:'🔒 How we store data'},
+  'prv3-title': {pl:'🤖 AI Coach i Strava',      en:'🤖 AI Coach and Strava'},
+  'prv4-title': {pl:'🗑️ Usuwanie konta',         en:'🗑️ Account deletion'},
+  'prv5-title': {pl:'📧 Kontakt',                en:'📧 Contact'},
+  // FEATURE descriptions
+  'f2-desc': {pl:'Trzy sekcje w jednym widoku — Dzień (nastrój, notatka), Trading (para, PNL, zasady, emocje, wykres) i Trening (typ, czas, intensywność, RPE). Wszystko w 2 minuty.', en:'Three sections in one view — Day (mood, note), Trading (pair, PNL, rules, emotions, chart) and Workout (type, duration, intensity, RPE). Done in 2 minutes.'},
+  'f3-desc': {pl:'Ustaw swoje dzienne nawyki i zaznaczaj je każdego dnia. System liczy wynik 0–100 pkt i buduje streak. Zmiana nazwy celu nie usuwa historii.', en:'Set your daily habits and check them off every day. The system calculates a 0–100 score and builds a streak. Renaming a goal does not erase history.'},
+  'f4-desc': {pl:'Pełna historia wpisów. Kliknij dowolny dzień i otworzysz szczegółowy raport — dane, notatki, wykres. Edytuj lub usuń wpis w jednym kliknięciu.', en:'Full entry history. Click any day to open a detailed report — data, notes, chart. Edit or delete in one click.'},
+  'f5-desc': {pl:'Historia Goalmaxxing punktów każdego dnia — wykres postępu, realizacja celów, streak perfekcyjnych dni. Widzisz czy naprawdę budujesz dyscyplinę czy tylko myślisz że budujesz.', en:'Goalmaxxing score history for every day — progress chart, goal completion, perfect day streaks. See if you are really building discipline or just think you are.'},
+  'f6-desc': {pl:'Loguj treningi ręcznie lub połącz konto Strava — aktywności wczytują się automatycznie. Dystans, tempo, tętno, przewyższenie. Rest Day też się liczy.', en:'Log workouts manually or connect your Strava account — activities load automatically. Distance, pace, heart rate, elevation. Rest Day counts too.'},
+  'f7-desc': {pl:'Lista wszystkich Twoich dni z wynikami. Kliknij dzień → AI generuje spersonalizowaną analizę — ocenia trading, trening i cele i daje konkretną radę na jutro.', en:'List of all your days with scores. Click a day and AI generates a personalized analysis — evaluates trading, workout and goals and gives a concrete tip for tomorrow.'},
+  'f8-desc': {pl:'Chat z AI który zna Twoje dane — ostatnie 7 dni tradingu, treningów i celów. Napisz o problemie, dostań konkretną odpowiedź. Plus automatyczne powiadomienia po każdym zapisanym wpisie.', en:'Chat with AI that knows your data — last 7 days of trading, workouts and goals. Describe your problem, get a concrete answer. Plus automatic notifications after every saved entry.'},
+  // PRIVACY descriptions
+  'prv1-desc': {pl:'Zbieramy tylko dane które sam wprowadzasz — wpisy tradingowe, treningowe, notatki i cele. Do logowania używamy Supabase (email + hasło). Nie zbieramy danych o Twoim urządzeniu, zachowaniu na stronie ani nie sprzedajemy żadnych danych.', en:'We only collect data you enter yourself — trading entries, workout logs, notes and goals. We use Supabase for login (email + password). We do not collect device data or browsing behavior, and we never sell your data.'},
+  'prv2-desc': {pl:'Dane są przechowywane w Supabase — europejska infrastruktura, szyfrowanie w spoczynku i w tranzycie. Dane lokalne (cele, ustawienia) są przechowywane w Twoim localStorage i nie opuszczają Twojej przeglądarki.', en:'Data is stored in Supabase — European infrastructure, encrypted at rest and in transit. Local data (goals, settings) is stored in your localStorage and never leaves your browser.'},
+  'prv3-desc': {pl:'AI Coach używa Anthropic API — Twoje dane są wysyłane do analizy ale nie są używane do trenowania modeli. Integracja Strava działa na zasadzie OAuth — możesz ją odłączyć w każdej chwili z poziomu dashboardu.', en:'AI Coach uses the Anthropic API — your data is sent for analysis but is not used to train models. Strava integration works via OAuth — you can disconnect it anytime from the dashboard.'},
+  'prv4-desc': {pl:'Możesz usunąć swoje konto i wszystkie dane w dowolnym momencie kontaktując się z nami przez email. Dane zostaną trwale usunięte w ciągu 7 dni roboczych.', en:'You can delete your account and all data at any time by contacting us via email. Data will be permanently deleted within 7 business days.'},
+  // SUPPORT form
+  'sup-name':    {pl:'Imię',       en:'Name'},
+  'sup-email':   {pl:'Email',      en:'Email'},
+  'sup-msg':     {pl:'Wiadomość',  en:'Message'},
+  'sup-name-ph': {pl:'Twoje imię', en:'Your name'},
+  'sup-email-ph':{pl:'twoj@email.com', en:'your@email.com'},
+  'sup-msg-ph':  {pl:'Opisz swoje pytanie lub problem...', en:'Describe your question or problem...'},
+  'sup-send':    {pl:'Wyślij wiadomość →', en:'Send message →'},
+  // FAQ
+  'faq1-q': {pl:'Czy lifebizJournal jest darmowy?',        en:'Is lifebizJournal free?'},
+  'faq2-q': {pl:'Na jakich rynkach mogę handlować?',       en:'Which markets can I trade?'},
+  'faq3-q': {pl:'Czy moje dane są bezpieczne?',            en:'Is my data secure?'},
+  'faq4-q': {pl:'Czy będą inne moduły poza tradingiem?',   en:'Will there be modules beyond trading?'},
+  'faq5-q': {pl:'Jak skontaktować się z supportem?',       en:'How do I contact support?'},
+  // SURVEY
+  'sq1':     {pl:'1 / 5 — Jak długo traderujesz?', en:'1 / 5 — How long have you been trading?'},
+  'sq-next': {pl:'Dalej →', en:'Next →'},
+  'sq-back':   {pl:'← Wstecz',          en:'← Back'},
+  'sq-submit': {pl:'Wyślij 🚀',          en:'Submit 🚀'},
+  'sq-thanks': {pl:'Dzięki za Twoją opinię!', en:'Thank you for your feedback!'},
+  'sq-thanks-sub': {pl:'Twoje odpowiedzi pomogą nam zbudować narzędzie które naprawdę spełni Twoje potrzeby. Dajemy z siebie 110%.', en:'Your answers will help us build a tool that truly meets your needs. We give 110%.'},
+  'sq-join':   {pl:'Dołącz teraz →',    en:'Join now →'},
+  // SURVEY options
+  'sq1-opt3b': {pl:'3-5 lat', en:'3-5 years'},
+  // Q2
+  'sq2': {pl:'2 / 5 — Na jakim rynku głównie handlujesz?', en:'2 / 5 — Which market do you mainly trade?'},
+  'sq2-opt1': {pl:'Futures / Kontrakty', en:'Futures / Contracts'},
+  'sq2-opt2': {pl:'Forex', en:'Forex'},
+  'sq2-opt3': {pl:'Krypto', en:'Crypto'},
+  'sq2-opt4': {pl:'Akcje / Opcje', en:'Stocks / Options'},
+  // Q3
+  'sq3': {pl:'3 / 5 — Co jest dla Ciebie największym wyzwaniem?', en:'3 / 5 — What is your biggest challenge?'},
+  'sq3-opt1': {pl:'Dyscyplina i trzymanie się planu', en:'Discipline and sticking to the plan'},
+  'sq3-opt2': {pl:'Zarządzanie emocjami podczas tradów', en:'Managing emotions during trades'},
+  'sq3-opt3': {pl:'Analiza błędów i nauka z nich', en:'Analyzing mistakes and learning from them'},
+  'sq3-opt4': {pl:'Konsekwentna rutyna i work-life balance', en:'Consistent routine and work-life balance'},
+  // Q4
+  'sq4': {pl:'4 / 5 — Czy aktywność fizyczna jest częścią Twojej rutyny?', en:'4 / 5 — Is physical activity part of your routine?'},
+  'sq4-opt1': {pl:'Tak, regularnie (4+ razy w tygodniu)', en:'Yes, regularly (4+ times a week)'},
+  'sq4-opt2': {pl:'Czasami (1-3 razy)', en:'Sometimes (1-3 times)'},
+  'sq4-opt3': {pl:'Rzadko, ale chcę to zmienić', en:'Rarely, but I want to change that'},
+  'sq4-opt4': {pl:'Nie — trading to mój sport 😅', en:'No — trading is my sport 😅'},
+  // Q5
+  'sq5': {pl:'5 / 5 — Czego najbardziej oczekujesz od lifebizJournal?', en:'5 / 5 — What do you expect most from lifebizJournal?'},
+  'sq5-opt1': {pl:'Lepsza analiza moich tradów', en:'Better analysis of my trades'},
+  'sq5-opt2': {pl:'System nawyków i rutyna', en:'Habit system and routine'},
+  'sq5-opt3': {pl:'Śledzenie emocji i psychologii', en:'Tracking emotions and psychology'},
+  'sq5-opt4': {pl:'Holistyczny widok: trading + życie', en:'Holistic view: trading + life'},
+  'sq1-opt1': {pl:'Dopiero zaczynam (0-6 miesięcy)', en:'Just starting out (0-6 months)'},
+  'sq1-opt2': {pl:'Ponad rok',                       en:'Over a year'},
+  'sq1-opt3': {pl:'3–5 lat',                         en:'3–5 years'},
+  'sq1-opt4': {pl:'Powyżej 5 lat — weteran 🧙',      en:'Over 5 years — veteran 🧙'},
+  // FAQ answers
+  'faq1-a': {pl:'Dostęp do lifebizJournal kosztuje $10 miesięcznie — jedna prosta oferta, bez ukrytych planów. Anuluj kiedy chcesz.', en:'Access to lifebizJournal costs $10 per month — one simple offer, no hidden plans. Cancel anytime.'},
+  'faq2-a': {pl:'lifebizJournal jest agnostyczny względem rynku — możesz logować trady na Forex, futures, crypto, akcjach i opcjach. Ważne są Twoje dane, nie broker.', en:'lifebizJournal is market-agnostic — you can log trades on Forex, futures, crypto, stocks and options. Your data matters, not the broker.'},
+  'faq3-a': {pl:'Absolutnie. Dane są szyfrowane i przechowywane lokalnie w Twojej przeglądarce. Nie sprzedajemy ani nie udostępniamy żadnych danych osobom trzecim.', en:'Absolutely. Data is encrypted and stored locally in your browser. We never sell or share your data with third parties.'},
+  'faq4-a': {pl:'Tak! Planujemy rozszerzenie dla innych przedsiębiorców — e-commerce, freelancerów, startupowców. Na razie skupiamy się na dopieszczeniu modułu tradingowego.', en:'Yes! We plan to expand for other entrepreneurs — e-commerce, freelancers, startup founders. For now we focus on perfecting the trading module.'},
+  'faq5-a': {pl:'Napisz do nas przez formularz obok lub wyślij email na support@lifebizjournal.app. Odpowiadamy zazwyczaj w ciągu 24h.', en:'Write to us via the form or send an email to support@lifebizjournal.app. We usually reply within 24h.'},
+  'footer-tagline': {pl:'Buduj siebie jako tradera. Codziennie.', en:'Build yourself as a trader. Every day.'},
+  'footer-copy':    {pl:'© 2026 lifebizJournal', en:'© 2026 lifebizJournal'},
+};
+
+var USD_RATE = null;
+
+async function fetchUsdRate(){
+  try{
+    var res = await fetch('https://api.frankfurter.app/latest?from=PLN&to=USD');
+    var data = await res.json();
+    if(data.rates && data.rates.USD){
+      USD_RATE = data.rates.USD; // PLN→USD rate
+    }
+  }catch(e){
+    // fallback rate
+    USD_RATE = 0.25;
+  }
+}
+
+function getPriceDisplay(lang){
+  // Always show $10/mo
+  return '<span style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:54px;font-weight:700;line-height:1;color:var(--text)">$10</span><span style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:22px;color:var(--muted);font-weight:500;margin-left:3px">/mo</span>';
+}
+
+function setLandingLang(lang){
+  document.documentElement.dataset.lang = lang;
+  localStorage.setItem('landing_lang', lang);
+
+  // Update flag opacity
+  var plBtn = document.getElementById('lang-pl-btn');
+  var enBtn = document.getElementById('lang-en-btn');
+  if(plBtn) plBtn.style.opacity = lang === 'pl' ? '1' : '.4';
+  if(enBtn) enBtn.style.opacity = lang === 'en' ? '1' : '.4';
+
+  // Translate all elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.dataset.i18n;
+    if(LANDING_TRANSLATIONS[key] && LANDING_TRANSLATIONS[key][lang]){
+      el.innerHTML = LANDING_TRANSLATIONS[key][lang];
+    }
+  });
+  // Translate placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    var key = el.dataset.i18nPlaceholder;
+    if(LANDING_TRANSLATIONS[key] && LANDING_TRANSLATIONS[key][lang]){
+      el.placeholder = LANDING_TRANSLATIONS[key][lang];
+    }
+  });
+
+  // Update price
+  var priceEl = document.getElementById('landing-price');
+  if(priceEl) priceEl.innerHTML = getPriceDisplay(lang);
+
+  // Update nav CTA buttons
+  var loginBtn = document.querySelector('.btn-ghost');
+  var signupBtn = document.querySelector('.btn-gold');
+  if(loginBtn) loginBtn.textContent = lang === 'en' ? 'Log in' : 'Zaloguj się';
+  if(signupBtn) signupBtn.textContent = lang === 'en' ? 'Sign up' : 'Zarejestruj się';
+
+  // Update hero CTA
+  var heroCta = document.querySelector('.btn-hero.primary');
+  if(heroCta) heroCta.textContent = lang === 'en' ? 'Get started free →' : 'Zacznij za darmo →';
+  var heroHow = document.querySelector('.btn-hero.secondary');
+  if(heroHow) heroHow.textContent = lang === 'en' ? 'How it works' : 'Jak to działa';
+}
+
+// Init on load
+document.addEventListener('DOMContentLoaded', function(){
+  var saved = localStorage.getItem('landing_lang') || 'pl';
+  setLandingLang(saved);
+  // Fetch USD rate in background, then update price if EN
+  fetchUsdRate().then(function(){
+    if((localStorage.getItem('landing_lang')||'pl') === 'en'){
+      var priceEl = document.getElementById('landing-price');
+      if(priceEl) priceEl.innerHTML = getPriceDisplay('en');
+    }
+  });
+});
+
 </script>
 </body>
 </html>
