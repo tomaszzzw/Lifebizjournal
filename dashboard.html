@@ -271,13 +271,13 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
       <h1 id="user-nick" onclick="editNick()" title="Kliknij aby zmienić" style="cursor:pointer">Tom Dashboard</h1>
       <p id="side-subtitle">Tworzymy lepszych traderów</p>
     </div>
-    <div class="status-pill"><span>Rising mode</span><span class="dot"></span></div>
     <nav class="nav">
       <button class="active" data-view="dash" data-i18n="nav_dash">🏠 Dashboard</button>
       <button data-view="log" data-i18n="nav_new">✏️ Nowy wpis</button>
       <button data-view="history" data-i18n="nav_history">📖 Historia</button>
       <button data-view="calendar" data-i18n="nav_cal">📅 Kalendarz</button>
       <button data-view="stats" data-i18n="nav_stats">📊 Statystyki</button>
+      <button onclick="window.setView('weekly');setTimeout(renderWeeklyStats,1200);" data-view="weekly" data-i18n="nav_weekly">📅 Weekly</button>
       <button data-view="connect" data-i18n="nav_train">🏃 Trening</button>
       <button data-view="dailystatus" data-i18n="nav_daily">📈 Dzienny Status</button>
       <button data-view="summary" data-i18n="nav_summary">📝 Podsumowanie dnia</button>
@@ -434,6 +434,14 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
       </div>
     </section>
 
+    <section class="view" id="view-weekly">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head"><div><div class="title" id="weekly-title">Tygodniowe statystyki</div><div class="sub" id="weekly-sub">Trading tego tygodnia</div></div><div style="display:flex;gap:8px"><button onclick="weeklyMove(-1)" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;color:var(--muted);cursor:pointer">&#8249;</button><span id="weekly-label" style="font-size:12px;color:var(--muted);min-width:120px;text-align:center"></span><button onclick="weeklyMove(1)" id="weekly-next-btn" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;color:var(--muted);cursor:pointer">&#8250;</button></div></div>
+        <div id="weekly-metrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:16px 0"></div>
+        <div id="weekly-days"></div>
+      </div>
+    </section>
+
     <section class="view" id="view-stats">
       <div class="grid">
         <div class="card"><div class="title" id="title-trading-stats">Trading stats</div><div class="metrics" style="margin-top:12px"><div class="metric"><b id="sPnl">$0</b><span>Total PNL</span></div><div class="metric"><b id="sWr">0%</b><span>Win rate</span></div><div class="metric"><b id="sTrades">0</b><span id="lbl-sesje">Sesje</span></div><div class="metric"><b id="sBad">0</b><span id="lbl-zlam">Złamane zasady</span></div><div class="metric"><b id="sAvgRr">-</b><span>Avg RR</span></div></div></div>
@@ -569,6 +577,9 @@ async function sbSyncFromServer() {
       });
     }
   } catch(e) { console.log('Supabase sync error:', e); }
+  // Re-render weekly if on that view
+  var wv = document.getElementById('view-weekly');
+  if(wv && wv.classList.contains('active') && typeof renderWeeklyStats === 'function') renderWeeklyStats();
 }
 
 function pnlClass(n){n=parseFloat(n);return !n?'zero':n>0?'pos':'neg'}
@@ -589,7 +600,7 @@ function setView(v){
   }
   $$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));
   $$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
-  if(v==='history')renderHistory();if(v==='stats')renderStats();if(v==='calendar')renderCalendar();if(v==='connect')loadStravaActivities();renderDash();
+  if(v==='history')renderHistory();if(v==='stats')renderStats();if(v==='weekly'){renderWeeklyStats();}if(v==='calendar')renderCalendar();if(v==='connect')loadStravaActivities();renderDash();
 }
 function setTab(t){$$('.form-panel').forEach(x=>x.classList.toggle('active',x.id==='tab-'+t));$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t))}
 $$('.nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
@@ -1133,6 +1144,7 @@ window.setView=function(v){
   if(v==='dailystatus')renderDailyStatus();
   if(v==='coach')initCoachChat();
   if(v==='summary')renderSummaryList();
+  if(v==='weekly'){renderWeeklyStats();setTimeout(renderWeeklyStats,1500);}
 };
 $$('.nav button').forEach(b=>b.onclick=()=>window.setView(b.dataset.view));
 
@@ -1176,7 +1188,7 @@ function toggleTheme(){
 /* ── LANGUAGE ── */
 const TRANSLATIONS = {
   pl: {
-    nav_dash:'🏠 Dashboard', nav_new:'✏️ Nowy wpis', nav_history:'📖 Historia', nav_cal:'📅 Kalendarz', nav_stats:'📊 Statystyki',
+    nav_dash:'🏠 Dashboard', nav_new:'✏️ Nowy wpis', nav_history:'📖 Historia', nav_cal:'📅 Kalendarz', nav_stats:'📊 Statystyki', nav_weekly:'📅 Tygodniowe staty',
     nav_train:'🏃 Trening', nav_daily:'📈 Dzienny Status', nav_summary:'📝 Podsumowanie dnia', nav_coach:'🤖 AI Coach',
     tab_day:'Dzień', tab_trade:'Trading', tab_workout:'Trening', tab_tomorrow:'Plan jutro',
     coach_title_default:'Log the session, then move.',
@@ -1191,7 +1203,7 @@ const TRANSLATIONS = {
     btn_saveday:'Zapisz dzień',
   },
   en: {
-    nav_dash:'🏠 Dashboard', nav_new:'✏️ New entry', nav_history:'📖 History', nav_cal:'📅 Calendar', nav_stats:'📊 Statistics',
+    nav_dash:'🏠 Dashboard', nav_new:'✏️ New entry', nav_history:'📖 History', nav_cal:'📅 Calendar', nav_stats:'📊 Statistics', nav_weekly:'📅 Weekly Stats',
     nav_train:'🏃 Training', nav_daily:'📈 Daily Status', nav_summary:'📝 Summary', nav_coach:'🤖 AI Coach',
     tab_day:'Day', tab_trade:'Trading', tab_workout:'Workout', tab_tomorrow:'Plan tomorrow',
     coach_title_default:'Log the session, then move.',
@@ -1213,8 +1225,8 @@ function setLang(lang){
   var t=TRANSLATIONS[lang];
   // Nav
   var navBtns=document.querySelectorAll('.nav button[data-view]');
-  var navKeys=['nav_dash','nav_new','nav_history','nav_cal','nav_stats','nav_train','nav_daily','nav_summary','nav_coach'];
-  navBtns.forEach(function(b,i){if(navKeys[i]&&t[navKeys[i]])b.textContent=t[navKeys[i]];});
+  var navKeys=['nav_dash','nav_new','nav_history','nav_cal','nav_stats','nav_weekly','nav_train','nav_daily','nav_summary','nav_coach'];
+  navBtns.forEach(function(b){var k=b.dataset.i18n;if(k&&t[k])b.textContent=t[k];});
   // Tabs
   var tabs=document.querySelectorAll('.tab[data-tab]');
   var tabKeys=['tab_day','tab_trade','tab_workout'];
@@ -1345,6 +1357,9 @@ function setLang(lang){
   var baw=document.getElementById('btn-add-workout');if(baw)baw.title=lang==='en'?'Add workout':'Dodaj trening';
   // Re-render Strava area button (text changes with lang)
   renderStravaLinkArea();
+  // Always update weekly title regardless of view
+  var _wt=document.getElementById('weekly-title');if(_wt)_wt.textContent=lang==='en'?'Weekly Stats':'Tygodniowe statystyki';
+  var _ws=document.getElementById('weekly-sub');if(_ws)_ws.textContent=lang==='en'?'Trading this week':'Trading tego tygodnia';
   // sf form labels
   var sft=document.getElementById('sf-title');
   // Only update if form is not in edit mode
@@ -2132,7 +2147,7 @@ function boot(){
   var nickEl=document.getElementById('user-nick');
   if(nickEl&&savedNick)nickEl.textContent=savedNick;
   loadCustomEmotions();loadCustomWorkoutTypes();loadCustomFeelings();loadCriteria();
-  setDefaultDates();renderGoals();renderDash();renderStats();renderCalendar();toggleWorkoutExtra();renderStravaLinkArea();var _bl=localStorage.getItem('app_lang')||'pl';setLang(_bl);}
+  setDefaultDates();renderGoals();renderDash();renderStats();renderCalendar();toggleWorkoutExtra();renderStravaLinkArea();var _bl=localStorage.getItem('app_lang')||'pl';setLang(_bl);renderWeeklyStats();}
 async function startApp(){await sbSyncFromServer();boot();}startApp();
 </script>
 <script>
@@ -2675,6 +2690,110 @@ async function sendCoachMessage(){
   }
   if(btn){btn.disabled=false;btn.textContent=isEn?'Send ↑':'Wyślij ↑';}
 }
+
+
+var _wOff=0;
+function weeklyMove(d){_wOff+=d;var b=document.getElementById('weekly-next-btn');if(b)b.style.opacity=_wOff>=0?'0.3':'1';renderWeeklyStats();}
+function renderWeeklyStats(){
+  var isEn=localStorage.getItem('app_lang')==='en';
+  var now=new Date(),dow=now.getDay();
+  var mon=new Date(now);mon.setDate(now.getDate()-((dow+6)%7)+_wOff*7);mon.setHours(0,0,0,0);
+  var sun=new Date(mon);sun.setDate(mon.getDate()+6);sun.setHours(23,59,59,999);
+  // Update title - always in correct language
+  var wt=document.getElementById('weekly-title');if(wt)wt.textContent=isEn?'Weekly Stats':'Tygodniowe statystyki';
+  var ws2=document.getElementById('weekly-sub');if(ws2)ws2.textContent=isEn?'Trading this week':'Trading tego tygodnia';
+  // Update week label
+  var lbl=document.getElementById('weekly-label');
+  if(lbl){
+    if(_wOff===0){lbl.textContent=isEn?'This week':'Ten tydzień';}
+    else{lbl.textContent=mon.toLocaleDateString(isEn?'en-GB':'pl-PL',{day:'numeric',month:'short'})+' – '+sun.toLocaleDateString(isEn?'en-GB':'pl-PL',{day:'numeric',month:'short'});}
+  }
+  // Collect ALL trading keys and filter by date
+  var allKeys=keys('journal_trading_');
+  var pnl=0,wins=0,losses=0,trades=0,rrsum=0,rrcnt=0,days=[];
+  allKeys.forEach(function(k){
+    var ds=k.replace('journal_trading_','');
+    var dd=new Date(ds+'T00:00:00');
+    if(isNaN(dd.getTime()))return;
+    if(dd<mon||dd>sun)return;
+    var x=load(k);if(!x)return;
+    var n=parseFloat(x.pnl);
+    if(!isNaN(n)){pnl+=n;trades++;if(n>0)wins++;else if(n<0)losses++;}
+    if(x.rr){var rp=String(x.rr).split(':');var rv=rp.length>1?parseFloat(rp[1]):parseFloat(rp[0]);if(!isNaN(rv)&&rv>0){rrsum+=rv;rrcnt++;}}
+    days.push({ds:ds,x:x,n:n});
+  });
+  // Show count of all keys for debugging
+  var mel=document.getElementById('weekly-metrics');
+  if(mel&&allKeys.length===0){
+    mel.innerHTML='<div style="color:var(--muted);font-size:12px;padding:8px">'+
+      (isEn?'No trading data found in storage.':'Brak danych tradingowych w pamięci.')+
+    '</div>';
+  }
+  days.sort(function(a,b){return b.ds>a.ds?1:-1;});
+  var wr=(wins+losses)?Math.round(wins/(wins+losses)*100):0;
+  var avgRr=rrcnt?'1:'+(rrsum/rrcnt).toFixed(1):'-';
+  var pnlColor=pnl>=0?'#63e18e':'#ff726d';
+  var wrColor=wr>=60?'#63e18e':wr>=40?'#f0c040':'#ff726d';
+  // Render metrics
+  var mel=document.getElementById('weekly-metrics');
+  if(mel){
+    var metrics=[
+      {v:fmtPnl(pnl), l:isEn?'PNL this week':'PNL tygodnia', c:pnlColor},
+      {v:wr+'%',       l:isEn?'Win rate':'Win rate',           c:wrColor},
+      {v:trades,       l:isEn?'Positions':'Pozycji',           c:'var(--text)'},
+      {v:wins,         l:isEn?'Won':'Wygranych',               c:'#63e18e'},
+      {v:losses,       l:isEn?'Lost':'Przegranych',            c:losses>0?'#ff726d':'var(--muted)'},
+      {v:avgRr,        l:isEn?'Avg RR':'Śr. RR',              c:'var(--text)'},
+    ];
+    mel.innerHTML=metrics.map(function(m){
+      return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;text-align:center">'
+        +'<div style="font-size:24px;font-weight:800;color:'+m.c+';margin-bottom:6px">'+m.v+'</div>'
+        +'<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">'+m.l+'</div>'
+      +'</div>';
+    }).join('');
+  }
+  // Render day list
+  var del=document.getElementById('weekly-days');
+  if(del){
+    if(!days.length){
+      del.innerHTML='<div style="color:var(--muted);text-align:center;padding:32px 0;font-size:13px">'+(isEn?'No trades this week.':'Brak tradów w tym tygodniu.')+'</div>';
+    } else {
+      del.innerHTML='<div style="border-top:1px solid var(--line);margin-top:12px">'+days.map(function(row){
+        var x=row.x,n=row.n;
+        var ps=!isNaN(n)?fmtPnl(n):'-';
+        var pc=!isNaN(n)&&n>0?'#63e18e':!isNaN(n)&&n<0?'#ff726d':'var(--muted)';
+        var rs=x.rules==='tak'?(isEn?'Rules ok':'Zasady ok'):x.rules==='nie'?(isEn?'Rules broken':'Zasady złamane'):'';
+        var rc=x.rules==='tak'?'#63e18e':'#ff726d';
+        return '<div class="trade-row" onclick="openHistoryDetail(''+row.ds+'')" style="cursor:pointer">'
+          +'<strong>'+fmt(row.ds)+'</strong>'
+          +'<div><b>'+esc(x.pair||'Trade')+'</b>'+(x.rr?'<br><small>RR '+x.rr+'</small>':'')+'</div>'
+          +'<div style="display:flex;gap:8px;align-items:center">'
+            +(rs?'<span style="font-size:11px;color:'+rc+'">'+rs+'</span>':'')
+            +'<span style="color:'+pc+'">'+ps+'</span>'
+          +'</div>'
+        +'</div>';
+      }).join('')+'</div>';
+    }
+  }
+}
+
+// MutationObserver — fires renderWeeklyStats when weekly tab becomes active
+(function(){
+  function tryObserve(){
+    var target=document.getElementById('view-weekly');
+    if(!target){setTimeout(tryObserve,200);return;}
+    new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        if(m.attributeName==='class'&&target.classList.contains('active')){
+          renderWeeklyStats();
+          setTimeout(renderWeeklyStats,1000);
+        }
+      });
+    }).observe(target,{attributes:true});
+  }
+  tryObserve();
+})();
+
 
 </script>
 
