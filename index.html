@@ -1,504 +1,468 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>flojournal</title>
+<title>flojournal — build yourself as a trader</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#11110f;
-  --panel:#191714;
-  --panel2:#211d18;
-  --panel3:#2a241d;
-  --line:#383029;
-  --line2:#4b4137;
-  --text:#f4efe7;
-  --muted:#9f9487;
-  --soft:#6e6257;
-  --gold:#d69a53;
-  --gold2:#f0c47d;
-  --green:#a5d66f;
-  --red:#ef7a68;
-  --blue:#74b7e8;
-  --purple:#c3a7ff;
-  --radius:10px;
+  --bg:#0e0d0b;
+  --surface:#161410;
+  --surface2:#1c1a16;
+  --border:rgba(255,255,255,.07);
+  --border2:rgba(255,255,255,.12);
+  --text:#f0ebe2;
+  --muted:#7a7060;
+  --soft:#4e4840;
+  --gold:#c8843a;
+  --gold2:#e8a84e;
+  --gold3:#f5c878;
+  --green:#7ab648;
+  --red:#d95f4b;
+  --r:6px;
 }
-html{scroll-behavior:smooth;background:#11110f}
+html{scroll-behavior:smooth;background:var(--bg)}
 body{
   color:var(--text);
-  font-family:'Plus Jakarta Sans',sans-serif;
+  font-family:'DM Sans',sans-serif;
   font-size:15px;
   line-height:1.6;
-  background:radial-gradient(circle at 20% 0%,#2e1f0e 0,#151412 30%,#0d0d0c 70%);
+  background:var(--bg);
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
-h1,h2,h3,h4{font-family:'Fraunces',serif;letter-spacing:-.02em}
 
-/* ─── NAV ─── */
+/* ── NOISE TEXTURE ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.5;
+}
+
+/* ── NAV ── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 40px;height:62px;
-  background:rgba(17,17,15,.82);
-  border-bottom:1px solid rgba(56,48,41,.6);
-  backdrop-filter:blur(20px);
+  padding:0 48px;height:58px;
+  border-bottom:1px solid var(--border);
+  background:rgba(14,13,11,.85);
+  backdrop-filter:blur(24px);
 }
-.logo{font-family:'Fraunces',serif;font-weight:800;font-size:19px;color:var(--gold2);letter-spacing:-.03em}
-.logo span{color:var(--muted);font-weight:400}
-.nav-links{display:flex;align-items:center;gap:6px}
+.logo{
+  font-family:'DM Serif Display',serif;
+  font-size:18px;color:var(--gold3);
+  letter-spacing:-.01em;
+}
+.logo span{color:var(--muted);font-style:italic}
+.nav-links{display:flex;align-items:center;gap:2px}
 .nav-links a{
-  color:var(--muted);font-size:13px;font-weight:500;
-  text-decoration:none;padding:7px 14px;border-radius:999px;
-  transition:.18s;
+  color:var(--muted);font-size:13px;font-weight:400;
+  text-decoration:none;padding:6px 12px;border-radius:var(--r);
+  transition:color .15s;letter-spacing:.01em;
 }
-.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06)}
-.nav-cta{
-  display:flex;gap:10px;align-items:center;
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;gap:8px;align-items:center}
+.nav-flags{display:flex;gap:4px}
+.nav-flags button{
+  background:none;border:none;cursor:pointer;
+  font-size:16px;opacity:.4;transition:opacity .15s;padding:4px;border-radius:4px;
 }
+.nav-flags button.active{opacity:1}
 .btn-ghost{
-  height:36px;padding:0 18px;border:1px solid var(--line2);
-  border-radius:999px;background:transparent;color:var(--muted);
-  font-size:13px;font-family:inherit;cursor:pointer;transition:.18s;
+  height:34px;padding:0 16px;border:1px solid var(--border2);
+  border-radius:var(--r);background:transparent;color:var(--muted);
+  font-size:13px;font-family:inherit;cursor:pointer;transition:.15s;letter-spacing:.01em;
 }
-.btn-ghost:hover{color:var(--text);border-color:rgba(240,196,125,.4)}
+.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
 .btn-gold{
-  height:36px;padding:0 20px;
-  background:linear-gradient(135deg,var(--gold),#c87d2f);
-  border:none;border-radius:999px;color:#11110f;
-  font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;
-  transition:.2s;box-shadow:0 4px 24px rgba(214,154,83,.3);
+  height:34px;padding:0 18px;
+  background:var(--gold);
+  border:none;border-radius:var(--r);color:#0e0d0b;
+  font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;
+  transition:.15s;letter-spacing:.01em;
 }
-.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 30px rgba(214,154,83,.45)}
+.btn-gold:hover{background:var(--gold2)}
 
-/* ─── HERO ─── */
+/* ── HERO ── */
 .hero{
-  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:100px 40px 80px;text-align:center;position:relative;overflow:hidden;
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:120px 40px 80px;
+  text-align:center;
+  position:relative;
 }
-.hero::before{
-  content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);
-  width:800px;height:800px;
-  background:radial-gradient(circle,rgba(214,154,83,.08) 0,transparent 70%);
-  pointer-events:none;
-}
-.hero::after{
-  content:'';position:absolute;bottom:-100px;right:-100px;
-  width:500px;height:500px;
-  background:radial-gradient(circle,rgba(165,214,111,.05) 0,transparent 70%);
+.hero-glow{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:600px;height:400px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(200,132,58,.07) 0,transparent 70%);
   pointer-events:none;
 }
 .hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  border:1px solid rgba(214,154,83,.3);background:rgba(214,154,83,.08);
-  border-radius:999px;padding:6px 16px;font-size:12px;color:var(--gold2);
-  font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:28px;
-  animation:fadeUp .6s ease both;
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--border2);background:rgba(255,255,255,.04);
+  border-radius:999px;padding:5px 14px;
+  font-size:11px;color:var(--muted);font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:36px;
+  animation:up .6s ease both;
 }
 .dot-live{
-  width:7px;height:7px;border-radius:50%;background:var(--green);
-  box-shadow:0 0 12px var(--green);animation:pulse 2s infinite;
+  width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;
 }
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .hero h1{
-  font-size:clamp(42px,7vw,88px);font-weight:800;line-height:1.0;
-  margin-bottom:24px;animation:fadeUp .7s .1s ease both;
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(44px,7vw,90px);font-weight:400;line-height:1.02;
+  letter-spacing:-.02em;margin-bottom:28px;
+  animation:up .65s .08s ease both;
 }
 .hero h1 em{
-  font-style:normal;
-  background:linear-gradient(135deg,var(--gold2),var(--gold),#c87d2f);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-style:italic;
+  color:var(--gold3);
 }
 .hero-sub{
-  max-width:560px;color:var(--muted);font-size:17px;line-height:1.7;
-  margin-bottom:40px;animation:fadeUp .7s .2s ease both;
+  max-width:480px;color:var(--muted);font-size:16px;line-height:1.75;font-weight:300;
+  margin:0 auto 44px;animation:up .7s .16s ease both;
 }
-.hero-buttons{display:flex;gap:14px;justify-content:center;animation:fadeUp .7s .3s ease both}
+.hero-buttons{
+  display:flex;gap:12px;justify-content:center;
+  animation:up .7s .24s ease both;
+}
 .btn-hero{
-  height:50px;padding:0 32px;border-radius:999px;font-size:15px;font-weight:600;
-  font-family:inherit;cursor:pointer;transition:.2s;
+  height:48px;padding:0 28px;border-radius:var(--r);
+  font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;transition:.18s;
+  letter-spacing:.01em;
 }
 .btn-hero.primary{
-  background:linear-gradient(135deg,var(--gold2),var(--gold));
-  border:none;color:#11110f;
-  box-shadow:0 6px 32px rgba(214,154,83,.4);
+  background:var(--gold);border:none;color:#0e0d0b;
 }
-.btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(214,154,83,.5)}
+.btn-hero.primary:hover{background:var(--gold2)}
 .btn-hero.secondary{
-  background:rgba(255,255,255,.055);border:1px solid var(--line2);color:var(--text);
+  background:transparent;border:1px solid var(--border2);color:var(--muted);
 }
-.btn-hero.secondary:hover{background:rgba(255,255,255,.09);border-color:rgba(240,196,125,.4)}
+.btn-hero.secondary:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+
+/* hero stats */
 .hero-stats{
-  display:flex;gap:40px;margin-top:64px;justify-content:center;
-  animation:fadeUp .7s .4s ease both;
+  display:flex;align-items:center;gap:0;margin-top:72px;
+  animation:up .7s .32s ease both;
+  border:1px solid var(--border);border-radius:var(--r);
+  background:var(--surface);overflow:hidden;
 }
-.stat{text-align:center}
-.stat-num{font-family:'Fraunces',serif;font-size:28px;font-weight:800;color:var(--text)}
-.stat-label{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
-.stat-sep{width:1px;background:var(--line);align-self:stretch}
+.hstat{padding:18px 32px;text-align:center}
+.hstat+.hstat{border-left:1px solid var(--border)}
+.hstat-num{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text)}
+.hstat-lbl{font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:2px}
 
 /* dashboard preview */
-.preview-wrap{
-  position:relative;margin-top:72px;width:100%;max-width:1020px;
-  animation:fadeUp .8s .5s ease both;
+.preview{
+  width:100%;max-width:900px;margin:72px auto 0;
+  position:relative;animation:up .8s .4s ease both;
 }
 .preview-glow{
-  position:absolute;inset:-40px;
-  background:radial-gradient(ellipse,rgba(214,154,83,.1) 0,transparent 70%);
-  pointer-events:none;border-radius:24px;
+  position:absolute;inset:-60px;
+  background:radial-gradient(ellipse,rgba(200,132,58,.06) 0,transparent 65%);
+  pointer-events:none;
 }
 .preview-frame{
-  background:#11110f;
-  border:1px solid var(--line2);border-radius:16px;
-  overflow:hidden;box-shadow:0 50px 140px rgba(0,0,0,.8);
-  /* subtle blur on edges to hint "there's more" */
-  -webkit-mask-image:linear-gradient(to bottom,black 75%,transparent 100%);
-  mask-image:linear-gradient(to bottom,black 75%,transparent 100%);
+  border:1px solid var(--border2);border-radius:12px;overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.6);
+  mask-image:linear-gradient(to bottom,black 70%,transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom,black 70%,transparent 100%);
 }
 .preview-bar{
-  padding:11px 16px;border-bottom:1px solid var(--line);
-  display:flex;align-items:center;gap:8px;background:rgba(16,15,14,.95);
+  background:rgba(12,11,10,.97);border-bottom:1px solid var(--border);
+  padding:10px 16px;display:flex;align-items:center;gap:8px;
 }
 .preview-dots{display:flex;gap:5px}
-.preview-dots span{width:10px;height:10px;border-radius:50%}
-.pd-r{background:#ef7a68}
-.pd-y{background:#f0c47d}
-.pd-g{background:#a5d66f}
-.preview-url{flex:1;height:22px;background:rgba(255,255,255,.05);border-radius:6px;margin:0 14px}
-/* app shell */
-.preview-app{display:grid;grid-template-columns:200px 1fr;min-height:380px}
-/* sidebar */
-.preview-sidebar{
-  background:rgba(16,15,14,.88);border-right:1px solid var(--line);
-  padding:16px 14px;display:flex;flex-direction:column;gap:6px;
+.preview-dots span{width:9px;height:9px;border-radius:50%}
+.pd-r{background:#d95f4b}.pd-y{background:#e8a84e}.pd-g{background:#7ab648}
+.preview-url-bar{flex:1;height:20px;background:rgba(255,255,255,.04);border-radius:4px;margin:0 12px}
+.preview-url-txt{font-size:10px;color:var(--soft)}
+.preview-app{display:grid;grid-template-columns:180px 1fr;min-height:340px}
+.preview-side{
+  background:rgba(12,11,10,.9);border-right:1px solid var(--border);
+  padding:14px 12px;display:flex;flex-direction:column;gap:5px;
 }
-.ps-brand{padding:0 4px 14px;border-bottom:1px solid var(--line);margin-bottom:6px}
-.ps-brand-name{font-family:'Fraunces',serif;font-size:13px;font-weight:800;color:var(--text)}
-.ps-brand-sub{font-size:9px;color:var(--muted);margin-top:2px}
-.ps-pill{
-  display:flex;align-items:center;justify-content:space-between;
-  background:linear-gradient(90deg,rgba(165,214,111,.1),rgba(214,154,83,.06));
-  border:1px solid rgba(214,154,83,.22);border-radius:999px;
-  padding:5px 9px;font-size:9px;color:var(--gold2);margin-bottom:6px;
-}
-.ps-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-.ps-nav-item{
-  height:30px;border-radius:6px;border:1px solid transparent;
-  display:flex;align-items:center;padding:0 9px;font-size:11px;color:var(--muted);gap:7px;
-}
-.ps-nav-item.active{
-  background:rgba(214,154,83,.11);border-color:rgba(214,154,83,.24);color:var(--gold2);font-weight:700;
-}
-/* main area */
-.preview-main{padding:16px;display:grid;gap:10px}
-.pm-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.pm-search{
-  flex:1;height:28px;background:rgba(255,255,255,.04);border:1px solid var(--line);
-  border-radius:999px;display:flex;align-items:center;padding:0 12px;
-  font-size:10px;color:var(--soft);max-width:400px;
-}
-.pm-chips{display:flex;gap:6px}
-.pm-chip{
-  height:24px;border:1px solid var(--line);border-radius:999px;
-  background:rgba(255,255,255,.03);padding:0 10px;font-size:9px;color:var(--muted);
-  display:flex;align-items:center;
-}
-.pm-chip.streak{color:var(--gold2);border-color:rgba(240,196,125,.3)}
-/* coach card */
+.ps-logo{font-family:'DM Serif Display',serif;font-size:12px;color:var(--gold3);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.ps-item{height:28px;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:10px;color:var(--muted);gap:6px}
+.ps-item.on{background:rgba(200,132,58,.1);color:var(--gold3);font-weight:600}
+.preview-main{padding:14px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
 .pm-coach{
-  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
-  border:1px solid var(--line);border-radius:8px;padding:14px 16px;
-  position:relative;overflow:hidden;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:14px 16px;
 }
-.pm-coach::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(115deg,transparent 45%,rgba(214,154,83,.07) 46%,transparent 62%);
+.pm-coach-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.pm-coach-title{font-family:'DM Serif Display',serif;font-size:15px;margin-bottom:4px;line-height:1.2}
+.pm-coach-sub{font-size:10px;color:var(--muted);line-height:1.5}
+.pm-bar{height:4px;background:rgba(255,255,255,.06);border-radius:99px;margin-top:10px;overflow:hidden}
+.pm-bar span{display:block;height:100%;width:62%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:99px}
+.pm-row{display:grid;grid-template-columns:1fr 220px;gap:10px}
+.pm-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.pm-card-label{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.pm-nums{display:flex;gap:16px}
+.pm-num{font-family:'DM Serif Display',serif;font-size:26px;line-height:1}
+.pm-num-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+.pm-goals{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.pm-goal-head{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.pm-goal-row{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:9px;color:var(--muted);border-bottom:1px solid var(--border)}
+.pm-goal-row:last-child{border:none}
+.pm-goal-row.done{color:var(--text)}
+.pm-check{width:12px;height:12px;border-radius:3px;border:1px solid var(--border2);display:grid;place-items:center;font-size:7px;flex-shrink:0}
+.pm-check.done{background:rgba(122,182,72,.25);border-color:rgba(122,182,72,.4);color:var(--green)}
+
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);max-width:1100px;margin:0 auto}
+
+/* ── SECTIONS ── */
+section{padding:100px 48px;max-width:1100px;margin:0 auto}
+.sec-eyebrow{
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);font-weight:500;margin-bottom:16px;display:block;
 }
-.pm-eyebrow{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold2);font-weight:800}
-.pm-coach-title{font-family:'Fraunces',serif;font-size:16px;font-weight:800;margin:6px 0 4px;line-height:1.2}
-.pm-coach-sub{font-size:10px;color:var(--muted);line-height:1.5;max-width:520px}
-.pm-barline{height:6px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-top:12px}
-.pm-barline span{display:block;height:100%;width:64%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:999px}
-/* two col */
-.pm-cols{display:grid;grid-template-columns:1fr 300px;gap:10px}
-/* today overview */
-.pm-today{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:8px;padding:14px}
-.pm-today-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.pm-today-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
-.pm-live{font-size:8px;border:1px solid rgba(165,214,111,.4);border-radius:999px;padding:2px 8px;color:var(--green)}
-.pm-today-date{font-size:9px;color:var(--soft)}
-.pm-today-nums{display:flex;gap:12px;margin-bottom:14px}
-.pm-big-num{font-family:'Fraunces',serif;font-size:28px;font-weight:800;line-height:1}
-.pm-big-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
-.pm-today-log{display:grid;gap:6px}
-.pm-log-head{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:2px;display:flex;justify-content:space-between}
-.pm-log-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:10px}
-.pm-log-row:last-child{border:none}
-.pm-log-type{color:var(--soft);min-width:46px;font-size:9px}
-.pm-log-val{flex:1;color:var(--text)}
-.pm-log-tag{border:1px solid var(--line2);border-radius:999px;padding:2px 7px;font-size:8px;color:var(--muted)}
-.pm-log-tag.green{color:var(--green);border-color:rgba(165,214,111,.3)}
-/* goals side */
-.pm-goals{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:8px;padding:14px}
-.pm-goals-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.pm-goals-title{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
-.pm-goals-count{font-size:9px;color:var(--gold2)}
-.pm-goal-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;font-size:10px;color:var(--muted);border:1px solid transparent;margin-bottom:4px}
-.pm-goal-row.done{background:rgba(165,214,111,.06);border-color:rgba(165,214,111,.18);color:var(--text)}
-.pm-check{width:14px;height:14px;border-radius:3px;border:1px solid var(--line2);flex-shrink:0;display:grid;place-items:center;font-size:8px}
-.pm-check.done{background:rgba(165,214,111,.3);border-color:rgba(165,214,111,.5);color:var(--green)}
-.pm-goal-tag{margin-left:auto;font-size:8px;color:var(--soft)}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-
-/* ─── SECTIONS ─── */
-section{padding:100px 40px;max-width:1160px;margin:0 auto}
-.section-label{
-  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--gold2);font-weight:700;margin-bottom:14px;
+.sec-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(28px,4vw,52px);font-weight:400;line-height:1.08;
+  letter-spacing:-.02em;margin-bottom:20px;
 }
-.section-title{font-size:clamp(28px,4vw,48px);font-weight:800;line-height:1.1;margin-bottom:20px}
-.section-sub{color:var(--muted);font-size:16px;max-width:520px;line-height:1.7}
+.sec-sub{color:var(--muted);font-size:15px;max-width:480px;line-height:1.75;font-weight:300}
 
-/* ─── ABOUT ─── */
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:60px}
-.about-text p{color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:16px}
-.about-text strong{color:var(--text)}
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:64px}
+.about-text p{color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:18px;font-weight:300}
+.about-text strong{color:var(--text);font-weight:500}
 .about-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
 .pill{
-  border:1px solid var(--line2);border-radius:999px;
-  padding:7px 15px;font-size:12px;color:var(--muted);font-weight:500;
-  background:rgba(255,255,255,.035);
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:6px 14px;font-size:12px;color:var(--muted);font-weight:400;
+  background:var(--surface);letter-spacing:.01em;
 }
-.about-visual{display:grid;gap:12px}
+.about-cards{display:grid;gap:10px}
 .av-card{
-  background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
-  border:1px solid var(--line);border-radius:12px;padding:18px 20px;
-  display:flex;align-items:center;gap:16px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px 18px;display:flex;align-items:center;gap:14px;
+  transition:border-color .18s;
 }
+.av-card:hover{border-color:var(--border2)}
 .av-icon{
-  width:42px;height:42px;border-radius:10px;display:grid;place-items:center;
-  font-size:20px;flex-shrink:0;
+  width:36px;height:36px;border-radius:var(--r);display:grid;place-items:center;
+  font-size:16px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);
 }
-.av-icon.gold{background:rgba(214,154,83,.15);border:1px solid rgba(214,154,83,.3)}
-.av-icon.green{background:rgba(165,214,111,.12);border:1px solid rgba(165,214,111,.3)}
-.av-icon.blue{background:rgba(116,183,232,.12);border:1px solid rgba(116,183,232,.3)}
-.av-icon.purple{background:rgba(195,167,255,.12);border:1px solid rgba(195,167,255,.3)}
-.av-label{font-size:13px;font-weight:600;color:var(--text)}
-.av-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.av-label{font-size:13px;font-weight:500;color:var(--text)}
+.av-desc{font-size:12px;color:var(--muted);margin-top:2px;font-weight:300}
 
-/* ─── HOW IT WORKS ─── */
-#how{background:transparent}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:56px}
+/* ── HOW ── */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:64px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--border)}
 .step{
-  position:relative;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
-  border:1px solid var(--line);border-radius:14px;padding:28px 22px;
+  background:var(--surface);padding:28px 24px;
+  transition:background .18s;
 }
-.step::before{
-  content:attr(data-n);position:absolute;top:20px;right:20px;
-  font-family:'Fraunces',serif;font-size:52px;font-weight:800;
-  color:rgba(255,255,255,.04);line-height:1;
+.step:hover{background:var(--surface2)}
+.step-n{
+  font-family:'DM Serif Display',serif;font-size:13px;
+  color:var(--gold);margin-bottom:16px;
 }
-.step-num{
-  width:34px;height:34px;border-radius:9px;
-  background:linear-gradient(135deg,var(--gold),#b87823);
-  display:grid;place-items:center;
-  font-family:'Fraunces',serif;font-size:14px;font-weight:800;color:#11110f;
-  margin-bottom:18px;
-}
-.step h3{font-size:16px;font-weight:700;margin-bottom:10px}
-.step p{font-size:13px;color:var(--muted);line-height:1.65}
+.step h3{font-size:15px;font-weight:500;margin-bottom:8px;letter-spacing:-.01em}
+.step p{font-size:13px;color:var(--muted);line-height:1.65;font-weight:300}
 
-/* ─── FEATURES ─── */
-.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px}
-.feat{
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.018));
-  border:1px solid var(--line);border-radius:14px;padding:28px;
-  transition:.22s;position:relative;overflow:hidden;
+/* ── FEATURES ── */
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:64px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--border)}
+.feat{background:var(--surface);padding:28px 26px;transition:background .18s}
+.feat:hover{background:var(--surface2)}
+.feat-icon{font-size:20px;margin-bottom:14px}
+.feat h3{font-size:14px;font-weight:500;margin-bottom:6px;letter-spacing:-.01em}
+.feat p{font-size:13px;color:var(--muted);line-height:1.6;font-weight:300}
+
+/* ── PRICING ── */
+.pricing-wrap{margin-top:64px;display:flex;justify-content:center}
+.pricing-card{
+  width:100%;max-width:420px;
+  background:var(--surface);border:1px solid var(--border2);border-radius:12px;
+  padding:44px 40px;text-align:center;
+  box-shadow:0 32px 80px rgba(0,0,0,.4);
+  position:relative;overflow:hidden;
 }
-.feat:hover{border-color:rgba(214,154,83,.35);transform:translateY(-2px)}
-.feat::after{
+.pricing-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(214,154,83,.4),transparent);
-  opacity:0;transition:.22s;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:.5;
 }
-.feat:hover::after{opacity:1}
-.feat-icon{font-size:26px;margin-bottom:16px}
-.feat h3{font-size:17px;font-weight:700;margin-bottom:8px}
-.feat p{font-size:13px;color:var(--muted);line-height:1.65}
-.feat-wide{grid-column:1/-1}
+.price-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--border);background:var(--surface2);
+  border-radius:999px;padding:4px 12px;
+  font-size:10px;color:var(--muted);font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:24px;
+}
+.price-main{margin-bottom:8px}
+.price-num{font-family:'DM Serif Display',serif;font-size:60px;color:var(--text);line-height:1}
+.price-per{font-size:16px;color:var(--muted);font-weight:300}
+.price-period{font-size:13px;color:var(--soft);margin-bottom:36px}
+.price-list{display:grid;gap:10px;margin-bottom:36px;text-align:left}
+.price-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-weight:300}
+.price-item .ck{color:var(--green);font-size:12px;flex-shrink:0}
+.price-cta{
+  width:100%;height:48px;border:none;border-radius:var(--r);
+  background:var(--gold);color:#0e0d0b;
+  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s;
+}
+.price-cta:hover{background:var(--gold2)}
+.price-note{margin-top:14px;font-size:11px;color:var(--soft)}
 
-/* ─── LOGIN / MODAL ─── */
+/* ── SUPPORT ── */
+.support-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:64px;align-items:start}
+.faq{display:grid;gap:1px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--border)}
+.faq-item{background:var(--surface)}
+.faq-q{
+  padding:16px 20px;font-size:13px;font-weight:500;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .15s;user-select:none;letter-spacing:.01em;
+}
+.faq-q:hover{background:var(--surface2)}
+.faq-q .arr{color:var(--gold);font-size:14px;transition:.2s;flex-shrink:0;margin-left:12px}
+.faq-item.open .arr{transform:rotate(45deg)}
+.faq-a{
+  max-height:0;overflow:hidden;transition:.28s;
+  font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;
+  padding:0 20px;
+}
+.faq-item.open .faq-a{max-height:200px;padding:0 20px 16px}
+.contact-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:28px;
+}
+.contact-card h3{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;margin-bottom:8px;letter-spacing:-.01em}
+.contact-card p{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.7;font-weight:300}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:6px}
+.field input,.textarea-field{
+  width:100%;border:1px solid var(--border);background:rgba(255,255,255,.03);
+  border-radius:var(--r);color:var(--text);padding:10px 13px;outline:none;
+  font:inherit;font-size:13px;transition:.15s;font-weight:300;
+}
+.field input:focus,.textarea-field:focus{border-color:rgba(200,132,58,.4);background:rgba(255,255,255,.05)}
+.textarea-field{resize:vertical;min-height:90px;margin-bottom:14px}
+.btn-form{
+  width:100%;height:44px;border:none;border-radius:var(--r);
+  background:var(--gold);color:#0e0d0b;font-size:13px;font-weight:600;
+  font-family:inherit;cursor:pointer;transition:.15s;
+}
+.btn-form:hover{background:var(--gold2)}
+
+/* ── SURVEY ── */
+.survey-wrap{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:36px;margin-top:48px;
+}
+.survey-progress{height:2px;background:var(--border);border-radius:99px;margin-bottom:28px;overflow:hidden}
+.survey-progress-bar{height:100%;background:var(--gold);border-radius:99px;transition:width .4s ease}
+.survey-step{display:none}
+.survey-step.active{display:block}
+.survey-q{font-size:16px;font-weight:500;margin-bottom:18px;letter-spacing:-.01em}
+.survey-opts{display:grid;gap:8px;margin-bottom:24px}
+.survey-opt{
+  border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;
+  background:transparent;cursor:pointer;font-size:13px;color:var(--muted);
+  transition:.15s;text-align:left;font-family:inherit;font-weight:300;
+  display:flex;align-items:center;gap:10px;
+}
+.survey-opt:hover,.survey-opt.selected{border-color:rgba(200,132,58,.35);background:rgba(200,132,58,.06);color:var(--text)}
+.survey-opt .check{width:16px;height:16px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;font-size:8px;flex-shrink:0;transition:.15s}
+.survey-opt.selected .check{background:var(--gold);border-color:var(--gold);color:#0e0d0b}
+.survey-nav{display:flex;justify-content:space-between;align-items:center}
+.survey-back{height:38px;padding:0 18px;border:1px solid var(--border);border-radius:var(--r);background:transparent;color:var(--muted);font-family:inherit;font-size:12px;cursor:pointer;transition:.15s}
+.survey-back:hover{color:var(--text)}
+.survey-next{height:38px;padding:0 22px;border:none;border-radius:var(--r);background:var(--gold);color:#0e0d0b;font-weight:600;font-size:12px;font-family:inherit;cursor:pointer;transition:.15s}
+.survey-next:hover{background:var(--gold2)}
+.survey-done{text-align:center;padding:20px 0}
+.survey-done .big{font-size:48px;margin-bottom:16px}
+.survey-done h3{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;margin-bottom:10px}
+.survey-done p{color:var(--muted);font-size:13px;font-weight:300}
+
+/* ── PRIVACY ── */
+.priv-grid{margin-top:48px;display:grid;gap:1px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--border)}
+.priv-item{background:var(--surface);padding:24px 28px}
+.priv-item h3{font-size:14px;font-weight:500;color:var(--text);margin-bottom:8px;letter-spacing:.01em}
+.priv-item p{font-size:13px;color:var(--muted);line-height:1.75;font-weight:300}
+
+/* ── MODAL ── */
 .modal-overlay{
   display:none;position:fixed;inset:0;z-index:999;
-  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
   align-items:center;justify-content:center;
 }
 .modal-overlay.open{display:flex}
 .modal{
-  background:linear-gradient(180deg,#211d18,#191714);
-  border:1px solid var(--line2);border-radius:18px;
-  padding:40px;width:100%;max-width:420px;position:relative;
-  animation:fadeUp .3s ease both;
+  background:var(--surface);border:1px solid var(--border2);border-radius:12px;
+  padding:36px;width:100%;max-width:400px;position:relative;
+  animation:up .25s ease both;
 }
 .modal-close{
-  position:absolute;top:16px;right:16px;
-  width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);
-  border:1px solid var(--line);color:var(--muted);font-size:16px;
-  display:grid;place-items:center;cursor:pointer;transition:.18s;
+  position:absolute;top:14px;right:14px;
+  width:28px;height:28px;border-radius:var(--r);background:var(--surface2);
+  border:1px solid var(--border);color:var(--muted);font-size:14px;
+  display:grid;place-items:center;cursor:pointer;transition:.15s;
 }
-.modal-close:hover{color:var(--text);background:rgba(255,255,255,.14)}
-.modal h2{font-size:24px;font-weight:800;margin-bottom:6px}
-.modal p{font-size:13px;color:var(--muted);margin-bottom:28px}
-.tabs-modal{display:flex;gap:6px;margin-bottom:24px;background:rgba(255,255,255,.04);border-radius:10px;padding:4px}
-.tab-modal{
-  flex:1;height:36px;border:none;border-radius:7px;background:transparent;
-  color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:.18s;
-}
-.tab-modal.active{background:rgba(214,154,83,.15);color:var(--gold2);border:1px solid rgba(214,154,83,.3)}
-.field{margin-bottom:16px}
-.field label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:7px}
-.field input{
-  width:100%;border:1px solid var(--line2);background:rgba(255,255,255,.04);
-  border-radius:9px;color:var(--text);padding:12px 14px;outline:none;
-  font:inherit;font-size:14px;transition:.18s;
-}
-.field input:focus{border-color:rgba(214,154,83,.55);background:rgba(255,255,255,.07)}
-.btn-form{
-  width:100%;height:48px;border:none;border-radius:10px;
-  background:linear-gradient(135deg,var(--gold2),var(--gold));
-  color:#11110f;font-size:15px;font-weight:700;font-family:inherit;
-  cursor:pointer;transition:.2s;margin-top:6px;
-}
-.btn-form:hover{opacity:.9;transform:translateY(-1px)}
-.modal-footer{text-align:center;margin-top:18px;font-size:12px;color:var(--muted)}
+.modal-close:hover{color:var(--text)}
+.modal h2{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;margin-bottom:6px;letter-spacing:-.01em}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:24px;font-weight:300}
+.tabs-modal{display:flex;gap:1px;margin-bottom:22px;background:var(--border);border-radius:var(--r);overflow:hidden}
+.tab-modal{flex:1;height:34px;border:none;background:var(--surface2);color:var(--muted);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;transition:.15s;letter-spacing:.01em}
+.tab-modal.active{background:rgba(200,132,58,.12);color:var(--gold3)}
+.modal-footer{text-align:center;margin-top:16px;font-size:12px;color:var(--muted);font-weight:300}
 
-/* ─── SUPPORT ─── */
-.support-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:56px;align-items:start}
-.faq{display:grid;gap:10px}
-.faq-item{
-  border:1px solid var(--line);border-radius:12px;overflow:hidden;
-  background:rgba(255,255,255,.03);
-}
-.faq-q{
-  padding:16px 20px;font-size:14px;font-weight:600;cursor:pointer;
-  display:flex;justify-content:space-between;align-items:center;
-  transition:.18s;user-select:none;
-}
-.faq-q:hover{background:rgba(255,255,255,.04)}
-.faq-q .arr{transition:.25s;color:var(--gold2);font-size:16px}
-.faq-item.open .arr{transform:rotate(45deg)}
-.faq-a{
-  max-height:0;overflow:hidden;transition:.3s;
-  font-size:13px;color:var(--muted);line-height:1.7;
-  padding:0 20px;
-}
-.faq-item.open .faq-a{max-height:200px;padding:0 20px 16px}
-
-.contact-card{
-  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
-  border:1px solid var(--line);border-radius:14px;padding:30px;
-}
-.contact-card h3{font-size:18px;font-weight:700;margin-bottom:10px}
-.contact-card p{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.7}
-.textarea-field{
-  width:100%;border:1px solid var(--line2);background:rgba(255,255,255,.04);
-  border-radius:9px;color:var(--text);padding:12px 14px;outline:none;
-  font:inherit;font-size:13px;resize:vertical;min-height:100px;transition:.18s;
-  margin-bottom:14px;
-}
-.textarea-field:focus{border-color:rgba(214,154,83,.55);background:rgba(255,255,255,.07)}
-.success-toast{
-  display:none;position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
-  background:#211d18;border:1px solid rgba(165,214,111,.4);border-radius:999px;
-  padding:12px 24px;font-size:13px;color:var(--green);font-weight:600;
-  box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:9999;
-  animation:slideUp .3s ease;
-}
-@keyframes slideUp{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
-
-/* ─── SURVEY ─── */
-.survey-wrap{
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
-  border:1px solid var(--line);border-radius:18px;padding:40px;margin-top:48px;
-}
-.survey-step{display:none}
-.survey-step.active{display:block}
-.survey-q{font-size:18px;font-weight:700;margin-bottom:20px}
-.survey-opts{display:grid;gap:10px;margin-bottom:28px}
-.survey-opt{
-  border:1px solid var(--line2);border-radius:10px;padding:14px 18px;
-  background:rgba(255,255,255,.03);cursor:pointer;font-size:14px;
-  color:var(--muted);transition:.18s;text-align:left;font-family:inherit;
-  display:flex;align-items:center;gap:12px;
-}
-.survey-opt:hover,.survey-opt.selected{
-  border-color:rgba(214,154,83,.4);background:rgba(214,154,83,.08);color:var(--text);
-}
-.survey-opt .check{
-  width:18px;height:18px;border-radius:50%;border:2px solid var(--line2);
-  display:grid;place-items:center;font-size:9px;flex-shrink:0;transition:.18s;
-}
-.survey-opt.selected .check{
-  background:var(--gold);border-color:var(--gold);color:#11110f;
-}
-.survey-progress{
-  height:4px;background:rgba(255,255,255,.07);border-radius:99px;margin-bottom:28px;overflow:hidden;
-}
-.survey-progress-bar{
-  height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));
-  border-radius:99px;transition:width .4s ease;
-}
-.survey-nav{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.survey-back{
-  height:40px;padding:0 20px;border:1px solid var(--line2);border-radius:999px;
-  background:transparent;color:var(--muted);font-family:inherit;font-size:13px;
-  cursor:pointer;transition:.18s;
-}
-.survey-back:hover{color:var(--text)}
-.survey-next{
-  height:40px;padding:0 24px;border:none;border-radius:999px;
-  background:linear-gradient(135deg,var(--gold2),var(--gold));
-  color:#11110f;font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;transition:.2s;
-}
-.survey-next:hover{opacity:.88}
-.survey-done{text-align:center;padding:20px 0}
-.survey-done .big{font-size:52px;margin-bottom:16px}
-.survey-done h3{font-size:22px;font-weight:800;margin-bottom:10px}
-.survey-done p{color:var(--muted);font-size:14px}
-
-/* ─── FOOTER ─── */
+/* ── FOOTER ── */
 footer{
-  border-top:1px solid var(--line);padding:40px;
-  display:flex;justify-content:space-between;align-items:center;
-  max-width:1160px;margin:0 auto;
+  border-top:1px solid var(--border);padding:40px 48px;
+  max-width:1100px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;
 }
-footer .logo{font-size:16px}
-.footer-links{display:flex;gap:20px}
-.footer-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:.18s}
-.footer-links a:hover{color:var(--text)}
-.footer-copy{font-size:12px;color:var(--soft)}
+.footer-logo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold3)}
+.footer-tagline{font-size:11px;color:var(--soft);margin-top:4px;font-weight:300}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font-size:12px;color:var(--soft);text-decoration:none;transition:color .15s;font-weight:300}
+.footer-links a:hover{color:var(--muted)}
+.footer-copy{font-size:11px;color:var(--soft);font-weight:300}
 
-/* ─── SCROLL ANIMATIONS ─── */
-.fade-in{opacity:0;transform:translateY(24px);transition:.7s cubic-bezier(.2,.8,.2,1)}
+/* ── TOAST ── */
+.toast{
+  display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--surface);border:1px solid rgba(122,182,72,.35);border-radius:999px;
+  padding:10px 22px;font-size:12px;color:var(--green);font-weight:500;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:9999;letter-spacing:.01em;
+  animation:toastup .28s ease;
+}
+@keyframes toastup{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+
+/* ── FADE IN ── */
+.fade-in{opacity:0;transform:translateY(18px);transition:.65s cubic-bezier(.2,.8,.2,1)}
 .fade-in.visible{opacity:1;transform:none}
 
+/* ── MOBILE ── */
 @media(max-width:768px){
   nav{padding:0 20px}
   .nav-links{display:none}
-  .hero{padding:90px 24px 60px}
-  .hero-stats{gap:24px}
-  section{padding:60px 24px}
+  .hero{padding:100px 24px 60px}
+  .hero h1{font-size:clamp(36px,10vw,60px)}
+  .hero-stats{flex-direction:column;width:100%;max-width:280px}
+  .hstat+.hstat{border-left:none;border-top:1px solid var(--border)}
+  .preview{display:none}
+  section{padding:72px 24px}
   .about-grid,.support-grid{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr 1fr}
-  .features-grid{grid-template-columns:1fr}
-  .feat-wide{grid-column:auto}
-  footer{flex-direction:column;gap:20px;text-align:center}
-  .preview-body{grid-template-columns:1fr}
-  .preview-side{display:none}
+  .feats{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+  .hero-buttons{flex-direction:column;align-items:center}
+}
+@media(max-width:480px){
+  .steps{grid-template-columns:1fr}
+  .hero h1{font-size:38px}
 }
 </style>
 </head>
@@ -506,121 +470,86 @@ footer .logo{font-size:16px}
 
 <!-- NAV -->
 <nav>
-  <div style="display:flex;align-items:center;gap:14px">
+  <div style="display:flex;align-items:center;gap:16px">
     <div class="logo">flo<span>journal</span></div>
-    <div style="display:flex;gap:6px;align-items:center">
-      <button id="lang-pl-btn" onclick="setLandingLang('pl')" title="Polski" style="background:none;border:none;cursor:pointer;font-size:20px;opacity:1;transition:opacity .18s;padding:2px;border-radius:4px" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity=document.documentElement.dataset.lang==='pl'?'1':'.5'">🇵🇱</button>
-      <button id="lang-en-btn" onclick="setLandingLang('en')" title="English" style="background:none;border:none;cursor:pointer;font-size:20px;opacity:.5;transition:opacity .18s;padding:2px;border-radius:4px" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity=document.documentElement.dataset.lang==='en'?'1':'.5'">🇬🇧</button>
+    <div class="nav-flags">
+      <button id="lang-pl-btn" onclick="setLandingLang('pl')" title="Polski" class="active">🇵🇱</button>
+      <button id="lang-en-btn" onclick="setLandingLang('en')" title="English">🇬🇧</button>
     </div>
   </div>
   <div class="nav-links">
-    <a href="#about" data-i18n="nav-about">O nas</a>
-    <a href="#how" data-i18n="nav-how">Jak działa</a>
-    <a href="#features" data-i18n="nav-features">Funkcje</a>
+    <a href="#about" data-i18n="nav-about">About</a>
+    <a href="#how" data-i18n="nav-how">How it works</a>
+    <a href="#features" data-i18n="nav-features">Features</a>
+    <a href="#pricing" data-i18n="nav-pricing">Pricing</a>
     <a href="#support" data-i18n="nav-support">Support</a>
-    <a href="#survey" data-i18n="nav-survey">Ankieta</a>
-    <a href="#pricing" data-i18n="nav-pricing">Cennik</a>
-    <a href="#privacy" data-i18n="nav-privacy">Prywatność</a>
+    <a href="#privacy" data-i18n="nav-privacy">Privacy</a>
   </div>
-  <div class="nav-cta">
-    <button class="btn-ghost" onclick="openModal('login')">Zaloguj się</button>
-    <button class="btn-gold" onclick="openModal('signup')">Zarejestruj się</button>
+  <div class="nav-right">
+    <button class="btn-ghost" onclick="openModal('login')">Log in</button>
+    <button class="btn-gold" onclick="openModal('signup')">Sign up</button>
   </div>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-badge"><span class="dot-live"></span><span data-i18n="hero-badge">Teraz dostępny dla traderów</span></div>
-  <h1 data-i18n="hero-h1">Journal który<br><em>buduje Cię</em><br>jako tradera.</h1>
-  <p class="hero-sub" data-i18n="hero-sub">Śledź swoje trady, emocje, cele i codzienną rutynę — wszystko w jednym miejscu. Bo najlepsza inwestycja to inwestycja w siebie.</p>
+  <div class="hero-glow"></div>
+  <div class="hero-badge"><span class="dot-live"></span><span data-i18n="hero-badge">Now available for traders</span></div>
+  <h1 data-i18n="hero-h1">The journal that<br><em>builds you</em><br>as a trader.</h1>
+  <p class="hero-sub" data-i18n="hero-sub">Track your trades, emotions, goals and daily routine — all in one place. Because the best investment is investing in yourself.</p>
   <div class="hero-buttons">
-    <button class="btn-hero primary" onclick="openModal('signup')">Zacznij za darmo →</button>
-    <a href="#how"><button class="btn-hero secondary">Jak to działa</button></a>
+    <button class="btn-hero primary" id="hero-cta-btn" onclick="(function(){var el=document.getElementById('pricing');var top=el.getBoundingClientRect().top+window.scrollY-70;window.scrollTo({top:top,behavior:'smooth'});})()" >Start right now →</button>
+    <a href="#how"><button class="btn-hero secondary" data-i18n="hero-how">How it works</button></a>
   </div>
 
+  <div class="hero-stats fade-in">
+    <div class="hstat"><div class="hstat-num">$10</div><div class="hstat-lbl">Per month</div></div>
+    <div class="hstat"><div class="hstat-num">3-in-1</div><div class="hstat-lbl">Trading · Workout · Goals</div></div>
+    <div class="hstat"><div class="hstat-num">AI</div><div class="hstat-lbl">Personalized coach</div></div>
+  </div>
 
-  <div class="preview-wrap">
+  <div class="preview fade-in">
     <div class="preview-glow"></div>
     <div class="preview-frame">
-      <!-- browser chrome -->
       <div class="preview-bar">
-        <div class="preview-dots">
-          <span class="pd-r"></span><span class="pd-y"></span><span class="pd-g"></span>
-        </div>
-        <div class="preview-url"></div>
-        <span style="font-size:10px;color:var(--soft)">flojournal.app/dashboard</span>
+        <div class="preview-dots"><span class="pd-r"></span><span class="pd-y"></span><span class="pd-g"></span></div>
+        <div class="preview-url-bar"></div>
+        <span class="preview-url-txt">flojournal.app/dashboard</span>
       </div>
-      <!-- app shell -->
       <div class="preview-app">
-        <!-- sidebar -->
-        <div class="preview-sidebar">
-          <div class="ps-brand">
-            <div class="ps-brand-name">Cris Dashboard</div>
-            <div class="ps-brand-sub">Building better traders</div>
-          </div>
-          <div class="ps-pill"><span>Rising mode</span><span class="ps-dot"></span></div>
-          <div class="ps-nav-item active">🏠 Dashboard</div>
-          <div class="ps-nav-item">✏️ New entry</div>
-          <div class="ps-nav-item">📖 History</div>
-          <div class="ps-nav-item">📅 Calendar</div>
-          <div class="ps-nav-item">📊 Statistics</div>
-          <div class="ps-nav-item">🏃 Training</div>
-          <div class="ps-nav-item">📈 Daily Status</div>
-          <div class="ps-nav-item">📝 Summary</div>
-          <div class="ps-nav-item">🤖 AI Coach</div>
+        <div class="preview-side">
+          <div class="ps-logo">flojournal</div>
+          <div class="ps-item on">🏠 Dashboard</div>
+          <div class="ps-item">✏️ New entry</div>
+          <div class="ps-item">📖 History</div>
+          <div class="ps-item">📅 Calendar</div>
+          <div class="ps-item">📊 Statistics</div>
+          <div class="ps-item">📅 Weekly</div>
+          <div class="ps-item">🏃 Workout</div>
+          <div class="ps-item">📈 Daily Status</div>
+          <div class="ps-item">🤖 AI Coach</div>
         </div>
-        <!-- main -->
         <div class="preview-main">
-          <!-- coach -->
           <div class="pm-coach">
-            <div class="pm-eyebrow">Progressive Overload Coach</div>
-            <div class="pm-coach-title">Keep going! You are close to filling the ring!</div>
+            <div class="pm-coach-label">Progressive Overload Coach</div>
+            <div class="pm-coach-title">Keep going — you are close to filling the ring.</div>
             <div class="pm-coach-sub">Log your workout, mindset and trading today. Small data daily builds a brutally clear picture.</div>
-            <div class="pm-barline"><span></span></div>
+            <div class="pm-bar"><span></span></div>
           </div>
-          <!-- two columns -->
-          <div class="pm-cols">
-            <!-- today -->
-            <div class="pm-today">
-              <div class="pm-today-head">
-                <div>
-                  <div class="pm-today-title">Day Overview</div>
-                  <div class="pm-today-date">Friday, 15 May</div>
-                </div>
-                <div class="pm-live">live</div>
-              </div>
-              <div class="pm-today-nums">
-                <div>
-                  <div class="pm-big-num">0</div>
-                  <div class="pm-big-lbl">Workouts</div>
-                </div>
-                <div>
-                  <div class="pm-big-num" style="color:var(--green)">+$0</div>
-                  <div class="pm-big-lbl">PNL Today</div>
-                </div>
-              </div>
-              <div class="pm-today-log">
-                <div class="pm-log-head"><span>Daily Log</span><span style="color:var(--soft);font-weight:400">auto from entries</span></div>
-                <div class="pm-log-row">
-                  <span class="pm-log-type">Trading</span>
-                  <span class="pm-log-val">Sesja</span>
-                  <span class="pm-log-tag green">+$0</span>
-                </div>
+          <div class="pm-row">
+            <div class="pm-card">
+              <div class="pm-card-label">Day overview</div>
+              <div class="pm-nums">
+                <div><div class="pm-num">0</div><div class="pm-num-lbl">Workouts</div></div>
+                <div><div class="pm-num" style="color:var(--green)">+$1500</div><div class="pm-num-lbl">PNL today</div></div>
               </div>
             </div>
-            <!-- goals -->
             <div class="pm-goals">
-              <div class="pm-goals-head">
-                <div>
-                  <div class="pm-goals-title">Goalmaxxing</div>
-                  <div style="font-size:9px;color:var(--muted);margin-top:2px">2 / 4 complete</div>
-                </div>
-                <div class="pm-goals-count">day streak →</div>
-              </div>
-              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>Did you eat good?</span><span class="pm-goal-tag">custom</span></div>
-              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>10k steps?</span><span class="pm-goal-tag">custom</span></div>
-              <div class="pm-goal-row"><div class="pm-check"></div><span style="color:var(--muted)">Sleep good?</span><span class="pm-goal-tag">custom</span></div>
-              <div class="pm-goal-row"><div class="pm-check"></div><span style="color:var(--muted)">Did you study something?</span><span class="pm-goal-tag">custom</span></div>
+              <div class="pm-goal-head">Goalmaxxing — 2 / 4</div>
+              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>Morning routine</span></div>
+              <div class="pm-goal-row done"><div class="pm-check done">✓</div><span>Followed rules</span></div>
+              <div class="pm-goal-row"><div class="pm-check"></div><span style="color:var(--soft)">Evening workout</span></div>
+              <div class="pm-goal-row"><div class="pm-check"></div><span style="color:var(--soft)">Protein goal</span></div>
             </div>
           </div>
         </div>
@@ -628,379 +557,274 @@ footer .logo{font-size:16px}
     </div>
   </div>
 </div>
+
+<div class="divider"></div>
 
 <!-- ABOUT -->
 <section id="about">
-  <div class="section-label" data-i18n="about-label">O nas</div>
-  <h2 class="section-title" data-i18n="about-main-title">Zbudowany przez traderów,<br>dla traderów.</h2>
-  <p class="section-sub" data-i18n="about-desc">flojournal to więcej niż journal. To Twój codzienny coach, który pomaga utrzymać dyscyplinę, świadomość i wzrost.</p>
-
+  <div class="fade-in">
+    <span class="sec-eyebrow" data-i18n="about-label">About</span>
+    <h2 class="sec-title" data-i18n="about-main-title">Built by traders,<br>for traders.</h2>
+    <p class="sec-sub" data-i18n="about-desc">flojournal is more than a journal. It is your daily coach, helping you maintain discipline, awareness and growth.</p>
+  </div>
   <div class="about-grid fade-in">
     <div class="about-text">
-      <p data-i18n="about-p1">Większość traderów skupia się wyłącznie na rynku — zapominając, że <strong>to oni sami są zmienną</strong>. Twój stan emocjonalny, sen, rutyna i nastawienie mają ogromny wpływ na Twoje decyzje.</p>
-      <p data-i18n="about-p2">flojournal powstał z jednej prostej obserwacji: <strong>najlepsi traderzy prowadzą dzienniki.</strong> Nie dlatego, że muszą — ale dlatego, że to działa. Widzą wzorce, uczą się na błędach i budują konsekwentne procesy.</p>
-      <p data-i18n="about-p3">Obecnie skupiamy się głównie na <strong>tradingu</strong> — dzienniku sesji, emocjach, dyscyplinie i wynikach. Jednak to dopiero początek. Niedługo będziemy wprowadzali znacznie więcej możliwości dla każdego kto chce świadomie rozwijać siebie i swój biznes.</p>
+      <p data-i18n="about-p1">Most traders focus only on the market — forgetting that <strong>they themselves are the variable</strong>. Your emotional state, sleep, routine and mindset have a huge impact on your decisions.</p>
+      <p data-i18n="about-p2">flojournal was born from one simple observation: <strong>the best traders keep journals.</strong> Not because they have to — but because it works. They see patterns, learn from mistakes and build consistent processes.</p>
+      <p data-i18n="about-p3">We currently focus mainly on <strong>trading</strong> — session journal, emotions, discipline and results. But this is just the beginning.</p>
       <div class="about-pills">
-        <span class="pill" data-i18n="pill1">🧠 Psychologia tradingu</span>
-        <span class="pill" data-i18n="pill2">📊 Analiza wyników</span>
-        <span class="pill" data-i18n="pill3">🏃 Zdrowy tryb życia</span>
-        <span class="pill" data-i18n="pill4">🎯 Zarządzanie celami</span>
+        <span class="pill" data-i18n="pill1">🧠 Trading psychology</span>
+        <span class="pill" data-i18n="pill2">📊 Performance analysis</span>
+        <span class="pill" data-i18n="pill3">🏃 Healthy lifestyle</span>
+        <span class="pill" data-i18n="pill4">🎯 Goal management</span>
       </div>
     </div>
-    <div class="about-visual">
-      <div class="av-card">
-        <div class="av-icon gold">📓</div>
-        <div><div class="av-label" data-i18n="av1-label">Codzienny journal</div><div class="av-desc" data-i18n="av1-desc">Zapisuj myśli, emocje i plany każdego dnia</div></div>
-      </div>
-      <div class="av-card">
-        <div class="av-icon green">📈</div>
-        <div><div class="av-label" data-i18n="av2-label">Śledzenie tradów</div><div class="av-desc" data-i18n="av2-desc">Historia wpisów, P&L i analiza wzorców</div></div>
-      </div>
-      <div class="av-card">
-        <div class="av-icon blue">🏃</div>
-        <div><div class="av-label" data-i18n="av3-label">Aktywność fizyczna</div><div class="av-desc" data-i18n="av3-desc">Sport i regeneracja jako część procesu</div></div>
-      </div>
-      <div class="av-card">
-        <div class="av-icon purple">🎯</div>
-        <div><div class="av-label" data-i18n="av4-label">System celów</div><div class="av-desc" data-i18n="av4-desc">Codzienne rytuały, które budują dyscyplinę</div></div>
-      </div>
+    <div class="about-cards">
+      <div class="av-card"><div class="av-icon">📓</div><div><div class="av-label" data-i18n="av1-label">Daily journal</div><div class="av-desc" data-i18n="av1-desc">Record your thoughts, emotions and plans every day</div></div></div>
+      <div class="av-card"><div class="av-icon">📈</div><div><div class="av-label" data-i18n="av2-label">Trade tracking</div><div class="av-desc" data-i18n="av2-desc">Entry history, P&amp;L and pattern analysis</div></div></div>
+      <div class="av-card"><div class="av-icon">🏃</div><div><div class="av-label" data-i18n="av3-label">Physical activity</div><div class="av-desc" data-i18n="av3-desc">Sport and recovery as part of the process</div></div></div>
+      <div class="av-card"><div class="av-icon">🎯</div><div><div class="av-label" data-i18n="av4-label">Goal system</div><div class="av-desc" data-i18n="av4-desc">Daily rituals that build discipline</div></div></div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section id="how" style="padding-top:0">
-  <div class="section-label" data-i18n="how-label">Jak to działa</div>
-  <h2 class="section-title" data-i18n="how-title">Cztery kroki do świadomego tradingu.</h2>
+<div class="divider"></div>
 
+<!-- HOW -->
+<section id="how">
+  <div class="fade-in">
+    <span class="sec-eyebrow" data-i18n="how-label">How it works</span>
+    <h2 class="sec-title" data-i18n="how-title">Four steps to conscious trading.</h2>
+  </div>
   <div class="steps fade-in">
-    <div class="step" data-n="1">
-      <div class="step-num">1</div>
-      <h3 data-i18n="how-step1-title">Zacznij dzień z planem</h3>
-      <p data-i18n="how-step1-desc">Każde rano wypełniasz krótki check-in — jak śpisz, jaki masz poziom energii i co chcesz osiągnąć. Zero wymówek.</p>
-    </div>
-    <div class="step" data-n="2">
-      <div class="step-num">2</div>
-      <h3 data-i18n="how-step2-title">Loguj swoje trady</h3>
-      <p data-i18n="how-step2-desc">Wpisuj setup, wynik, emocje przed i po. System analizuje wzorce i pokazuje Ci kiedy handlujesz najlepiej.</p>
-    </div>
-    <div class="step" data-n="3">
-      <div class="step-num">3</div>
-      <h3 data-i18n="how-step3-title">Dbaj o siebie</h3>
-      <p data-i18n="how-step3-desc">Śledź sport, sen i regenerację. Najlepsi traderzy wiedzą, że ciało i umysł to fundament wszystkich decyzji.</p>
-    </div>
-    <div class="step" data-n="4">
-      <div class="step-num">4</div>
-      <h3 data-i18n="how-step4-title">Przeglądaj i rośnij</h3>
-      <p data-i18n="how-step4-desc">Tygodniowe podsumowania, wykresy i wzorce. Widzisz co działa, co nie — i gdzie jest Twój edge.</p>
-    </div>
+    <div class="step"><div class="step-n">01</div><h3 data-i18n="how-step1-title">Start the day with a plan</h3><p data-i18n="how-step1-desc">Every morning fill in a quick check-in — how you slept, your energy level and what you want to achieve. No excuses.</p></div>
+    <div class="step"><div class="step-n">02</div><h3 data-i18n="how-step2-title">Log your trades</h3><p data-i18n="how-step2-desc">Enter setup, result, emotions before and after. The system analyzes patterns and shows you when you trade best.</p></div>
+    <div class="step"><div class="step-n">03</div><h3 data-i18n="how-step3-title">Take care of yourself</h3><p data-i18n="how-step3-desc">Track sport, sleep and recovery. The best traders know that body and mind are the foundation of all decisions.</p></div>
+    <div class="step"><div class="step-n">04</div><h3 data-i18n="how-step4-title">Review and grow</h3><p data-i18n="how-step4-desc">Weekly summaries, charts and patterns. See what works, what does not — and where your edge is.</p></div>
   </div>
 </section>
+
+<div class="divider"></div>
 
 <!-- FEATURES -->
-<section id="features" style="padding-top:0">
-  <div class="section-label" data-i18n="feat-label">Co znajdziesz w dashboardzie</div>
-  <h2 class="section-title" data-i18n="feat-title">Wszystko w jednym miejscu.</h2>
-  <p class="section-sub" data-i18n="feat-sub">Każda zakładka to jeden element Twojej rutyny — połącz je razem i miej pełny obraz swojego rozwoju.</p>
-
-  <div class="features-grid fade-in" style="margin-top:48px">
-    <div class="feat">
-      <div class="feat-icon">📊</div>
-      <h3 data-i18n="f1-title">Dashboard</h3>
-      <p data-i18n="f1-desc">Widok główny z podsumowaniem dnia. Wynik Goalmaxxing, pasek postępu, streak, motywacyjny komunikat od AI Coacha i szybki podgląd dzisiejszych aktywności.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">✏️</div>
-      <h3 data-i18n="f2-title">Nowy wpis</h3>
-      <p data-i18n="f2-desc">Trzy sekcje w jednym widoku — Dzień (nastrój, notatka), Trading (para, PNL, zasady, emocje, wykres) i Trening (typ, czas, intensywność, RPE). Wszystko w 2 minuty.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">🎯</div>
-      <h3 data-i18n="f3-title">Goalmaxxing</h3>
-      <p data-i18n="f3-desc">Ustaw swoje dzienne nawyki i zaznaczaj je każdego dnia. System liczy wynik 0–100 pkt i buduje streak. Zmiana nazwy celu nie usuwa historii.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">📅</div>
-      <h3 data-i18n="f4-title">Kalendarz & Historia</h3>
-      <p data-i18n="f4-desc">Pełna historia wpisów. Kliknij dowolny dzień i otworzysz szczegółowy raport — dane, notatki, wykres. Edytuj lub usuń wpis w jednym kliknięciu.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">📈</div>
-      <h3 data-i18n="f5-title">Dzienny Status</h3>
-      <p data-i18n="f5-desc">Historia Goalmaxxing punktów każdego dnia — wykres postępu, realizacja celów, streak perfekcyjnych dni. Widzisz czy naprawdę budujesz dyscyplinę czy tylko myślisz że budujesz.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">🏃</div>
-      <h3 data-i18n="f6-title">Trening + Strava</h3>
-      <p data-i18n="f6-desc">Loguj treningi ręcznie lub połącz konto Strava — aktywności wczytują się automatycznie. Dystans, tempo, tętno, przewyższenie. Rest Day też się liczy.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">📝</div>
-      <h3 data-i18n="f7-title">Podsumowanie dnia</h3>
-      <p data-i18n="f7-desc">Lista wszystkich Twoich dni z wynikami. Kliknij dzień → AI generuje spersonalizowaną analizę — ocenia trading, trening i cele i daje konkretną radę na jutro.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">🤖</div>
-      <h3 data-i18n="f8-title">AI Coach</h3>
-      <p data-i18n="f8-desc">Chat z AI który zna Twoje dane — ostatnie 7 dni tradingu, treningów i celów. Napisz o problemie, dostań konkretną odpowiedź. Plus automatyczne powiadomienia po każdym zapisanym wpisie.</p>
-    </div>
+<section id="features">
+  <div class="fade-in">
+    <span class="sec-eyebrow" data-i18n="feat-label">Inside the dashboard</span>
+    <h2 class="sec-title" data-i18n="feat-title">Everything in one place.</h2>
+    <p class="sec-sub" data-i18n="feat-sub">Each tab is one element of your routine — combine them and get a complete picture of your growth.</p>
+  </div>
+  <div class="feats fade-in">
+    <div class="feat"><div class="feat-icon">📊</div><h3 data-i18n="f1-title">Dashboard</h3><p data-i18n="f1-desc">Main view with daily summary. Goalmaxxing score, progress bar, streak, motivational AI Coach message and quick overview of today.</p></div>
+    <div class="feat"><div class="feat-icon">✏️</div><h3 data-i18n="f2-title">New entry</h3><p data-i18n="f2-desc">Three sections in one view — Day (mood, note), Trading (pair, PNL, rules, emotions, chart) and Workout (type, duration, intensity, RPE). Done in 2 minutes.</p></div>
+    <div class="feat"><div class="feat-icon">🎯</div><h3 data-i18n="f3-title">Goalmaxxing</h3><p data-i18n="f3-desc">Set your daily habits and check them off every day. The system calculates a 0–100 score and builds a streak. Renaming a goal does not erase history.</p></div>
+    <div class="feat"><div class="feat-icon">📅</div><h3 data-i18n="f4-title">Calendar &amp; History</h3><p data-i18n="f4-desc">Full entry history. Click any day to open a detailed report — data, notes, chart. Edit or delete in one click.</p></div>
+    <div class="feat"><div class="feat-icon">📈</div><h3 data-i18n="f5-title">Daily Status</h3><p data-i18n="f5-desc">Goalmaxxing score history for every day — progress chart, goal completion, perfect day streaks. See if you are really building discipline or just think you are.</p></div>
+    <div class="feat"><div class="feat-icon">🏃</div><h3 data-i18n="f6-title">Workout + Strava</h3><p data-i18n="f6-desc">Log workouts manually or connect your Strava account — activities load automatically. Distance, pace, heart rate, elevation. Rest Day counts too.</p></div>
+    <div class="feat"><div class="feat-icon">📝</div><h3 data-i18n="f7-title">Day Summary</h3><p data-i18n="f7-desc">List of all your days with scores. Click a day and AI generates a personalized analysis — evaluates trading, workout and goals and gives a concrete tip for tomorrow.</p></div>
+    <div class="feat"><div class="feat-icon">🤖</div><h3 data-i18n="f8-title">AI Coach</h3><p data-i18n="f8-desc">Chat with AI that knows your data — last 7 days of trading, workouts and goals. Describe your problem, get a concrete answer. Plus automatic notifications after every saved entry.</p></div>
   </div>
 </section>
 
-<!-- SUPPORT -->
-<section id="support" style="padding-top:0">
-  <div class="section-label" data-i18n="sup-label">Support</div>
-  <h2 class="section-title" data-i18n="sup-title">Masz pytania? Mamy odpowiedzi.</h2>
-
-  <div class="support-grid fade-in">
-    <div class="faq">
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq1-q">Czy flojournal jest darmowy?</span> <span class="arr">+</span></div>
-        <div class="faq-a" data-i18n="faq1-a">Dostęp do flojournal kosztuje 40 zł miesięcznie — jedna prosta oferta, bez ukrytych planów. Anuluj kiedy chcesz.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq2-q">Na jakich rynkach mogę handlować?</span> <span class="arr">+</span></div>
-        <div class="faq-a" data-i18n="faq2-a">flojournal jest agnostyczny względem rynku — możesz logować trady na Forex, futures, crypto, akcjach i opcjach. Ważne są Twoje dane, nie broker.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq3-q">Czy moje dane są bezpieczne?</span> <span class="arr">+</span></div>
-        <div class="faq-a" data-i18n="faq3-a">Absolutnie. Dane są szyfrowane i przechowywane lokalnie w Twojej przeglądarce. Nie sprzedajemy ani nie udostępniamy żadnych danych osobom trzecim.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq4-q">Czy będą inne moduły poza tradingiem?</span> <span class="arr">+</span></div>
-        <div class="faq-a" data-i18n="faq4-a">Tak! Planujemy rozszerzenie dla innych przedsiębiorców — e-commerce, freelancerów, startupowców. Na razie skupiamy się na dopieszczeniu modułu tradingowego.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq5-q">Jak skontaktować się z supportem?</span> <span class="arr">+</span></div>
-        <div class="faq-a" data-i18n="faq5-a">Napisz do nas przez formularz obok lub wyślij email na support@flojournal.app. Odpowiadamy zazwyczaj w ciągu 24h.</div>
-      </div>
-    </div>
-
-    <div class="contact-card">
-      <h3><span data-i18n="sup-contact-title">Napisz do nas</span></h3>
-      <p><span data-i18n="sup-contact-sub">Masz pytanie, sugestię lub bug report? Daj nam znać — naprawdę czytamy każdą wiadomość.</span></p>
-      <div class="field">
-        <label data-i18n="sup-name">Imię</label>
-        <input type="text" id="contact-name" placeholder="Twoje imię" data-i18n-placeholder="sup-name-ph">
-      </div>
-      <div class="field">
-        <label data-i18n="sup-email">Email</label>
-        <input type="email" id="contact-email" placeholder="twoj@email.com" data-i18n-placeholder="sup-email-ph">
-      </div>
-      <div class="field">
-        <label data-i18n="sup-msg">Wiadomość</label>
-        <textarea class="textarea-field" id="contact-msg" placeholder="Opisz swoje pytanie lub problem..." data-i18n-placeholder="sup-msg-ph"></textarea>
-      </div>
-      <button class="btn-form" onclick="sendSupport()"><span data-i18n="sup-send">Wyślij wiadomość →</span></button>
-    </div>
-  </div>
-</section>
+<div class="divider"></div>
 
 <!-- SURVEY -->
-<section id="survey" style="padding-top:0">
-  <div class="section-label" data-i18n="sur-label">Ankieta</div>
-  <h2 class="section-title" data-i18n="sur-title">Pomóż nam budować lepszy produkt.</h2>
-  <p class="section-sub" data-i18n="sur-sub">Twoja opinia jest dla nas bezcenna. Zajmie to 2 minuty — obiecujemy.</p>
-
+<section id="survey">
+  <div class="fade-in">
+    <span class="sec-eyebrow" data-i18n="sur-label">Survey</span>
+    <h2 class="sec-title" data-i18n="sur-title">Help us build a better product.</h2>
+    <p class="sec-sub" data-i18n="sur-sub">Your feedback is invaluable. It takes 2 minutes — we promise.</p>
+  </div>
   <div class="survey-wrap fade-in">
     <div class="survey-progress"><div class="survey-progress-bar" id="survey-bar" style="width:20%"></div></div>
-
     <div class="survey-step active" id="sq-1">
-      <div class="survey-q" data-i18n="sq1">1 / 5 — Jak długo traderujesz?</div>
+      <div class="survey-q" data-i18n="sq1">1 / 5 — How long have you been trading?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq1-opt1">Dopiero zaczynam (0-6 miesięcy)</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq1-opt2">Ponad rok</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq1-opt3b">3-5 lat</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq1-opt4">Powyżej 5 lat — weteran 🧙</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq1-opt1">Just starting out (0-6 months)</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq1-opt2">Over a year</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq1-opt3b">3-5 years</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq1-opt4">Over 5 years — veteran 🧙</span></button>
       </div>
-      <div class="survey-nav">
-        <span></span>
-        <button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Dalej →</span></button>
-      </div>
+      <div class="survey-nav"><span></span><button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Next →</span></button></div>
     </div>
-
     <div class="survey-step" id="sq-2">
-      <div class="survey-q" data-i18n="sq2">2 / 5 — Na jakim rynku głównie handlujesz?</div>
+      <div class="survey-q" data-i18n="sq2">2 / 5 — Which market do you mainly trade?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq2-opt1">Futures / Kontrakty</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq2-opt2">Forex</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq2-opt3">Krypto</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq2-opt4">Akcje / Opcje</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq2-opt1">Futures / Contracts</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq2-opt2">Forex</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq2-opt3">Crypto</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq2-opt4">Stocks / Options</span></button>
       </div>
-      <div class="survey-nav">
-        <button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Wstecz</span></button>
-        <button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Dalej →</span></button>
-      </div>
+      <div class="survey-nav"><button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Back</span></button><button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Next →</span></button></div>
     </div>
-
     <div class="survey-step" id="sq-3">
-      <div class="survey-q" data-i18n="sq3">3 / 5 — Co jest dla Ciebie największym wyzwaniem?</div>
+      <div class="survey-q" data-i18n="sq3">3 / 5 — What is your biggest challenge?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq3-opt1">Dyscyplina i trzymanie się planu</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq3-opt2">Zarządzanie emocjami podczas tradów</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq3-opt3">Analiza błędów i nauka z nich</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq3-opt4">Konsekwentna rutyna i work-life balance</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq3-opt1">Discipline and sticking to the plan</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq3-opt2">Managing emotions during trades</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq3-opt3">Analyzing mistakes and learning from them</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq3-opt4">Consistent routine and work-life balance</span></button>
       </div>
-      <div class="survey-nav">
-        <button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Wstecz</span></button>
-        <button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Dalej →</span></button>
-      </div>
+      <div class="survey-nav"><button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Back</span></button><button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Next →</span></button></div>
     </div>
-
     <div class="survey-step" id="sq-4">
-      <div class="survey-q" data-i18n="sq4">4 / 5 — Czy aktywność fizyczna jest częścią Twojej rutyny?</div>
+      <div class="survey-q" data-i18n="sq4">4 / 5 — Is physical activity part of your routine?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq4-opt1">Tak, regularnie (4+ razy w tygodniu)</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq4-opt2">Czasami (1-3 razy)</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq4-opt3">Rzadko, ale chcę to zmienić</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq4-opt4">Nie — trading to mój sport 😅</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq4-opt1">Yes, regularly (4+ times a week)</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq4-opt2">Sometimes (1-3 times)</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq4-opt3">Rarely, but I want to change that</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq4-opt4">No — trading is my sport 😅</span></button>
       </div>
-      <div class="survey-nav">
-        <button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Wstecz</span></button>
-        <button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Dalej →</span></button>
-      </div>
+      <div class="survey-nav"><button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Back</span></button><button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Next →</span></button></div>
     </div>
-
     <div class="survey-step" id="sq-5">
-      <div class="survey-q" data-i18n="sq5">5 / 5 — Czego najbardziej oczekujesz od flojournal?</div>
+      <div class="survey-q" data-i18n="sq5">5 / 5 — What do you expect most from flojournal?</div>
       <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq5-opt1">Lepsza analiza moich tradów</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq5-opt2">System nawyków i rutyna</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq5-opt3">Śledzenie emocji i psychologii</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span> <span data-i18n="sq5-opt4">Holistyczny widok: trading + życie</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq5-opt1">Better analysis of my trades</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq5-opt2">Habit system and routine</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq5-opt3">Tracking emotions and psychology</span></button>
+        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq5-opt4">Holistic view: trading + life</span></button>
       </div>
-      <div class="survey-nav">
-        <button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Wstecz</span></button>
-        <button class="survey-next" onclick="surveySubmit()"><span data-i18n="sq-submit">Wyślij 🚀</span></button>
-      </div>
+      <div class="survey-nav"><button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Back</span></button><button class="survey-next" onclick="surveySubmit()"><span data-i18n="sq-submit">Submit 🚀</span></button></div>
     </div>
-
     <div class="survey-step" id="sq-done">
       <div class="survey-done">
         <div class="big">🏆</div>
-        <h3 data-i18n="sq-thanks">Dzięki za Twoją opinię!</h3>
-        <p data-i18n="sq-thanks-sub">Twoje odpowiedzi pomogą nam zbudować narzędzie które naprawdę spełni Twoje potrzeby. Dajemy z siebie 110%.</p>
-        <button class="btn-hero primary" style="margin-top:24px;width:auto" onclick="openModal('signup')"><span data-i18n="sq-join">Dołącz teraz →</span></button>
+        <h3 data-i18n="sq-thanks">Thank you for your feedback!</h3>
+        <p data-i18n="sq-thanks-sub">Your answers will help us build a tool that truly meets your needs. We give 110%.</p>
+        <button class="btn-hero primary" style="margin-top:24px" onclick="openModal('signup')"><span data-i18n="sq-join">Join now →</span></button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── PRICING ─── -->
-<section id="pricing" style="padding:100px 40px;max-width:1160px;margin:0 auto">
+<div class="divider"></div>
+
+<!-- PRICING -->
+<section id="pricing">
   <div class="fade-in">
-    <div class="section-label" data-i18n="price-label">Cennik</div>
-    <h2 class="section-title" data-i18n="price-title">Jedna prosta oferta.</h2>
-    <p class="section-sub" data-i18n="price-sub">Bez ukrytych opłat, bez planów premium. Wszystko w jednej cenie.</p>
+    <span class="sec-eyebrow" data-i18n="price-label">Pricing</span>
+    <h2 class="sec-title" data-i18n="price-title">One simple offer.</h2>
+    <p class="sec-sub" data-i18n="price-sub">No hidden fees, no premium tiers. Everything at one price.</p>
   </div>
-  <div class="fade-in" style="margin-top:56px;display:flex;justify-content:center">
-    <div style="background:linear-gradient(160deg,#1c1812,#161310);border:1px solid rgba(214,154,83,.4);border-radius:24px;padding:48px 52px;max-width:460px;width:100%;text-align:center;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.5)">
-      <!-- glow -->
-      <div style="position:absolute;inset:-1px;border-radius:24px;background:linear-gradient(135deg,rgba(214,154,83,.15),transparent 60%);pointer-events:none"></div>
-      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(214,154,83,.1);border:1px solid rgba(214,154,83,.3);border-radius:999px;padding:5px 14px;font-size:11px;color:var(--gold2);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px"><span data-i18n="price-badge">⚡ Pełny dostęp</span></div>
-      <div id="landing-price" style="display:flex;align-items:baseline;justify-content:center;gap:4px;margin:4px 0"><span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:54px;font-weight:700;line-height:1;color:var(--text)">$10</span><span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;color:var(--muted);font-weight:500;margin-left:3px">/mo</span></div>
-      <div data-i18n="price-period" style="font-size:13px;color:var(--muted);margin-top:6px;margin-bottom:36px">miesięcznie · anuluj kiedy chcesz</div>
-      <div style="display:grid;gap:12px;margin-bottom:36px;text-align:left">
-        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr1">Trading Journal — pełna historia</span></div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr2">Goalmaxxing — dzienne cele</span></div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr3">Trening Log + integracja Strava</span></div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr4">AI Coach — analiza i powiadomienia</span></div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr5">Podsumowanie dnia — AI raport</span></div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr6">Statystyki, Kalendarz, Daily Status</span></div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text)"><span style="color:var(--green);font-size:16px">✓</span><span data-i18n="pr7">Dwujęzyczny interfejs (PL/EN)</span></div>
+  <div class="pricing-wrap fade-in">
+    <div class="pricing-card">
+      <div class="price-badge">⚡ <span data-i18n="price-badge">Full access</span></div>
+      <div class="price-main">
+        <div id="landing-price"><span class="price-num">$10</span><span class="price-per">/mo</span></div>
       </div>
-      <button class="btn-hero primary" style="width:100%;height:54px;font-size:16px" onclick="openModal('signup')"><span data-i18n="price-cta">Zacznij teraz →</span></button>
-      <div data-i18n="price-note" style="margin-top:16px;font-size:12px;color:var(--muted)">Bezpieczna płatność · Bez zobowiązań</div>
+      <div class="price-period" data-i18n="price-period">/ month · cancel anytime</div>
+      <div class="price-list">
+        <div class="price-item"><span class="ck">✓</span><span data-i18n="pr1">Trading Journal — full history</span></div>
+        <div class="price-item"><span class="ck">✓</span><span data-i18n="pr2">Goalmaxxing — daily goals</span></div>
+        <div class="price-item"><span class="ck">✓</span><span data-i18n="pr3">Workout Log + Strava integration</span></div>
+        <div class="price-item"><span class="ck">✓</span><span data-i18n="pr4">AI Coach — analysis and notifications</span></div>
+        <div class="price-item"><span class="ck">✓</span><span data-i18n="pr5">Day Summary — AI report</span></div>
+        <div class="price-item"><span class="ck">✓</span><span data-i18n="pr6">Stats, Calendar, Daily Status</span></div>
+        <div class="price-item"><span class="ck">✓</span><span data-i18n="pr7">Bilingual interface (PL/EN)</span></div>
+      </div>
+      <button class="price-cta" onclick="openModal('signup')"><span data-i18n="price-cta">Start now →</span></button>
+      <div class="price-note" data-i18n="price-note">Secure payment · No commitment</div>
     </div>
   </div>
 </section>
 
-<!-- ─── PRIVACY ─── -->
-<section id="privacy" style="padding:100px 40px;max-width:860px;margin:0 auto">
+<div class="divider"></div>
+
+<!-- SUPPORT -->
+<section id="support">
   <div class="fade-in">
-    <div class="section-label" data-i18n="priv-label">Polityka prywatności</div>
-    <h2 class="section-title" data-i18n="priv-title">Twoje dane,<br>Twoja własność.</h2>
+    <span class="sec-eyebrow" data-i18n="sup-label">Support</span>
+    <h2 class="sec-title" data-i18n="sup-title">Questions? We have answers.</h2>
   </div>
-  <div class="fade-in" style="margin-top:48px;display:grid;gap:16px">
-    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
-      <h3 data-i18n="prv1-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">📦 Co zbieramy</h3>
-      <p data-i18n="prv1-desc" style="font-size:14px;color:var(--muted);line-height:1.75">Zbieramy tylko dane które sam wprowadzasz — wpisy tradingowe, treningowe, notatki i cele. Do logowania używamy Supabase (email + hasło). Nie zbieramy danych o Twoim urządzeniu, zachowaniu na stronie ani nie sprzedajemy żadnych danych.</p>
+  <div class="support-grid fade-in">
+    <div class="faq">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq1-q">Is flojournal free?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq1-a">Access to flojournal costs $10 per month — one simple offer, no hidden plans. Cancel anytime.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq2-q">Which markets can I trade?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq2-a">flojournal is market-agnostic — you can log trades on Forex, futures, crypto, stocks and options. Your data matters, not the broker.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq3-q">Is my data secure?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq3-a">Absolutely. Data is encrypted and stored locally in your browser. We never sell or share your data with third parties.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq4-q">Will there be modules beyond trading?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq4-a">Yes! We plan to expand for other entrepreneurs — e-commerce, freelancers, startup founders. For now we focus on perfecting the trading module.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq5-q">How do I contact support?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq5-a">Write to us via the form or send an email to support@flojournal.app. We usually reply within 24h.</div></div>
     </div>
-    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
-      <h3 data-i18n="prv2-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">🔒 Jak przechowujemy dane</h3>
-      <p data-i18n="prv2-desc" style="font-size:14px;color:var(--muted);line-height:1.75">Dane są przechowywane w Supabase — europejska infrastruktura, szyfrowanie w spoczynku i w tranzycie. Dane lokalne (cele, ustawienia) są przechowywane w Twoim localStorage i nie opuszczają Twojej przeglądarki.</p>
-    </div>
-    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
-      <h3 data-i18n="prv3-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">🤖 AI Coach i Strava</h3>
-      <p data-i18n="prv3-desc" style="font-size:14px;color:var(--muted);line-height:1.75">AI Coach używa Anthropic API — Twoje dane są wysyłane do analizy ale nie są używane do trenowania modeli. Integracja Strava działa na zasadzie OAuth — możesz ją odłączyć w każdej chwili z poziomu dashboardu.</p>
-    </div>
-    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
-      <h3 data-i18n="prv4-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">🗑️ Usuwanie konta</h3>
-      <p data-i18n="prv4-desc" style="font-size:14px;color:var(--muted);line-height:1.75">Możesz usunąć swoje konto i wszystkie dane w dowolnym momencie kontaktując się z nami przez email. Dane zostaną trwale usunięte w ciągu 7 dni roboczych.</p>
-    </div>
-    <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:24px 28px">
-      <h3 data-i18n="prv5-title" style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--text)">📧 Kontakt</h3>
-      <p style="font-size:14px;color:var(--muted);line-height:1.75">Pytania dotyczące prywatności: <a href="mailto:kontakt@flojournal.pl" style="color:var(--gold2);text-decoration:none">kontakt@flojournal.pl</a><br>Ostatnia aktualizacja: maj 2026</p>
+    <div class="contact-card">
+      <h3 data-i18n="sup-contact-title">Contact us</h3>
+      <p data-i18n="sup-contact-sub">Have a question, suggestion or bug report? Let us know — we read every message.</p>
+      <div class="field"><label data-i18n="sup-name">Name</label><input type="text" id="contact-name" placeholder="Your name" data-i18n-placeholder="sup-name-ph"></div>
+      <div class="field"><label data-i18n="sup-email">Email</label><input type="email" id="contact-email" placeholder="your@email.com" data-i18n-placeholder="sup-email-ph"></div>
+      <div class="field"><label data-i18n="sup-msg">Message</label></div>
+      <textarea class="textarea-field" id="contact-msg" placeholder="Describe your question or problem..." data-i18n-placeholder="sup-msg-ph"></textarea>
+      <button class="btn-form" onclick="sendSupport()"><span data-i18n="sup-send">Send message →</span></button>
     </div>
   </div>
 </section>
+
+<div class="divider"></div>
+
+<!-- PRIVACY -->
+<section id="privacy" style="max-width:800px">
+  <div class="fade-in">
+    <span class="sec-eyebrow" data-i18n="priv-label">Privacy policy</span>
+    <h2 class="sec-title" data-i18n="priv-title">Your data,<br>your property.</h2>
+  </div>
+  <div class="priv-grid fade-in">
+    <div class="priv-item"><h3 data-i18n="prv1-title">📦 What we collect</h3><p data-i18n="prv1-desc">We only collect data you enter yourself — trading entries, workout logs, notes and goals. We use Supabase for login (email + password). We do not collect device data or browsing behavior, and we never sell your data.</p></div>
+    <div class="priv-item"><h3 data-i18n="prv2-title">🔒 How we store data</h3><p data-i18n="prv2-desc">Data is stored in Supabase — European infrastructure, encrypted at rest and in transit. Local data (goals, settings) is stored in your localStorage and never leaves your browser.</p></div>
+    <div class="priv-item"><h3 data-i18n="prv3-title">🤖 AI Coach and Strava</h3><p data-i18n="prv3-desc">AI Coach uses the Anthropic API — your data is sent for analysis but is not used to train models. Strava integration works via OAuth — you can disconnect it anytime from the dashboard.</p></div>
+    <div class="priv-item"><h3 data-i18n="prv4-title">🗑️ Account deletion</h3><p data-i18n="prv4-desc">You can delete your account and all data at any time by contacting us via email. Data will be permanently deleted within 7 business days.</p></div>
+    <div class="priv-item"><h3 data-i18n="prv5-title">📧 Contact</h3><p>Privacy questions: <a href="mailto:support@flojournal.app" style="color:var(--gold2);text-decoration:none">support@flojournal.app</a><br>Last updated: May 2026</p></div>
+  </div>
+</section>
+
+<div class="divider"></div>
 
 <!-- FOOTER -->
-<footer style="border-top:1px solid var(--line);padding:48px 40px;max-width:1160px;margin:0 auto">
-  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px">
-    <div>
-      <div class="logo" style="font-size:18px;margin-bottom:6px">flo<span>journal</span></div>
-      <div data-i18n="footer-tagline" style="font-size:12px;color:var(--muted)">Buduj siebie jako tradera. Codziennie.</div>
-    </div>
-    <div style="display:flex;gap:24px;flex-wrap:wrap">
-      <a href="#about" data-i18n="nav-about" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">O nas</a>
-      <a href="#how" data-i18n="nav-how" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Jak działa</a>
-      <a href="#features" data-i18n="nav-features" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Funkcje</a>
-      <a href="#pricing" data-i18n="nav-pricing" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Cennik</a>
-      <a href="#support" data-i18n="nav-support" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Support</a>
-      <a href="#privacy" data-i18n="nav-privacy" style="font-size:13px;color:var(--muted);text-decoration:none;transition:.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Prywatność</a>
-    </div>
-    <div style="font-size:12px;color:var(--soft)">© 2026 flojournal</div>
+<footer>
+  <div>
+    <div class="footer-logo">flojournal</div>
+    <div class="footer-tagline" data-i18n="footer-tagline">Build yourself as a trader. Every day.</div>
   </div>
+  <div class="footer-links">
+    <a href="#about" data-i18n="nav-about">About</a>
+    <a href="#how" data-i18n="nav-how">How it works</a>
+    <a href="#features" data-i18n="nav-features">Features</a>
+    <a href="#pricing" data-i18n="nav-pricing">Pricing</a>
+    <a href="#support" data-i18n="nav-support">Support</a>
+    <a href="#privacy" data-i18n="nav-privacy">Privacy</a>
+  </div>
+  <div class="footer-copy">© 2026 flojournal</div>
 </footer>
 
-<!-- LOGIN / SIGNUP MODAL -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
-    <h2 id="modal-title">Zaloguj się</h2>
-    <p id="modal-sub">Witaj z powrotem, trader.</p>
+    <h2 id="modal-title">Log in</h2>
+    <p id="modal-sub">Welcome back, trader.</p>
     <div class="tabs-modal">
-      <button class="tab-modal active" id="tab-login" onclick="switchTab('login')">Logowanie</button>
-      <button class="tab-modal" id="tab-signup" onclick="switchTab('signup')">Rejestracja</button>
+      <button class="tab-modal active" id="tab-login" onclick="switchTab('login')">Log in</button>
+      <button class="tab-modal" id="tab-signup" onclick="switchTab('signup')">Sign up</button>
     </div>
     <div id="form-login">
-      <div class="field"><label data-i18n="sup-email">Email</label><input type="email" id="login-email" placeholder="twoj@email.com" data-i18n-placeholder="sup-email-ph" autocomplete="email"></div>
-      <div class="field"><label>Hasło</label><input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"></div>
-      <div id="login-error" style="color:#ef7a68;font-size:12px;margin-bottom:10px;display:none"></div>
-      <button class="btn-form" id="login-btn" onclick="doLogin()">Zaloguj się →</button>
-      <div class="modal-footer">Nie masz konta? <a href="#" onclick="switchTab('signup')" style="color:var(--gold2)">Zarejestruj się</a></div>
+      <div class="field"><label data-i18n="sup-email">Email</label><input type="email" id="login-email" placeholder="your@email.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"></div>
+      <div id="login-error" style="color:var(--red);font-size:12px;margin-bottom:10px;display:none"></div>
+      <button class="btn-form" id="login-btn" onclick="doLogin()">Log in →</button>
+      <div class="modal-footer">No account? <a href="#" onclick="switchTab('signup')" style="color:var(--gold2)">Sign up</a></div>
     </div>
     <div id="form-signup" style="display:none">
-      <div class="field"><label data-i18n="sup-name">Imię</label><input type="text" id="signup-name" placeholder="Twoje imię" data-i18n-placeholder="sup-name-ph"></div>
-      <div class="field"><label data-i18n="sup-email">Email</label><input type="email" id="signup-email" placeholder="twoj@email.com" data-i18n-placeholder="sup-email-ph" autocomplete="email"></div>
-      <div class="field"><label>Hasło</label><input type="password" id="signup-password" placeholder="Min. 8 znaków" autocomplete="new-password"></div>
-      <div id="signup-error" style="color:#ef7a68;font-size:12px;margin-bottom:10px;display:none"></div>
-      <button class="btn-form" id="signup-btn" onclick="doSignup()">Utwórz konto →</button>
-      <div class="modal-footer">Masz już konto? <a href="#" onclick="switchTab('login')" style="color:var(--gold2)">Zaloguj się</a></div>
+      <div class="field"><label data-i18n="sup-name">Name</label><input type="text" id="signup-name" placeholder="Your name"></div>
+      <div class="field"><label data-i18n="sup-email">Email</label><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input type="password" id="signup-password" placeholder="Min. 8 characters" autocomplete="new-password"></div>
+      <div id="signup-error" style="color:var(--red);font-size:12px;margin-bottom:10px;display:none"></div>
+      <button class="btn-form" id="signup-btn" onclick="doSignup()">Create account →</button>
+      <div class="modal-footer">Already have an account? <a href="#" onclick="switchTab('login')" style="color:var(--gold2)">Log in</a></div>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="success-toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 // Modal
-function openModal(type){
-  document.getElementById('modal').classList.add('open');
-  switchTab(type);
-}
+function openModal(type){document.getElementById('modal').classList.add('open');switchTab(type);}
 function closeModal(){document.getElementById('modal').classList.remove('open')}
 function closeModalOutside(e){if(e.target.id==='modal')closeModal()}
 function switchTab(t){
@@ -1008,137 +832,99 @@ function switchTab(t){
   document.getElementById('form-signup').style.display=t==='signup'?'block':'none';
   document.getElementById('tab-login').classList.toggle('active',t==='login');
   document.getElementById('tab-signup').classList.toggle('active',t==='signup');
-  document.getElementById('modal-title').textContent=t==='login'?'Zaloguj się':'Dołącz do flojournal';
-  document.getElementById('modal-sub').textContent=t==='login'?'Witaj z powrotem, trader.':'Zacznij budować siebie jako tradera.';
+  document.getElementById('modal-title').textContent=t==='login'?'Log in':'Join flojournal';
+  document.getElementById('modal-sub').textContent=t==='login'?'Welcome back, trader.':'Start building yourself as a trader.';
 }
 
-const SUPA_URL = 'https://hnhvewxfwdpcdcxkxbdw.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaHZld3hmd2RwY2RjeGt4YmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjI5MjYsImV4cCI6MjA5NDA5ODkyNn0.113ebL6tBa3BgoKGSciqllCszw4BWb9En51BhGW08ng';
-
-async function supaFetch(path, method, body) {
-  const res = await fetch(SUPA_URL + path, {
-    method: method || 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': SUPA_KEY,
-      'Authorization': 'Bearer ' + SUPA_KEY
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
+const SUPA_URL='https://hnhvewxfwdpcdcxkxbdw.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaHZld3hmd2RwY2RjeGt4YmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjI5MjYsImV4cCI6MjA5NDA5ODkyNn0.113ebL6tBa3BgoKGSciqllCszw4BWb9En51BhGW08ng';
+async function supaFetch(path,method,body){
+  const res=await fetch(SUPA_URL+path,{method:method||'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY},body:body?JSON.stringify(body):undefined});
   return res.json();
 }
-
-function setAuthLoading(btnId, loading) {
-  const btn = document.getElementById(btnId);
-  if(btn) { btn.disabled = loading; btn.textContent = loading ? 'Ładowanie...' : (btnId === 'login-btn' ? 'Zaloguj się →' : 'Utwórz konto →'); }
+function setAuthLoading(btnId,loading){
+  const btn=document.getElementById(btnId);
+  if(btn){btn.disabled=loading;btn.textContent=loading?'Loading...':(btnId==='login-btn'?'Log in →':'Create account →');}
 }
+function showAuthError(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display='block';}}
+function hideAuthError(id){const el=document.getElementById(id);if(el)el.style.display='none';}
 
-function showAuthError(id, msg) {
-  const el = document.getElementById(id);
-  if(el) { el.textContent = msg; el.style.display = 'block'; }
-}
-function hideAuthError(id) {
-  const el = document.getElementById(id);
-  if(el) el.style.display = 'none';
-}
-
-async function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const password=document.getElementById('login-password').value;
   hideAuthError('login-error');
-  if(!email || !password) { showAuthError('login-error', 'Podaj email i hasło.'); return; }
-  setAuthLoading('login-btn', true);
-  try {
-    const data = await supaFetch('/auth/v1/token?grant_type=password', 'POST', { email, password });
-    if(data.access_token) {
-      localStorage.setItem('sb_access_token', data.access_token);
-      localStorage.setItem('sb_refresh_token', data.refresh_token);
-      localStorage.setItem('sb_user_id', data.user.id);
-      localStorage.setItem('sb_user_email', data.user.email);
-      closeModal();
-      window.location.href = 'dashboard.html';
-    } else {
-      showAuthError('login-error', 'Nieprawidłowy email lub hasło.');
-    }
-  } catch(e) {
-    showAuthError('login-error', 'Błąd połączenia. Spróbuj ponownie.');
-  }
-  setAuthLoading('login-btn', false);
+  if(!email||!password){showAuthError('login-error','Enter email and password.');return;}
+  setAuthLoading('login-btn',true);
+  try{
+    const data=await supaFetch('/auth/v1/token?grant_type=password','POST',{email,password});
+    if(data.access_token){
+      localStorage.setItem('sb_access_token',data.access_token);
+      localStorage.setItem('sb_refresh_token',data.refresh_token);
+      localStorage.setItem('sb_user_id',data.user.id);
+      localStorage.setItem('sb_user_email',data.user.email);
+      closeModal();window.location.href='dashboard.html';
+    }else{showAuthError('login-error','Invalid email or password.');}
+  }catch(e){showAuthError('login-error','Connection error. Try again.');}
+  setAuthLoading('login-btn',false);
 }
 
-async function doSignup() {
-  const name = document.getElementById('signup-name').value.trim();
-  const email = document.getElementById('signup-email').value.trim();
-  const password = document.getElementById('signup-password').value;
+async function doSignup(){
+  const name=document.getElementById('signup-name').value.trim();
+  const email=document.getElementById('signup-email').value.trim();
+  const password=document.getElementById('signup-password').value;
   hideAuthError('signup-error');
-  if(!name) { showAuthError('signup-error', 'Podaj swoje imię.'); return; }
-  if(!email) { showAuthError('signup-error', 'Podaj email.'); return; }
-  if(password.length < 8) { showAuthError('signup-error', 'Hasło musi mieć minimum 8 znaków.'); return; }
-  setAuthLoading('signup-btn', true);
-  try {
-    const data = await supaFetch('/auth/v1/signup', 'POST', { email, password, data: { full_name: name } });
-    if(data.access_token) {
-      localStorage.setItem('sb_access_token', data.access_token);
-      localStorage.setItem('sb_refresh_token', data.refresh_token);
-      localStorage.setItem('sb_user_id', data.user.id);
-      localStorage.setItem('sb_user_email', data.user.email);
-      closeModal();
-      window.location.href = 'dashboard.html';
-    } else if(data.id || (data.user && data.user.id)) {
-      closeModal();
-      showToast('Konto utworzone! Sprawdź email aby potwierdzić rejestrację. ✓');
-    } else {
-      const msg = data.msg || data.message || data.error_description || 'Błąd rejestracji.';
-      showAuthError('signup-error', msg);
+  if(!name){showAuthError('signup-error','Enter your name.');return;}
+  if(!email){showAuthError('signup-error','Enter email.');return;}
+  if(password.length<8){showAuthError('signup-error','Password must be at least 8 characters.');return;}
+  setAuthLoading('signup-btn',true);
+  try{
+    const data=await supaFetch('/auth/v1/signup','POST',{email,password,data:{full_name:name}});
+    if(data.access_token){
+      localStorage.setItem('sb_access_token',data.access_token);
+      localStorage.setItem('sb_refresh_token',data.refresh_token);
+      localStorage.setItem('sb_user_id',data.user.id);
+      localStorage.setItem('sb_user_email',data.user.email);
+      closeModal();window.location.href='dashboard.html';
+    }else if(data.id||(data.user&&data.user.id)){
+      closeModal();showToast('Account created! Check your email to confirm. ✓');
+    }else{
+      showAuthError('signup-error',data.msg||data.message||data.error_description||'Registration error.');
     }
-  } catch(e) {
-    showAuthError('signup-error', 'Błąd połączenia. Spróbuj ponownie.');
-  }
-  setAuthLoading('signup-btn', false);
+  }catch(e){showAuthError('signup-error','Connection error. Try again.');}
+  setAuthLoading('signup-btn',false);
 }
 
-// Enter key support
-document.addEventListener('keydown', function(e) {
-  if(e.key === 'Enter') {
-    const loginForm = document.getElementById('form-login');
-    const signupForm = document.getElementById('form-signup');
-    if(loginForm && loginForm.style.display !== 'none') doLogin();
-    else if(signupForm && signupForm.style.display !== 'none') doSignup();
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    const lf=document.getElementById('form-login');
+    const sf=document.getElementById('form-signup');
+    if(lf&&lf.style.display!=='none')doLogin();
+    else if(sf&&sf.style.display!=='none')doSignup();
   }
+  if(e.key==='Escape')closeModal();
 });
 
-// Auto-redirect if already logged in
-if(localStorage.getItem('sb_access_token')) {
-  window.location.href = 'dashboard.html';
-}
+if(localStorage.getItem('sb_access_token')){window.location.href='dashboard.html';}
 
+function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
 
-// FAQ
-function toggleFaq(el){
-  const item=el.closest('.faq-item');
-  item.classList.toggle('open');
-}
-
-// Support
 function sendSupport(){
   const n=document.getElementById('contact-name').value.trim();
   const e=document.getElementById('contact-email').value.trim();
   const m=document.getElementById('contact-msg').value.trim();
-  if(!n||!e||!m){showToast('Uzupełnij wszystkie pola');return;}
-  showToast('Wiadomość wysłana ✓ — Odpiszemy wkrótce!');
+  if(!n||!e||!m){showToast('Please fill in all fields');return;}
+  showToast('Message sent ✓ — We will reply soon!');
   document.getElementById('contact-name').value='';
   document.getElementById('contact-email').value='';
   document.getElementById('contact-msg').value='';
 }
 
-// Toast
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.style.display='block';
   setTimeout(()=>t.style.display='none',3200);
 }
 
-// Survey
 let surveyStep=1;const totalSteps=5;
 function selectOpt(btn){
   btn.closest('.survey-opts').querySelectorAll('.survey-opt').forEach(b=>b.classList.remove('selected'));
@@ -1165,261 +951,156 @@ function surveySubmit(){
   document.getElementById('sq-5').classList.remove('active');
   document.getElementById('sq-done').classList.add('active');
   document.getElementById('survey-bar').style.width='100%';
-  showToast('Ankieta wysłana ✓ Dzięki!');
+  showToast('Survey submitted ✓ Thanks!');
 }
 
-// Scroll animations
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
-},{threshold:.1});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});},{threshold:.08});
 document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
-
-// ESC close modal
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 </script>
 <script>
-/* ══════════════════════════════════════════
-   LANDING PAGE — PL/EN + USD PRICE
-══════════════════════════════════════════ */
-
-var LANDING_TRANSLATIONS = {
-  'nav-about':    {pl:'O nas',           en:'About'},
-  'nav-how':      {pl:'Jak działa',      en:'How it works'},
-  'nav-features': {pl:'Funkcje',         en:'Features'},
-  'nav-support':  {pl:'Support',         en:'Support'},
-  'nav-survey':   {pl:'Ankieta',         en:'Survey'},
-  'nav-pricing':  {pl:'Cennik',          en:'Pricing'},
-  'nav-privacy':  {pl:'Prywatność',      en:'Privacy'},
-  'nav-login':    {pl:'Zaloguj się',     en:'Log in'},
-  'nav-signup':   {pl:'Zarejestruj się', en:'Sign up'},
-  'hero-badge':   {pl:'Teraz dostępny dla traderów', en:'Now available for traders'},
-  'hero-h1':      {pl:'Journal który<br><em>buduje Cię</em><br>jako tradera.', en:'The journal that<br><em>builds you</em><br>as a trader.'},
-  'hero-sub':     {pl:'Śledź swoje trady, emocje, cele i codzienną rutynę — wszystko w jednym miejscu. Bo najlepsza inwestycja to inwestycja w siebie.', en:'Track your trades, emotions, goals and daily routine — all in one place. Because the best investment is investing in yourself.'},
-  'hero-cta':     {pl:'Zacznij za darmo →', en:'Get started free →'},
-  'hero-how':     {pl:'Jak to działa',     en:'How it works'},
-  'about-label':       {pl:'O nas', en:'About'},
-  'about-main-title':  {pl:'Zbudowany przez traderów,<br>dla traderów.', en:'Built by traders,<br>for traders.'},
-  'about-desc':        {pl:'flojournal to więcej niż journal. To Twój codzienny coach, który pomaga utrzymać dyscyplinę, świadomość i wzrost.', en:'flojournal is more than a journal. It is your daily coach, helping you maintain discipline, awareness and growth.'},
-  'about-p1':          {pl:'Większość traderów skupia się wyłącznie na rynku — zapominając, że <strong>to oni sami są zmienną</strong>. Twój stan emocjonalny, sen, rutyna i nastawienie mają ogromny wpływ na Twoje decyzje.', en:'Most traders focus only on the market — forgetting that <strong>they themselves are the variable</strong>. Your emotional state, sleep, routine and mindset have a huge impact on your decisions.'},
-  'about-p2':          {pl:'flojournal powstał z jednej prostej obserwacji: <strong>najlepsi traderzy prowadzą dzienniki.</strong> Nie dlatego, że muszą — ale dlatego, że to działa. Widzą wzorce, uczą się na błędach i budują konsekwentne procesy.', en:'flojournal was born from one simple observation: <strong>the best traders keep journals.</strong> Not because they have to — but because it works. They see patterns, learn from mistakes and build consistent processes.'},
-  'about-p3':          {pl:'Obecnie skupiamy się głównie na <strong>tradingu</strong> — dzienniku sesji, emocjach, dyscyplinie i wynikach. Jednak to dopiero początek.', en:'We currently focus mainly on <strong>trading</strong> — session journal, emotions, discipline and results. But this is just the beginning.'},
-  'how-label':    {pl:'Jak to działa',  en:'How it works'},
-  'how-title':    {pl:'Cztery kroki do świadomego tradingu.', en:'Four steps to conscious trading.'},
-  'how-step1-title': {pl:'Zacznij dzień z planem',   en:'Start the day with a plan'},
-  'how-step1-desc':  {pl:'Każde rano wypełniasz krótki check-in — jak śpisz, jaki masz poziom energii i co chcesz osiągnąć. Zero wymówek.', en:'Every morning fill in a quick check-in — how you slept, your energy level and what you want to achieve. No excuses.'},
-  'how-step2-title': {pl:'Loguj swoje trady',        en:'Log your trades'},
-  'how-step2-desc':  {pl:'Wpisuj setup, wynik, emocje przed i po. System analizuje wzorce i pokazuje Ci kiedy handlujesz najlepiej.', en:'Enter setup, result, emotions before and after. The system analyzes patterns and shows you when you trade best.'},
-  'how-step3-title': {pl:'Dbaj o siebie',            en:'Take care of yourself'},
-  'how-step3-desc':  {pl:'Śledź sport, sen i regenerację. Najlepsi traderzy wiedzą, że ciało i umysł to fundament wszystkich decyzji.', en:'Track sport, sleep and recovery. The best traders know that body and mind are the foundation of all decisions.'},
-  'how-step4-title': {pl:'Przeglądaj i rośnij',      en:'Review and grow'},
-  'how-step4-desc':  {pl:'Tygodniowe podsumowania, wykresy i wzorce. Widzisz co działa, co nie — i gdzie jest Twój edge.', en:'Weekly summaries, charts and patterns. See what works, what does not — and where your edge is.'},
-  'feat-label':   {pl:'Co znajdziesz w dashboardzie', en:'Inside the dashboard'},
-  'feat-title':   {pl:'Wszystko w jednym miejscu.',   en:'Everything in one place.'},
-  'feat-sub':     {pl:'Każda zakładka to jeden element Twojej rutyny — połącz je razem i miej pełny obraz swojego rozwoju.', en:'Each tab is one element of your routine — combine them and get a complete picture of your growth.'},
-  'price-label':  {pl:'Cennik',              en:'Pricing'},
-  'price-title':  {pl:'Jedna prosta oferta.', en:'One simple offer.'},
-  'price-sub':    {pl:'Bez ukrytych opłat, bez planów premium. Wszystko w jednej cenie.', en:'No hidden fees, no premium tiers. Everything at one price.'},
-  'price-badge':  {pl:'Pełny dostęp',        en:'Full access'},
-  'price-period': {pl:'/ miesiąc · anuluj kiedy chcesz', en:'/ month · cancel anytime'},
-  'price-cta':    {pl:'Zacznij teraz →',     en:'Start now →'},
-  'price-note':   {pl:'Bezpieczna płatność · Bez zobowiązań', en:'Secure payment · No commitment'},
-  'priv-label':   {pl:'Polityka prywatności',      en:'Privacy policy'},
-  'priv-title':   {pl:'Twoje dane,<br>Twoja własność.', en:'Your data,<br>your property.'},
-  'sup-label':    {pl:'Support', en:'Support'},
-  'sup-title':    {pl:'Masz pytania? Mamy odpowiedzi.', en:'Questions? We have answers.'},
-  'sup-contact-title': {pl:'Napisz do nas', en:'Contact us'},
-  'sup-contact-sub':   {pl:'Masz pytanie, sugestię lub bug report? Daj nam znać — naprawdę czytamy każdą wiadomość.', en:'Have a question, suggestion or bug report? Let us know — we read every message.'},
-  'sur-label': {pl:'Ankieta',    en:'Survey'},
-  'sur-title': {pl:'Pomóż nam budować lepszy produkt.', en:'Help us build a better product.'},
-  'sur-sub':   {pl:'Twoja opinia jest dla nas bezcenna. Zajmie to 2 minuty — obiecujemy.', en:'Your feedback is invaluable. It takes 2 minutes — we promise.'},
-  // ABOUT feature cards
-  'av1-label': {pl:'Codzienny journal',   en:'Daily journal'},
-  'av1-desc':  {pl:'Zapisuj myśli, emocje i plany każdego dnia', en:'Record your thoughts, emotions and plans every day'},
-  'av2-label': {pl:'Śledzenie tradów',    en:'Trade tracking'},
-  'av2-desc':  {pl:'Historia wpisów, P&L i analiza wzorców', en:'Entry history, P&L and pattern analysis'},
-  'av3-label': {pl:'Aktywność fizyczna',  en:'Physical activity'},
-  'av3-desc':  {pl:'Sport i regeneracja jako część procesu', en:'Sport and recovery as part of the process'},
-  'av4-label': {pl:'System celów',        en:'Goal system'},
-  'av4-desc':  {pl:'Codzienne rytuały, które budują dyscyplinę', en:'Daily rituals that build discipline'},
-  // About pills
-  'pill1': {pl:'🧠 Psychologia tradingu', en:'🧠 Trading psychology'},
-  'pill2': {pl:'📊 Analiza wyników',      en:'📊 Performance analysis'},
-  'pill3': {pl:'🏃 Zdrowy tryb życia',    en:'🏃 Healthy lifestyle'},
-  'pill4': {pl:'🎯 Zarządzanie celami',   en:'🎯 Goal management'},
-  // Feature cards
-  'f1-title': {pl:'Dashboard',          en:'Dashboard'},
-  'f1-desc':  {pl:'Widok główny z podsumowaniem dnia. Wynik Goalmaxxing, pasek postępu, streak, motywacyjny komunikat od AI Coacha i szybki podgląd dzisiejszych aktywności.', en:'Main view with daily summary. Goalmaxxing score, progress bar, streak, motivational AI Coach message and quick overview of today.'},
-  'f2-title': {pl:'Nowy wpis',          en:'New entry'},
-  'f3-title': {pl:'Goalmaxxing',        en:'Goalmaxxing'},
-  'f4-title': {pl:'Kalendarz & Historia', en:'Calendar & History'},
-  'f5-title': {pl:'Dzienny Status',     en:'Daily Status'},
-  'f6-title': {pl:'Trening + Strava',   en:'Workout + Strava'},
-  'f7-title': {pl:'Podsumowanie dnia',  en:'Day Summary'},
-  'f8-title': {pl:'AI Coach',           en:'AI Coach'},
-  // Pricing list
-  'pr1': {pl:'Trading Journal — pełna historia',  en:'Trading Journal — full history'},
-  'pr2': {pl:'Goalmaxxing — dzienne cele',         en:'Goalmaxxing — daily goals'},
-  'pr3': {pl:'Trening Log + integracja Strava',   en:'Workout Log + Strava integration'},
-  'pr4': {pl:'AI Coach — analiza i powiadomienia', en:'AI Coach — analysis and notifications'},
-  'pr5': {pl:'Podsumowanie dnia — AI raport',     en:'Day Summary — AI report'},
-  'pr6': {pl:'Statystyki, Kalendarz, Daily Status', en:'Stats, Calendar, Daily Status'},
-  'pr7': {pl:'Dwujęzyczny interfejs (PL/EN)',     en:'Bilingual interface (PL/EN)'},
-  // Privacy
-  'prv1-title': {pl:'📦 Co zbieramy',            en:'📦 What we collect'},
-  'prv2-title': {pl:'🔒 Jak przechowujemy dane', en:'🔒 How we store data'},
-  'prv3-title': {pl:'🤖 AI Coach i Strava',      en:'🤖 AI Coach and Strava'},
-  'prv4-title': {pl:'🗑️ Usuwanie konta',         en:'🗑️ Account deletion'},
-  'prv5-title': {pl:'📧 Kontakt',                en:'📧 Contact'},
-  // FEATURE descriptions
-  'f2-desc': {pl:'Trzy sekcje w jednym widoku — Dzień (nastrój, notatka), Trading (para, PNL, zasady, emocje, wykres) i Trening (typ, czas, intensywność, RPE). Wszystko w 2 minuty.', en:'Three sections in one view — Day (mood, note), Trading (pair, PNL, rules, emotions, chart) and Workout (type, duration, intensity, RPE). Done in 2 minutes.'},
-  'f3-desc': {pl:'Ustaw swoje dzienne nawyki i zaznaczaj je każdego dnia. System liczy wynik 0–100 pkt i buduje streak. Zmiana nazwy celu nie usuwa historii.', en:'Set your daily habits and check them off every day. The system calculates a 0–100 score and builds a streak. Renaming a goal does not erase history.'},
-  'f4-desc': {pl:'Pełna historia wpisów. Kliknij dowolny dzień i otworzysz szczegółowy raport — dane, notatki, wykres. Edytuj lub usuń wpis w jednym kliknięciu.', en:'Full entry history. Click any day to open a detailed report — data, notes, chart. Edit or delete in one click.'},
-  'f5-desc': {pl:'Historia Goalmaxxing punktów każdego dnia — wykres postępu, realizacja celów, streak perfekcyjnych dni. Widzisz czy naprawdę budujesz dyscyplinę czy tylko myślisz że budujesz.', en:'Goalmaxxing score history for every day — progress chart, goal completion, perfect day streaks. See if you are really building discipline or just think you are.'},
-  'f6-desc': {pl:'Loguj treningi ręcznie lub połącz konto Strava — aktywności wczytują się automatycznie. Dystans, tempo, tętno, przewyższenie. Rest Day też się liczy.', en:'Log workouts manually or connect your Strava account — activities load automatically. Distance, pace, heart rate, elevation. Rest Day counts too.'},
-  'f7-desc': {pl:'Lista wszystkich Twoich dni z wynikami. Kliknij dzień → AI generuje spersonalizowaną analizę — ocenia trading, trening i cele i daje konkretną radę na jutro.', en:'List of all your days with scores. Click a day and AI generates a personalized analysis — evaluates trading, workout and goals and gives a concrete tip for tomorrow.'},
-  'f8-desc': {pl:'Chat z AI który zna Twoje dane — ostatnie 7 dni tradingu, treningów i celów. Napisz o problemie, dostań konkretną odpowiedź. Plus automatyczne powiadomienia po każdym zapisanym wpisie.', en:'Chat with AI that knows your data — last 7 days of trading, workouts and goals. Describe your problem, get a concrete answer. Plus automatic notifications after every saved entry.'},
-  // PRIVACY descriptions
-  'prv1-desc': {pl:'Zbieramy tylko dane które sam wprowadzasz — wpisy tradingowe, treningowe, notatki i cele. Do logowania używamy Supabase (email + hasło). Nie zbieramy danych o Twoim urządzeniu, zachowaniu na stronie ani nie sprzedajemy żadnych danych.', en:'We only collect data you enter yourself — trading entries, workout logs, notes and goals. We use Supabase for login (email + password). We do not collect device data or browsing behavior, and we never sell your data.'},
-  'prv2-desc': {pl:'Dane są przechowywane w Supabase — europejska infrastruktura, szyfrowanie w spoczynku i w tranzycie. Dane lokalne (cele, ustawienia) są przechowywane w Twoim localStorage i nie opuszczają Twojej przeglądarki.', en:'Data is stored in Supabase — European infrastructure, encrypted at rest and in transit. Local data (goals, settings) is stored in your localStorage and never leaves your browser.'},
-  'prv3-desc': {pl:'AI Coach używa Anthropic API — Twoje dane są wysyłane do analizy ale nie są używane do trenowania modeli. Integracja Strava działa na zasadzie OAuth — możesz ją odłączyć w każdej chwili z poziomu dashboardu.', en:'AI Coach uses the Anthropic API — your data is sent for analysis but is not used to train models. Strava integration works via OAuth — you can disconnect it anytime from the dashboard.'},
-  'prv4-desc': {pl:'Możesz usunąć swoje konto i wszystkie dane w dowolnym momencie kontaktując się z nami przez email. Dane zostaną trwale usunięte w ciągu 7 dni roboczych.', en:'You can delete your account and all data at any time by contacting us via email. Data will be permanently deleted within 7 business days.'},
-  // SUPPORT form
-  'sup-name':    {pl:'Imię',       en:'Name'},
-  'sup-email':   {pl:'Email',      en:'Email'},
-  'sup-msg':     {pl:'Wiadomość',  en:'Message'},
-  'sup-name-ph': {pl:'Twoje imię', en:'Your name'},
-  'sup-email-ph':{pl:'twoj@email.com', en:'your@email.com'},
-  'sup-msg-ph':  {pl:'Opisz swoje pytanie lub problem...', en:'Describe your question or problem...'},
-  'sup-send':    {pl:'Wyślij wiadomość →', en:'Send message →'},
-  // FAQ
-  'faq1-q': {pl:'Czy flojournal jest darmowy?',        en:'Is flojournal free?'},
-  'faq2-q': {pl:'Na jakich rynkach mogę handlować?',       en:'Which markets can I trade?'},
-  'faq3-q': {pl:'Czy moje dane są bezpieczne?',            en:'Is my data secure?'},
-  'faq4-q': {pl:'Czy będą inne moduły poza tradingiem?',   en:'Will there be modules beyond trading?'},
-  'faq5-q': {pl:'Jak skontaktować się z supportem?',       en:'How do I contact support?'},
-  // SURVEY
-  'sq1':     {pl:'1 / 5 — Jak długo traderujesz?', en:'1 / 5 — How long have you been trading?'},
-  'sq-next': {pl:'Dalej →', en:'Next →'},
-  'sq-back':   {pl:'← Wstecz',          en:'← Back'},
-  'sq-submit': {pl:'Wyślij 🚀',          en:'Submit 🚀'},
-  'sq-thanks': {pl:'Dzięki za Twoją opinię!', en:'Thank you for your feedback!'},
-  'sq-thanks-sub': {pl:'Twoje odpowiedzi pomogą nam zbudować narzędzie które naprawdę spełni Twoje potrzeby. Dajemy z siebie 110%.', en:'Your answers will help us build a tool that truly meets your needs. We give 110%.'},
-  'sq-join':   {pl:'Dołącz teraz →',    en:'Join now →'},
-  // SURVEY options
-  'sq1-opt3b': {pl:'3-5 lat', en:'3-5 years'},
-  // Q2
-  'sq2': {pl:'2 / 5 — Na jakim rynku głównie handlujesz?', en:'2 / 5 — Which market do you mainly trade?'},
-  'sq2-opt1': {pl:'Futures / Kontrakty', en:'Futures / Contracts'},
-  'sq2-opt2': {pl:'Forex', en:'Forex'},
-  'sq2-opt3': {pl:'Krypto', en:'Crypto'},
-  'sq2-opt4': {pl:'Akcje / Opcje', en:'Stocks / Options'},
-  // Q3
-  'sq3': {pl:'3 / 5 — Co jest dla Ciebie największym wyzwaniem?', en:'3 / 5 — What is your biggest challenge?'},
-  'sq3-opt1': {pl:'Dyscyplina i trzymanie się planu', en:'Discipline and sticking to the plan'},
-  'sq3-opt2': {pl:'Zarządzanie emocjami podczas tradów', en:'Managing emotions during trades'},
-  'sq3-opt3': {pl:'Analiza błędów i nauka z nich', en:'Analyzing mistakes and learning from them'},
-  'sq3-opt4': {pl:'Konsekwentna rutyna i work-life balance', en:'Consistent routine and work-life balance'},
-  // Q4
-  'sq4': {pl:'4 / 5 — Czy aktywność fizyczna jest częścią Twojej rutyny?', en:'4 / 5 — Is physical activity part of your routine?'},
-  'sq4-opt1': {pl:'Tak, regularnie (4+ razy w tygodniu)', en:'Yes, regularly (4+ times a week)'},
-  'sq4-opt2': {pl:'Czasami (1-3 razy)', en:'Sometimes (1-3 times)'},
-  'sq4-opt3': {pl:'Rzadko, ale chcę to zmienić', en:'Rarely, but I want to change that'},
-  'sq4-opt4': {pl:'Nie — trading to mój sport 😅', en:'No — trading is my sport 😅'},
-  // Q5
-  'sq5': {pl:'5 / 5 — Czego najbardziej oczekujesz od flojournal?', en:'5 / 5 — What do you expect most from flojournal?'},
-  'sq5-opt1': {pl:'Lepsza analiza moich tradów', en:'Better analysis of my trades'},
-  'sq5-opt2': {pl:'System nawyków i rutyna', en:'Habit system and routine'},
-  'sq5-opt3': {pl:'Śledzenie emocji i psychologii', en:'Tracking emotions and psychology'},
-  'sq5-opt4': {pl:'Holistyczny widok: trading + życie', en:'Holistic view: trading + life'},
-  'sq1-opt1': {pl:'Dopiero zaczynam (0-6 miesięcy)', en:'Just starting out (0-6 months)'},
-  'sq1-opt2': {pl:'Ponad rok',                       en:'Over a year'},
-  'sq1-opt3': {pl:'3–5 lat',                         en:'3–5 years'},
-  'sq1-opt4': {pl:'Powyżej 5 lat — weteran 🧙',      en:'Over 5 years — veteran 🧙'},
-  // FAQ answers
-  'faq1-a': {pl:'Dostęp do flojournal kosztuje $10 miesięcznie — jedna prosta oferta, bez ukrytych planów. Anuluj kiedy chcesz.', en:'Access to flojournal costs $10 per month — one simple offer, no hidden plans. Cancel anytime.'},
-  'faq2-a': {pl:'flojournal jest agnostyczny względem rynku — możesz logować trady na Forex, futures, crypto, akcjach i opcjach. Ważne są Twoje dane, nie broker.', en:'flojournal is market-agnostic — you can log trades on Forex, futures, crypto, stocks and options. Your data matters, not the broker.'},
-  'faq3-a': {pl:'Absolutnie. Dane są szyfrowane i przechowywane lokalnie w Twojej przeglądarce. Nie sprzedajemy ani nie udostępniamy żadnych danych osobom trzecim.', en:'Absolutely. Data is encrypted and stored locally in your browser. We never sell or share your data with third parties.'},
-  'faq4-a': {pl:'Tak! Planujemy rozszerzenie dla innych przedsiębiorców — e-commerce, freelancerów, startupowców. Na razie skupiamy się na dopieszczeniu modułu tradingowego.', en:'Yes! We plan to expand for other entrepreneurs — e-commerce, freelancers, startup founders. For now we focus on perfecting the trading module.'},
-  'faq5-a': {pl:'Napisz do nas przez formularz obok lub wyślij email na support@flojournal.app. Odpowiadamy zazwyczaj w ciągu 24h.', en:'Write to us via the form or send an email to support@flojournal.app. We usually reply within 24h.'},
-  'footer-tagline': {pl:'Buduj siebie jako tradera. Codziennie.', en:'Build yourself as a trader. Every day.'},
-  'footer-copy':    {pl:'© 2026 flojournal', en:'© 2026 flojournal'},
+var LANDING_TRANSLATIONS={
+  'nav-about':{pl:'O nas',en:'About'},
+  'nav-how':{pl:'Jak działa',en:'How it works'},
+  'nav-features':{pl:'Funkcje',en:'Features'},
+  'nav-support':{pl:'Support',en:'Support'},
+  'nav-survey':{pl:'Ankieta',en:'Survey'},
+  'nav-pricing':{pl:'Cennik',en:'Pricing'},
+  'nav-privacy':{pl:'Prywatność',en:'Privacy'},
+  'hero-badge':{pl:'Teraz dostępny dla traderów',en:'Now available for traders'},
+  'hero-h1':{pl:'Journal który<br><em>buduje Cię</em><br>jako tradera.',en:'The journal that<br><em>builds you</em><br>as a trader.'},
+  'hero-sub':{pl:'Śledź swoje trady, emocje, cele i codzienną rutynę — wszystko w jednym miejscu. Bo najlepsza inwestycja to inwestycja w siebie.',en:'Track your trades, emotions, goals and daily routine — all in one place. Because the best investment is investing in yourself.'},
+  'hero-how':{pl:'Jak to działa',en:'How it works'},
+  'about-label':{pl:'O nas',en:'About'},
+  'about-main-title':{pl:'Zbudowany przez traderów,<br>dla traderów.',en:'Built by traders,<br>for traders.'},
+  'about-desc':{pl:'flojournal to więcej niż journal. To Twój codzienny coach, który pomaga utrzymać dyscyplinę, świadomość i wzrost.',en:'flojournal is more than a journal. It is your daily coach, helping you maintain discipline, awareness and growth.'},
+  'about-p1':{pl:'Większość traderów skupia się wyłącznie na rynku — zapominając, że <strong>to oni sami są zmienną</strong>. Twój stan emocjonalny, sen, rutyna i nastawienie mają ogromny wpływ na Twoje decyzje.',en:'Most traders focus only on the market — forgetting that <strong>they themselves are the variable</strong>. Your emotional state, sleep, routine and mindset have a huge impact on your decisions.'},
+  'about-p2':{pl:'flojournal powstał z jednej prostej obserwacji: <strong>najlepsi traderzy prowadzą dzienniki.</strong> Nie dlatego, że muszą — ale dlatego, że to działa.',en:'flojournal was born from one simple observation: <strong>the best traders keep journals.</strong> Not because they have to — but because it works.'},
+  'about-p3':{pl:'Obecnie skupiamy się głównie na <strong>tradingu</strong> — dzienniku sesji, emocjach, dyscyplinie i wynikach.',en:'We currently focus mainly on <strong>trading</strong> — session journal, emotions, discipline and results.'},
+  'how-label':{pl:'Jak to działa',en:'How it works'},
+  'how-title':{pl:'Cztery kroki do świadomego tradingu.',en:'Four steps to conscious trading.'},
+  'how-step1-title':{pl:'Zacznij dzień z planem',en:'Start the day with a plan'},
+  'how-step1-desc':{pl:'Każde rano wypełniasz krótki check-in — jak śpisz, jaki masz poziom energii i co chcesz osiągnąć. Zero wymówek.',en:'Every morning fill in a quick check-in — how you slept, your energy level and what you want to achieve. No excuses.'},
+  'how-step2-title':{pl:'Loguj swoje trady',en:'Log your trades'},
+  'how-step2-desc':{pl:'Wpisuj setup, wynik, emocje przed i po. System analizuje wzorce i pokazuje Ci kiedy handlujesz najlepiej.',en:'Enter setup, result, emotions before and after. The system analyzes patterns and shows you when you trade best.'},
+  'how-step3-title':{pl:'Dbaj o siebie',en:'Take care of yourself'},
+  'how-step3-desc':{pl:'Śledź sport, sen i regenerację. Najlepsi traderzy wiedzą, że ciało i umysł to fundament wszystkich decyzji.',en:'Track sport, sleep and recovery. The best traders know that body and mind are the foundation of all decisions.'},
+  'how-step4-title':{pl:'Przeglądaj i rośnij',en:'Review and grow'},
+  'how-step4-desc':{pl:'Tygodniowe podsumowania, wykresy i wzorce. Widzisz co działa, co nie — i gdzie jest Twój edge.',en:'Weekly summaries, charts and patterns. See what works, what does not — and where your edge is.'},
+  'feat-label':{pl:'Co znajdziesz w dashboardzie',en:'Inside the dashboard'},
+  'feat-title':{pl:'Wszystko w jednym miejscu.',en:'Everything in one place.'},
+  'feat-sub':{pl:'Każda zakładka to jeden element Twojej rutyny — połącz je razem i miej pełny obraz swojego rozwoju.',en:'Each tab is one element of your routine — combine them and get a complete picture of your growth.'},
+  'sur-label':{pl:'Ankieta',en:'Survey'},
+  'sur-title':{pl:'Pomóż nam budować lepszy produkt.',en:'Help us build a better product.'},
+  'sur-sub':{pl:'Twoja opinia jest dla nas bezcenna. Zajmie to 2 minuty — obiecujemy.',en:'Your feedback is invaluable. It takes 2 minutes — we promise.'},
+  'price-label':{pl:'Cennik',en:'Pricing'},
+  'price-title':{pl:'Jedna prosta oferta.',en:'One simple offer.'},
+  'price-sub':{pl:'Bez ukrytych opłat, bez planów premium. Wszystko w jednej cenie.',en:'No hidden fees, no premium tiers. Everything at one price.'},
+  'price-badge':{pl:'Pełny dostęp',en:'Full access'},
+  'price-period':{pl:'/ miesiąc · anuluj kiedy chcesz',en:'/ month · cancel anytime'},
+  'price-cta':{pl:'Zacznij teraz →',en:'Start now →'},
+  'price-note':{pl:'Bezpieczna płatność · Bez zobowiązań',en:'Secure payment · No commitment'},
+  'priv-label':{pl:'Polityka prywatności',en:'Privacy policy'},
+  'priv-title':{pl:'Twoje dane,<br>Twoja własność.',en:'Your data,<br>your property.'},
+  'sup-label':{pl:'Support',en:'Support'},
+  'sup-title':{pl:'Masz pytania? Mamy odpowiedzi.',en:'Questions? We have answers.'},
+  'sup-contact-title':{pl:'Napisz do nas',en:'Contact us'},
+  'sup-contact-sub':{pl:'Masz pytanie, sugestię lub bug report? Daj nam znać — naprawdę czytamy każdą wiadomość.',en:'Have a question, suggestion or bug report? Let us know — we read every message.'},
+  'av1-label':{pl:'Codzienny journal',en:'Daily journal'},'av1-desc':{pl:'Zapisuj myśli, emocje i plany każdego dnia',en:'Record your thoughts, emotions and plans every day'},
+  'av2-label':{pl:'Śledzenie tradów',en:'Trade tracking'},'av2-desc':{pl:'Historia wpisów, P&L i analiza wzorców',en:'Entry history, P&L and pattern analysis'},
+  'av3-label':{pl:'Aktywność fizyczna',en:'Physical activity'},'av3-desc':{pl:'Sport i regeneracja jako część procesu',en:'Sport and recovery as part of the process'},
+  'av4-label':{pl:'System celów',en:'Goal system'},'av4-desc':{pl:'Codzienne rytuały, które budują dyscyplinę',en:'Daily rituals that build discipline'},
+  'pill1':{pl:'🧠 Psychologia tradingu',en:'🧠 Trading psychology'},
+  'pill2':{pl:'📊 Analiza wyników',en:'📊 Performance analysis'},
+  'pill3':{pl:'🏃 Zdrowy tryb życia',en:'🏃 Healthy lifestyle'},
+  'pill4':{pl:'🎯 Zarządzanie celami',en:'🎯 Goal management'},
+  'f1-title':{pl:'Dashboard',en:'Dashboard'},'f1-desc':{pl:'Widok główny z podsumowaniem dnia.',en:'Main view with daily summary. Goalmaxxing score, progress bar, streak, AI Coach message.'},
+  'f2-title':{pl:'Nowy wpis',en:'New entry'},'f2-desc':{pl:'Trzy sekcje w jednym widoku — Dzień, Trading i Trening. Wszystko w 2 minuty.',en:'Three sections in one view — Day, Trading and Workout. Done in 2 minutes.'},
+  'f3-title':{pl:'Goalmaxxing',en:'Goalmaxxing'},'f3-desc':{pl:'Ustaw swoje dzienne nawyki i zaznaczaj je każdego dnia. System liczy wynik 0–100 pkt.',en:'Set your daily habits and check them off every day. The system calculates a 0–100 score.'},
+  'f4-title':{pl:'Kalendarz & Historia',en:'Calendar & History'},'f4-desc':{pl:'Pełna historia wpisów. Kliknij dowolny dzień i otworzysz szczegółowy raport.',en:'Full entry history. Click any day to open a detailed report — data, notes, chart.'},
+  'f5-title':{pl:'Dzienny Status',en:'Daily Status'},'f5-desc':{pl:'Historia Goalmaxxing punktów każdego dnia.',en:'Goalmaxxing score history for every day — progress chart, goal completion, perfect day streaks.'},
+  'f6-title':{pl:'Trening + Strava',en:'Workout + Strava'},'f6-desc':{pl:'Loguj treningi ręcznie lub połącz konto Strava.',en:'Log workouts manually or connect your Strava account — activities load automatically.'},
+  'f7-title':{pl:'Podsumowanie dnia',en:'Day Summary'},'f7-desc':{pl:'Lista wszystkich Twoich dni z wynikami. Kliknij dzień → AI generuje analizę.',en:'List of all your days with scores. Click a day and AI generates a personalized analysis.'},
+  'f8-title':{pl:'AI Coach',en:'AI Coach'},'f8-desc':{pl:'Chat z AI który zna Twoje dane — ostatnie 7 dni tradingu, treningów i celów.',en:'Chat with AI that knows your data — last 7 days of trading, workouts and goals.'},
+  'pr1':{pl:'Trading Journal — pełna historia',en:'Trading Journal — full history'},
+  'pr2':{pl:'Goalmaxxing — dzienne cele',en:'Goalmaxxing — daily goals'},
+  'pr3':{pl:'Trening Log + integracja Strava',en:'Workout Log + Strava integration'},
+  'pr4':{pl:'AI Coach — analiza i powiadomienia',en:'AI Coach — analysis and notifications'},
+  'pr5':{pl:'Podsumowanie dnia — AI raport',en:'Day Summary — AI report'},
+  'pr6':{pl:'Statystyki, Kalendarz, Daily Status',en:'Stats, Calendar, Daily Status'},
+  'pr7':{pl:'Dwujęzyczny interfejs (PL/EN)',en:'Bilingual interface (PL/EN)'},
+  'prv1-title':{pl:'📦 Co zbieramy',en:'📦 What we collect'},'prv1-desc':{pl:'Zbieramy tylko dane które sam wprowadzasz — wpisy tradingowe, treningowe, notatki i cele.',en:'We only collect data you enter yourself — trading entries, workout logs, notes and goals. We use Supabase for login. We never sell your data.'},
+  'prv2-title':{pl:'🔒 Jak przechowujemy dane',en:'🔒 How we store data'},'prv2-desc':{pl:'Dane są przechowywane w Supabase — europejska infrastruktura, szyfrowanie w spoczynku i w tranzycie.',en:'Data is stored in Supabase — European infrastructure, encrypted at rest and in transit. Local data is stored in your localStorage and never leaves your browser.'},
+  'prv3-title':{pl:'🤖 AI Coach i Strava',en:'🤖 AI Coach and Strava'},'prv3-desc':{pl:'AI Coach używa Anthropic API — Twoje dane są wysyłane do analizy ale nie są używane do trenowania modeli.',en:'AI Coach uses the Anthropic API — your data is sent for analysis but is not used to train models. Strava works via OAuth — disconnect anytime.'},
+  'prv4-title':{pl:'🗑️ Usuwanie konta',en:'🗑️ Account deletion'},'prv4-desc':{pl:'Możesz usunąć swoje konto i wszystkie dane w dowolnym momencie kontaktując się z nami przez email.',en:'You can delete your account and all data at any time by contacting us via email. Data will be permanently deleted within 7 business days.'},
+  'prv5-title':{pl:'📧 Kontakt',en:'📧 Contact'},
+  'sup-name':{pl:'Imię',en:'Name'},'sup-email':{pl:'Email',en:'Email'},'sup-msg':{pl:'Wiadomość',en:'Message'},
+  'sup-name-ph':{pl:'Twoje imię',en:'Your name'},'sup-email-ph':{pl:'twoj@email.com',en:'your@email.com'},'sup-msg-ph':{pl:'Opisz swoje pytanie lub problem...',en:'Describe your question or problem...'},
+  'sup-send':{pl:'Wyślij wiadomość →',en:'Send message →'},
+  'faq1-q':{pl:'Czy flojournal jest darmowy?',en:'Is flojournal free?'},
+  'faq2-q':{pl:'Na jakich rynkach mogę handlować?',en:'Which markets can I trade?'},
+  'faq3-q':{pl:'Czy moje dane są bezpieczne?',en:'Is my data secure?'},
+  'faq4-q':{pl:'Czy będą inne moduły poza tradingiem?',en:'Will there be modules beyond trading?'},
+  'faq5-q':{pl:'Jak skontaktować się z supportem?',en:'How do I contact support?'},
+  'faq1-a':{pl:'Dostęp do flojournal kosztuje $10 miesięcznie — jedna prosta oferta, bez ukrytych planów. Anuluj kiedy chcesz.',en:'Access to flojournal costs $10 per month — one simple offer, no hidden plans. Cancel anytime.'},
+  'faq2-a':{pl:'flojournal jest agnostyczny względem rynku — możesz logować trady na Forex, futures, crypto, akcjach i opcjach.',en:'flojournal is market-agnostic — you can log trades on Forex, futures, crypto, stocks and options. Your data matters, not the broker.'},
+  'faq3-a':{pl:'Absolutnie. Dane są szyfrowane. Nie sprzedajemy ani nie udostępniamy żadnych danych osobom trzecim.',en:'Absolutely. Data is encrypted and stored securely. We never sell or share your data with third parties.'},
+  'faq4-a':{pl:'Tak! Planujemy rozszerzenie dla innych przedsiębiorców.',en:'Yes! We plan to expand for other entrepreneurs — e-commerce, freelancers, startup founders.'},
+  'faq5-a':{pl:'Napisz do nas przez formularz obok lub wyślij email na support@flojournal.app.',en:'Write to us via the form or send an email to support@flojournal.app. We usually reply within 24h.'},
+  'sq1':{pl:'1 / 5 — Jak długo traderujesz?',en:'1 / 5 — How long have you been trading?'},
+  'sq2':{pl:'2 / 5 — Na jakim rynku głównie handlujesz?',en:'2 / 5 — Which market do you mainly trade?'},
+  'sq3':{pl:'3 / 5 — Co jest dla Ciebie największym wyzwaniem?',en:'3 / 5 — What is your biggest challenge?'},
+  'sq4':{pl:'4 / 5 — Czy aktywność fizyczna jest częścią Twojej rutyny?',en:'4 / 5 — Is physical activity part of your routine?'},
+  'sq5':{pl:'5 / 5 — Czego najbardziej oczekujesz od flojournal?',en:'5 / 5 — What do you expect most from flojournal?'},
+  'sq-next':{pl:'Dalej →',en:'Next →'},'sq-back':{pl:'← Wstecz',en:'← Back'},'sq-submit':{pl:'Wyślij 🚀',en:'Submit 🚀'},
+  'sq-thanks':{pl:'Dzięki za Twoją opinię!',en:'Thank you for your feedback!'},
+  'sq-thanks-sub':{pl:'Twoje odpowiedzi pomogą nam zbudować narzędzie które naprawdę spełni Twoje potrzeby.',en:'Your answers will help us build a tool that truly meets your needs. We give 110%.'},
+  'sq-join':{pl:'Dołącz teraz →',en:'Join now →'},
+  'sq1-opt1':{pl:'Dopiero zaczynam (0-6 miesięcy)',en:'Just starting out (0-6 months)'},
+  'sq1-opt2':{pl:'Ponad rok',en:'Over a year'},
+  'sq1-opt3b':{pl:'3-5 lat',en:'3-5 years'},
+  'sq1-opt4':{pl:'Powyżej 5 lat — weteran 🧙',en:'Over 5 years — veteran 🧙'},
+  'sq2-opt1':{pl:'Futures / Kontrakty',en:'Futures / Contracts'},'sq2-opt2':{pl:'Forex',en:'Forex'},'sq2-opt3':{pl:'Krypto',en:'Crypto'},'sq2-opt4':{pl:'Akcje / Opcje',en:'Stocks / Options'},
+  'sq3-opt1':{pl:'Dyscyplina i trzymanie się planu',en:'Discipline and sticking to the plan'},'sq3-opt2':{pl:'Zarządzanie emocjami podczas tradów',en:'Managing emotions during trades'},'sq3-opt3':{pl:'Analiza błędów i nauka z nich',en:'Analyzing mistakes and learning from them'},'sq3-opt4':{pl:'Konsekwentna rutyna i work-life balance',en:'Consistent routine and work-life balance'},
+  'sq4-opt1':{pl:'Tak, regularnie (4+ razy w tygodniu)',en:'Yes, regularly (4+ times a week)'},'sq4-opt2':{pl:'Czasami (1-3 razy)',en:'Sometimes (1-3 times)'},'sq4-opt3':{pl:'Rzadko, ale chcę to zmienić',en:'Rarely, but I want to change that'},'sq4-opt4':{pl:'Nie — trading to mój sport 😅',en:'No — trading is my sport 😅'},
+  'sq5-opt1':{pl:'Lepsza analiza moich tradów',en:'Better analysis of my trades'},'sq5-opt2':{pl:'System nawyków i rutyna',en:'Habit system and routine'},'sq5-opt3':{pl:'Śledzenie emocji i psychologii',en:'Tracking emotions and psychology'},'sq5-opt4':{pl:'Holistyczny widok: trading + życie',en:'Holistic view: trading + life'},
+  'footer-tagline':{pl:'Buduj siebie jako tradera. Codziennie.',en:'Build yourself as a trader. Every day.'},
 };
 
-var USD_RATE = null;
-
-async function fetchUsdRate(){
-  try{
-    var res = await fetch('https://api.frankfurter.app/latest?from=PLN&to=USD');
-    var data = await res.json();
-    if(data.rates && data.rates.USD){
-      USD_RATE = data.rates.USD; // PLN→USD rate
-    }
-  }catch(e){
-    // fallback rate
-    USD_RATE = 0.25;
-  }
-}
-
-function getPriceDisplay(lang){
-  // Always show $10/mo
-  return '<span style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:54px;font-weight:700;line-height:1;color:var(--text)">$10</span><span style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:22px;color:var(--muted);font-weight:500;margin-left:3px">/mo</span>';
+function getPriceDisplay(){
+  return '<span class="price-num">$10</span><span class="price-per">/mo</span>';
 }
 
 function setLandingLang(lang){
-  document.documentElement.dataset.lang = lang;
-  localStorage.setItem('landing_lang', lang);
-
-  // Update flag opacity
-  var plBtn = document.getElementById('lang-pl-btn');
-  var enBtn = document.getElementById('lang-en-btn');
-  if(plBtn) plBtn.style.opacity = lang === 'pl' ? '1' : '.4';
-  if(enBtn) enBtn.style.opacity = lang === 'en' ? '1' : '.4';
-
-  // Translate all elements with data-i18n
+  document.documentElement.dataset.lang=lang;
+  localStorage.setItem('landing_lang',lang);
+  var plBtn=document.getElementById('lang-pl-btn');
+  var enBtn=document.getElementById('lang-en-btn');
+  if(plBtn){plBtn.classList.toggle('active',lang==='pl');}
+  if(enBtn){enBtn.classList.toggle('active',lang==='en');}
   document.querySelectorAll('[data-i18n]').forEach(function(el){
-    var key = el.dataset.i18n;
-    if(LANDING_TRANSLATIONS[key] && LANDING_TRANSLATIONS[key][lang]){
-      el.innerHTML = LANDING_TRANSLATIONS[key][lang];
-    }
+    var key=el.dataset.i18n;
+    if(LANDING_TRANSLATIONS[key]&&LANDING_TRANSLATIONS[key][lang]){el.innerHTML=LANDING_TRANSLATIONS[key][lang];}
   });
-  // Translate placeholders
   document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
-    var key = el.dataset.i18nPlaceholder;
-    if(LANDING_TRANSLATIONS[key] && LANDING_TRANSLATIONS[key][lang]){
-      el.placeholder = LANDING_TRANSLATIONS[key][lang];
-    }
+    var key=el.dataset.i18nPlaceholder;
+    if(LANDING_TRANSLATIONS[key]&&LANDING_TRANSLATIONS[key][lang]){el.placeholder=LANDING_TRANSLATIONS[key][lang];}
   });
-
-  // Update price
-  var priceEl = document.getElementById('landing-price');
-  if(priceEl) priceEl.innerHTML = getPriceDisplay(lang);
-
-  // Update nav CTA buttons
-  var loginBtn = document.querySelector('.btn-ghost');
-  var signupBtn = document.querySelector('.btn-gold');
-  if(loginBtn) loginBtn.textContent = lang === 'en' ? 'Log in' : 'Zaloguj się';
-  if(signupBtn) signupBtn.textContent = lang === 'en' ? 'Sign up' : 'Zarejestruj się';
-
-  // Update hero CTA
-  var heroCta = document.querySelector('.btn-hero.primary');
-  if(heroCta) heroCta.textContent = lang === 'en' ? 'Get started free →' : 'Zacznij za darmo →';
-  var heroHow = document.querySelector('.btn-hero.secondary');
-  if(heroHow) heroHow.textContent = lang === 'en' ? 'How it works' : 'Jak to działa';
+  var priceEl=document.getElementById('landing-price');
+  if(priceEl)priceEl.innerHTML=getPriceDisplay();
+  var loginBtn=document.querySelector('.btn-ghost');
+  var signupBtn=document.querySelector('.btn-gold');
+  if(loginBtn)loginBtn.textContent=lang==='en'?'Log in':'Zaloguj się';
+  if(signupBtn)signupBtn.textContent=lang==='en'?'Sign up':'Zarejestruj się';
+  var heroCta=document.getElementById('hero-cta-btn');
+  if(heroCta)heroCta.textContent=lang==='en'?'Start right now →':'Zacznij już teraz →';
+  var heroHow=document.querySelector('.btn-hero.secondary');
+  if(heroHow)heroHow.textContent=lang==='en'?'How it works':'Jak to działa';
 }
 
-// Init on load
-document.addEventListener('DOMContentLoaded', function(){
-  var saved = localStorage.getItem('landing_lang') || 'pl';
+document.addEventListener('DOMContentLoaded',function(){
+  var saved=localStorage.getItem('landing_lang')||'en';
   setLandingLang(saved);
-  // Fetch USD rate in background, then update price if EN
-  fetchUsdRate().then(function(){
-    if((localStorage.getItem('landing_lang')||'pl') === 'en'){
-      var priceEl = document.getElementById('landing-price');
-      if(priceEl) priceEl.innerHTML = getPriceDisplay('en');
-    }
-  });
 });
-
 </script>
 </body>
 </html>
