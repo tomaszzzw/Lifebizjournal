@@ -436,7 +436,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
 
     <section class="view" id="view-weekly">
       <div class="card" style="margin-bottom:14px">
-        <div class="card-head"><div><div class="title" id="weekly-title">Tygodniowe statystyki</div><div class="sub" id="weekly-sub">Trading tego tygodnia</div></div><div style="display:flex;gap:8px"><button onclick="weeklyMove(-1)" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;color:var(--muted);cursor:pointer">&#8249;</button><span id="weekly-label" style="font-size:12px;color:var(--muted);min-width:120px;text-align:center"></span><button onclick="weeklyMove(1)" id="weekly-next-btn" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;color:var(--muted);cursor:pointer">&#8250;</button></div></div>
+        <div class="card-head"><div><div class="title" id="weekly-title">Tygodniowe statystyki</div><div class="sub" id="weekly-sub">Trading tego tygodnia</div></div><div style="display:flex;gap:8px"><button onclick="weeklyMove(-1)" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;color:var(--muted);cursor:pointer">&#8249;</button><span id="weekly-label" style="font-size:13px;font-weight:700;color:var(--gold2);min-width:200px;text-align:center;letter-spacing:.2px"></span><button onclick="weeklyMove(1)" id="weekly-next-btn" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;color:var(--muted);cursor:pointer">&#8250;</button></div></div>
         <div id="weekly-metrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:16px 0"></div>
         <div id="weekly-days"></div>
       </div>
@@ -1391,6 +1391,17 @@ function setLang(lang){
   var cv=document.getElementById('view-connect');
   if(cv&&cv.classList.contains('active')){
     loadStravaActivities();
+  }
+  // re-render all dynamic views immediately on language change
+  var _activeView=document.querySelector(".view.active");
+  if(_activeView){
+    var _vid=_activeView.id;
+    if(_vid==="view-weekly"&&typeof renderWeeklyStats==="function")renderWeeklyStats();
+    else if(_vid==="view-history"&&typeof renderHistory==="function")renderHistory();
+    else if(_vid==="view-stats"&&typeof renderStats==="function")renderStats();
+    else if(_vid==="view-calendar"&&typeof renderCalendar==="function")renderCalendar();
+    else if(_vid==="view-summary"&&typeof renderSummaryList==="function")renderSummaryList();
+    else if(_vid==="view-dash"&&typeof renderDash==="function")renderDash();
   }
 }
 
@@ -2702,11 +2713,14 @@ function renderWeeklyStats(){
   // Update title - always in correct language
   var wt=document.getElementById('weekly-title');if(wt)wt.textContent=isEn?'Weekly Stats':'Tygodniowe statystyki';
   var ws2=document.getElementById('weekly-sub');if(ws2)ws2.textContent=isEn?'Trading this week':'Trading tego tygodnia';
-  // Update week label
+  // Update week label — always show full date range with year
   var lbl=document.getElementById('weekly-label');
   if(lbl){
-    if(_wOff===0){lbl.textContent=isEn?'This week':'Ten tydzień';}
-    else{lbl.textContent=mon.toLocaleDateString(isEn?'en-GB':'pl-PL',{day:'numeric',month:'short'})+' – '+sun.toLocaleDateString(isEn?'en-GB':'pl-PL',{day:'numeric',month:'short'});}
+    var fmtOpts={day:'numeric',month:'long'};
+    var monStr=mon.toLocaleDateString(isEn?'en-GB':'pl-PL',fmtOpts);
+    var sunStr=sun.toLocaleDateString(isEn?'en-GB':'pl-PL',fmtOpts);
+    var yr=sun.getFullYear();
+    lbl.textContent=monStr+' – '+sunStr+' '+yr;
   }
   // Collect ALL trading keys and filter by date
   var allKeys=keys('journal_trading_');
@@ -2722,13 +2736,6 @@ function renderWeeklyStats(){
     if(x.rr){var rp=String(x.rr).split(':');var rv=rp.length>1?parseFloat(rp[1]):parseFloat(rp[0]);if(!isNaN(rv)&&rv>0){rrsum+=rv;rrcnt++;}}
     days.push({ds:ds,x:x,n:n});
   });
-  // Show count of all keys for debugging
-  var mel=document.getElementById('weekly-metrics');
-  if(mel&&allKeys.length===0){
-    mel.innerHTML='<div style="color:var(--muted);font-size:12px;padding:8px">'+
-      (isEn?'No trading data found in storage.':'Brak danych tradingowych w pamięci.')+
-    '</div>';
-  }
   days.sort(function(a,b){return b.ds>a.ds?1:-1;});
   var wr=(wins+losses)?Math.round(wins/(wins+losses)*100):0;
   var avgRr=rrcnt?'1:'+(rrsum/rrcnt).toFixed(1):'-';
@@ -2737,18 +2744,43 @@ function renderWeeklyStats(){
   // Render metrics
   var mel=document.getElementById('weekly-metrics');
   if(mel){
+    var posLabel=isEn?'Weekly Positions':'Pozycje tygodniowe';
+    var winsLossStr=wins+'W / '+losses+'L';
     var metrics=[
-      {v:fmtPnl(pnl), l:isEn?'PNL this week':'PNL tygodnia', c:pnlColor},
-      {v:wr+'%',       l:isEn?'Win rate':'Win rate',           c:wrColor},
-      {v:trades,       l:isEn?'Positions':'Pozycji',           c:'var(--text)'},
-      {v:wins,         l:isEn?'Won':'Wygranych',               c:'#63e18e'},
-      {v:losses,       l:isEn?'Lost':'Przegranych',            c:losses>0?'#ff726d':'var(--muted)'},
-      {v:avgRr,        l:isEn?'Avg RR':'Śr. RR',              c:'var(--text)'},
+      {
+        v: fmtPnl(pnl),
+        l: isEn?'Weekly PNL':'Weekly PNL',
+        c: pnlColor,
+        icon: pnl>=0?'📈':'📉',
+        sub: trades>0?(pnl>=0?isEn?'Profitable week':'Zyskowny tydzień':isEn?'Losing week':'Stratny tydzień'):isEn?'No trades':'Brak tradów'
+      },
+      {
+        v: wr+'%',
+        l: isEn?'Weekly Win Rate':'Weekly Win Rate',
+        c: wrColor,
+        icon: '🎯',
+        sub: winsLossStr
+      },
+      {
+        v: avgRr,
+        l: isEn?'Weekly RR':'Weekly RR',
+        c: avgRr!=='-'?'var(--text)':'var(--muted)',
+        icon: '⚖️',
+        sub: rrcnt>0?(isEn?'avg across '+rrcnt+' trades':'śr. z '+rrcnt+' tradów'):isEn?'No RR data':'Brak danych RR'
+      },
+      {
+        v: trades,
+        l: posLabel,
+        c: trades>0?'var(--text)':'var(--muted)',
+        icon: '📊',
+        sub: trades>0?winsLossStr:isEn?'No positions this week':'Brak pozycji w tygodniu'
+      },
     ];
     mel.innerHTML=metrics.map(function(m){
-      return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;text-align:center">'
-        +'<div style="font-size:24px;font-weight:800;color:'+m.c+';margin-bottom:6px">'+m.v+'</div>'
-        +'<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">'+m.l+'</div>'
+      return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:18px 16px;display:flex;flex-direction:column;gap:4px">'
+        +'<div style="font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px"><span>'+m.icon+'</span>'+m.l+'</div>'
+        +'<div style="font-size:28px;font-weight:800;color:'+m.c+';line-height:1.1;margin:6px 0 2px">'+m.v+'</div>'
+        +'<div style="font-size:11px;color:var(--soft)">'+m.sub+'</div>'
       +'</div>';
     }).join('');
   }
@@ -2764,7 +2796,7 @@ function renderWeeklyStats(){
         var pc=!isNaN(n)&&n>0?'#63e18e':!isNaN(n)&&n<0?'#ff726d':'var(--muted)';
         var rs=x.rules==='tak'?(isEn?'Rules ok':'Zasady ok'):x.rules==='nie'?(isEn?'Rules broken':'Zasady złamane'):'';
         var rc=x.rules==='tak'?'#63e18e':'#ff726d';
-        return '<div class="trade-row" onclick="openHistoryDetail(''+row.ds+'')" style="cursor:pointer">'
+        return '<div class="trade-row" onclick="openHistoryDetail(\''+row.ds+'\')" style="cursor:pointer">'
           +'<strong>'+fmt(row.ds)+'</strong>'
           +'<div><b>'+esc(x.pair||'Trade')+'</b>'+(x.rr?'<br><small>RR '+x.rr+'</small>':'')+'</div>'
           +'<div style="display:flex;gap:8px;align-items:center">'
