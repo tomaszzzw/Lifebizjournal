@@ -564,20 +564,30 @@ var save = function(k,v) { localStorage.setItem(k, JSON.stringify(v)); if(k.star
 async function sbSyncFromServer() {
   if(!sbToken || !sbUserId) return;
   try {
-    const res = await fetch(SUPA_URL + '/rest/v1/journal_data?user_id=eq.' + sbUserId + '&select=data_key,data_value&limit=1000', {
+    const res = await fetch(SUPA_URL + '/rest/v1/journal_data?user_id=eq.' + sbUserId + '&select=data_key,data_value,updated_at&limit=1000', {
       headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + sbToken }
     });
     const rows = await res.json();
     if(Array.isArray(rows)) {
+      // Build set of server keys
+      var serverKeys = new Set();
       rows.forEach(function(r) {
         const localKey = r.data_key.replace(sbUserId + '_', '');
-        if(!localStorage.getItem(localKey)) {
-          localStorage.setItem(localKey, r.data_value);
+        serverKeys.add(localKey);
+        // Always overwrite local with server data (server is source of truth)
+        localStorage.setItem(localKey, r.data_value);
+      });
+      // Remove local keys that were deleted on server
+      Object.keys(localStorage).forEach(function(k){
+        if((k.startsWith('journal_') || k.startsWith('user_') || k.startsWith('history_') || k.startsWith('custom_')) && !serverKeys.has(k)){
+          localStorage.removeItem(k);
         }
       });
     }
   } catch(e) { console.log('Supabase sync error:', e); }
-  // Re-render weekly if on that view
+  // Re-render after sync
+  if(typeof renderDash==='function') renderDash();
+  if(typeof renderHistory==='function') renderHistory();
   var wv = document.getElementById('view-weekly');
   if(wv && wv.classList.contains('active') && typeof renderWeeklyStats === 'function') renderWeeklyStats();
 }
@@ -2104,10 +2114,18 @@ function deleteHistoryDay(date){
   var lang=localStorage.getItem('app_lang')||'pl';
   var msg=lang==='en'?'Delete all data for '+fmt(date)+'?':'Usunąć wszystkie dane z dnia '+fmt(date)+'?';
   if(!confirm(msg))return;
-  localStorage.removeItem('journal_new_'+date);
-  localStorage.removeItem('journal_trading_'+date);
-  localStorage.removeItem('journal_workout_'+date);
-  localStorage.removeItem('journal_goals_'+date);
+  var keys=['journal_new_'+date,'journal_trading_'+date,'journal_workout_'+date,'journal_goals_'+date];
+  keys.forEach(function(k){
+    localStorage.removeItem(k);
+    // Delete from Supabase
+    if(sbToken && sbUserId){
+      var fullKey=sbUserId+'_'+k;
+      fetch(SUPA_URL+'/rest/v1/journal_data?user_id=eq.'+sbUserId+'&data_key=eq.'+encodeURIComponent(fullKey),{
+        method:'DELETE',
+        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+sbToken}
+      }).catch(function(){});
+    }
+  });
   closeHistoryModal();
   var t=lang==='en'?'Day deleted':'Dzień usunięty';
   toast(t);
