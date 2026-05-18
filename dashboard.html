@@ -294,7 +294,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
             <svg viewBox="0 0 30 30" width="30" height="30"><rect width="30" height="30" fill="#012169"/><path d="M0,0 L30,30 M30,0 L0,30" stroke="#fff" stroke-width="5"/><path d="M0,0 L30,30 M30,0 L0,30" stroke="#C8102E" stroke-width="3"/><rect x="12" width="6" height="30" fill="#fff"/><rect y="12" width="30" height="6" fill="#fff"/><rect x="13" width="4" height="30" fill="#C8102E"/><rect y="13" width="30" height="4" fill="#C8102E"/></svg>
           </button>
         </div>
-        <button id="theme-toggle" onclick="toggleTheme()" title="Zmień motyw" style="background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s">🌙 Ciemny</button>
+        <button id="theme-toggle" onclick="toggleTheme()" title="Zmień motyw" style="background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s">🌙 Dark</button>
       </div>
     </div>
   </aside>
@@ -338,7 +338,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
 
         <div class="stack">
           <div class="card">
-            <div class="card-head"><div><div class="title" id="title-goals">Goalmaxxing</div><div class="sub" id="goalCount">0 / 5 complete</div></div><div style="display:flex;gap:6px;align-items:center"><span class="tag">day streak</span><button onclick="openGoalEditor()" style="background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font)">&#9998; Edytuj</button></div></div>
+            <div class="card-head"><div><div class="title" id="title-goals">Goalmaxxing</div><div class="sub" id="goalCount">0 / 5 complete</div></div><div style="display:flex;gap:6px;align-items:center"><span class="tag">day streak</span><button onclick="openGoalEditor()" style="background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font)">&#9998; <span id="goal-edit-lbl">Edit</span></button></div></div>
             <div class="goal-list" id="goals"></div>
           </div>
           <div class="card">
@@ -673,7 +673,7 @@ function updateGoalInfo(){
   var rows=document.querySelectorAll('#goal-editor-list > div');
   var n=rows.length,pts=pointsPerGoal(n);
   var info=document.getElementById('goal-editor-info');
-  if(info)info.textContent=n+'/10 (min. 4) • '+pts+' pkt za każdy';
+  if(info)info.textContent=n+'/10 (min. 4) • '+pts+(localStorage.getItem('app_lang')==='en' ? ' pts each' : ' pkt za każdy');
   var btn=document.getElementById('goal-add-btn');
   if(btn)btn.style.opacity=n>=10?'0.4':'1';
 }
@@ -1174,14 +1174,14 @@ function editNick(){
 function toggleTheme(){
   const isBlue = document.body.classList.toggle('theme-blue');
   localStorage.setItem('app_theme', isBlue ? 'blue' : 'dark');
-  document.getElementById('theme-toggle').textContent = isBlue ? '🔵 Niebieski' : '🌙 Ciemny';
+  document.getElementById('theme-toggle').textContent = isBlue ? (localStorage.getItem('app_lang')==='en' ? '🔵 Blue' : '🔵 Niebieski') : (localStorage.getItem('app_lang')==='en' ? '🌙 Dark' : '🌙 Ciemny');
 }
 (function(){
   const t = localStorage.getItem('app_theme');
   if(t === 'blue'){
     document.body.classList.add('theme-blue');
     const btn = document.getElementById('theme-toggle');
-    if(btn) btn.textContent = '🔵 Niebieski';
+    if(btn) btn.textContent = localStorage.getItem('app_lang')==='en' ? '🔵 Blue' : '🔵 Niebieski';
   }
 })();
 
@@ -1293,6 +1293,20 @@ function setLang(lang){
   document.querySelectorAll('[data-pick="wTypes"] button[data-'+lang+']').forEach(function(b){b.textContent=b.getAttribute('data-'+lang);});
   document.querySelectorAll('[data-pick="wFeel"] button[data-'+lang+']').forEach(function(b){b.textContent=b.getAttribute('data-'+lang);});
   document.querySelectorAll('[data-pick="wIntensity"] button[data-'+lang+']').forEach(function(b){b.textContent=b.getAttribute('data-'+lang);});
+  // Goal editor labels
+  var gel=document.getElementById('goal-edit-lbl');if(gel)gel.textContent=lang==='en'?'Edit':'Edytuj';
+  var get2=document.getElementById('goal-editor-title');if(get2)get2.textContent=lang==='en'?'Edit goals':'Edytuj cele';
+  var gal=document.getElementById('goal-add-lbl');if(gal)gal.textContent=lang==='en'?'+ Add goal (max 10)':'+ Dodaj cel (max 10)';
+  var gsl=document.getElementById('goal-save-lbl');if(gsl)gsl.textContent=lang==='en'?'Save goals':'Zapisz cele';
+  var gcl=document.getElementById('goal-cancel-lbl');if(gcl)gcl.textContent=lang==='en'?'Cancel':'Anuluj';
+  // Theme toggle button
+  var tt=document.getElementById('theme-toggle');
+  if(tt){var isB=document.body.classList.contains('theme-blue');tt.textContent=isB?(lang==='en'?'🔵 Blue':'🔵 Niebieski'):(lang==='en'?'🌙 Dark':'🌙 Ciemny');}
+  // Summary + Coach section titles
+  var st=document.getElementById('summary-title');if(st)st.textContent=lang==='en'?'Day Summary':'Podsumowanie dnia';
+  var ss=document.getElementById('summary-sub');if(ss)ss.textContent=lang==='en'?'Your day history — AI analysis':'Historia Twoich dni — AI analiza';
+  var ct=document.getElementById('coach-chat-title');if(ct)ct.textContent='AI Coach';
+  var cs=document.getElementById('coach-chat-sub');if(cs)cs.textContent=lang==='en'?'Write about your trading problems':'Napisz o swoich problemach tradingowych';
   // Coach title (re-render)
   renderDash();
   // Struggles placeholder
@@ -2279,7 +2293,7 @@ function renderSummaryList(){
       if(wd.rest){
         workoutHtml='<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted)">🛌 Rest Day</span>';
       } else if(wd.did){
-        var wTypes=Array.isArray(wd.types)&&wd.types.length?wd.types.join(', '):(isEn?'Workout':'Trening');
+        var wTypes=Array.isArray(wd.types)&&wd.types.length?wd.types.map(function(t){return tv(t);}).join(', '):(isEn?'Workout':'Trening');
         workoutHtml='<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(99,225,142,.1);border:1px solid rgba(99,225,142,.25);color:#63e18e">💪 '+wTypes+'</span>';
       } else {
         workoutHtml='<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--muted)">'+(isEn?'No workout':'Bez treningu')+'</span>';
@@ -2366,7 +2380,7 @@ function openDayModal(date){
   }
   if(wd){
     if(wd.rest)pills.push('<span class="dm-pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted)">🛌 Rest Day</span>');
-    else if(wd.did){var wt=Array.isArray(wd.types)&&wd.types.length?wd.types.join(', '):(isEn?'Workout':'Trening');pills.push('<span class="dm-pill" style="background:rgba(99,225,142,.1);border:1px solid rgba(99,225,142,.25);color:#63e18e">💪 '+wt+'</span>');}
+    else if(wd.did){var wt=Array.isArray(wd.types)&&wd.types.length?wd.types.map(function(t){return tv(t);}).join(', '):(isEn?'Workout':'Trening');pills.push('<span class="dm-pill" style="background:rgba(99,225,142,.1);border:1px solid rgba(99,225,142,.25);color:#63e18e">💪 '+wt+'</span>');}
   }
 
   // Goals list
@@ -2832,14 +2846,14 @@ function renderWeeklyStats(){
 <div id="goal-editor-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
   <div style="background:#1a1f2e;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:28px;width:480px;max-width:94vw">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <div><div style="font-weight:700;font-size:16px;color:#fff">Edytuj cele</div><div id="goal-editor-info" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div>
+      <div><div style="font-weight:700;font-size:16px;color:#fff"<span id="goal-editor-title">Edit goals</span></div><div id="goal-editor-info" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div>
       <button onclick="closeGoalEditor()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer">&times;</button>
     </div>
     <div id="goal-editor-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;max-height:340px;overflow-y:auto"></div>
-    <button id="goal-add-btn" onclick="addGoalRow()" style="width:100%;background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.2);border-radius:8px;padding:10px;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font)">+ Dodaj cel (max 10)</button>
+    <button id="goal-add-btn" onclick="addGoalRow()" style="width:100%;background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.2);border-radius:8px;padding:10px;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font)"><span id="goal-add-lbl">+ Add goal (max 10)</span></button>
     <div style="display:flex;gap:8px;margin-top:16px">
-      <button onclick="saveGoalEditor()" style="flex:1;background:rgba(214,154,83,.2);border:1px solid rgba(214,154,83,.4);border-radius:8px;padding:11px;color:var(--gold2);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Zapisz cele</button>
-      <button onclick="closeGoalEditor()" style="padding:11px 20px;background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font)">Anuluj</button>
+      <button onclick="saveGoalEditor()" style="flex:1;background:rgba(214,154,83,.2);border:1px solid rgba(214,154,83,.4);border-radius:8px;padding:11px;color:var(--gold2);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)"<span id="goal-save-lbl">Save goals</span></button>
+      <button onclick="closeGoalEditor()" style="padding:11px 20px;background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font)"<span id="goal-cancel-lbl">Cancel</span></button>
     </div>
   </div>
 </div>
