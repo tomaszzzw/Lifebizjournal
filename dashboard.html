@@ -492,7 +492,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
 
     <section class="view" id="view-dailystatus">
       <div class="card" style="margin-bottom:14px">
-        <div class="card-head"><div><div class="title">Daily Status</div><div class="sub" id="sub-dailystatus">Historia Readiness punktów — każdy dzień</div></div><span class="tag" id="tag-goalmaxxing">Goalmaxxing</span></div>
+        <div class="card-head"><div><div class="title">Daily Status</div><div class="sub" id="sub-dailystatus">Historia Readiness punktów — każdy dzień</div></div><div style="display:flex;gap:8px;align-items:center"><button onclick="openAddDayModal()" id="btn-add-day" style="background:rgba(99,225,142,.12);border:1px solid rgba(99,225,142,.3);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;color:#63e18e;cursor:pointer;font-family:var(--font)">+ Add day</button><span class="tag" id="tag-goalmaxxing">Goalmaxxing</span></div></div>
         <div id="ds-list" style="margin-top:8px"></div>
       </div>
     </section>
@@ -536,60 +536,95 @@ function keys(prefix){let out=[];for(let i=0;i<localStorage.length;i++){const k=
 /* ── SUPABASE SYNC ── */
 const SUPA_URL = 'https://hnhvewxfwdpcdcxkxbdw.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaHZld3hmd2RwY2RjeGt4YmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjI5MjYsImV4cCI6MjA5NDA5ODkyNn0.113ebL6tBa3BgoKGSciqllCszw4BWb9En51BhGW08ng';
-const sbToken = localStorage.getItem('sb_access_token');
-const sbUserId = localStorage.getItem('sb_user_id');
 
-// Override save to also push to Supabase
+// Always read dynamically - never cache at startup
+function sbToken(){ return localStorage.getItem('sb_access_token'); }
+function sbUserId(){ return localStorage.getItem('sb_user_id'); }
 
-async function sbPush(k, v) {
-  if(!sbToken || !sbUserId) return;
-  const fullKey = sbUserId + '_' + k;
-  try {
-    await fetch(SUPA_URL + '/rest/v1/journal_data', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + sbToken,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify({user_id: sbUserId, data_key: fullKey, data_value: JSON.stringify(v)})
+// Refresh Supabase token
+async function sbRefreshToken(){
+  var rt=localStorage.getItem('sb_refresh_token');
+  if(!rt) return false;
+  try{
+    var res=await fetch(SUPA_URL+'/auth/v1/token?grant_type=refresh_token',{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({refresh_token:rt})
     });
-  } catch(e) {}
+    var data=await res.json();
+    if(data.access_token){
+      localStorage.setItem('sb_access_token',data.access_token);
+      if(data.refresh_token) localStorage.setItem('sb_refresh_token',data.refresh_token);
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+// Auto-refresh every 45 min
+setInterval(sbRefreshToken, 45*60*1000);
+
+// Keys that sync to Supabase
+function shouldSync(k){
+  return k.startsWith('journal_')||k.startsWith('user_')||k.startsWith('history_')||k.startsWith('custom_')||k.startsWith('sf_');
 }
 
-// Replace save with Supabase-aware version
-var save = function(k,v) { localStorage.setItem(k, JSON.stringify(v)); if(k.startsWith('journal_') || k.startsWith('user_') || k.startsWith('history_') || k.startsWith('custom_')) sbPush(k,v); };
-
-async function sbSyncFromServer() {
-  if(!sbToken || !sbUserId) return;
-  try {
-    const res = await fetch(SUPA_URL + '/rest/v1/journal_data?user_id=eq.' + sbUserId + '&select=data_key,data_value,updated_at&limit=1000', {
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + sbToken }
+// Push to Supabase (upsert)
+async function sbPush(k, v) {
+  if(!sbToken()||!sbUserId()) return;
+  const fullKey = sbUserId()+'_'+k;
+  try{
+    await fetch(SUPA_URL+'/rest/v1/journal_data',{
+      method:'POST',
+      headers:{
+        'apikey':SUPA_KEY,
+        'Authorization':'Bearer '+sbToken(),
+        'Content-Type':'application/json',
+        'Prefer':'resolution=merge-duplicates'
+      },
+      body:JSON.stringify({user_id:sbUserId(),data_key:fullKey,data_value:JSON.stringify(v)})
     });
-    const rows = await res.json();
-    if(Array.isArray(rows)) {
-      // Build set of server keys
-      var serverKeys = new Set();
-      rows.forEach(function(r) {
-        const localKey = r.data_key.replace(sbUserId + '_', '');
-        serverKeys.add(localKey);
-        // Always overwrite local with server data (server is source of truth)
-        localStorage.setItem(localKey, r.data_value);
-      });
-      // Remove local keys that were deleted on server
-      Object.keys(localStorage).forEach(function(k){
-        if((k.startsWith('journal_') || k.startsWith('user_') || k.startsWith('history_') || k.startsWith('custom_')) && !serverKeys.has(k)){
-          localStorage.removeItem(k);
-        }
-      });
-    }
-  } catch(e) { console.log('Supabase sync error:', e); }
-  // Re-render after sync
-  if(typeof renderDash==='function') renderDash();
-  if(typeof renderHistory==='function') renderHistory();
-  var wv = document.getElementById('view-weekly');
-  if(wv && wv.classList.contains('active') && typeof renderWeeklyStats === 'function') renderWeeklyStats();
+  }catch(e){}
+}
+
+// Delete from Supabase
+async function sbDelete(k){
+  if(!sbToken()||!sbUserId()) return;
+  var fullKey=sbUserId()+'_'+k;
+  try{
+    await fetch(SUPA_URL+'/rest/v1/journal_data?user_id=eq.'+sbUserId()+'&data_key=eq.'+encodeURIComponent(fullKey),{
+      method:'DELETE',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+sbToken()}
+    });
+  }catch(e){}
+}
+
+// Save: localStorage (instant) + Supabase (sync)
+var save=function(k,v){
+  localStorage.setItem(k,JSON.stringify(v));
+  if(shouldSync(k)) sbPush(k,v);
+};
+
+// Full sync - Supabase is source of truth for ALL devices
+async function sbSyncFromServer(){
+  if(!sbToken()||!sbUserId()) return;
+  try{
+    var res=await fetch(SUPA_URL+'/rest/v1/journal_data?user_id=eq.'+sbUserId()+'&select=data_key,data_value&limit=2000',{
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+sbToken()}
+    });
+    if(!res.ok) return;
+    var rows=await res.json();
+    if(!Array.isArray(rows)) return;
+    var serverKeys=new Set();
+    rows.forEach(function(r){
+      var localKey=r.data_key.replace(sbUserId()+'_','');
+      serverKeys.add(localKey);
+      localStorage.setItem(localKey,r.data_value);
+    });
+    // Remove keys deleted on other devices
+    Object.keys(localStorage).forEach(function(k){
+      if(shouldSync(k)&&!serverKeys.has(k)) localStorage.removeItem(k);
+    });
+  }catch(e){ console.log('Sync error:',e); }
 }
 
 function pnlClass(n){n=parseFloat(n);return !n?'zero':n>0?'pos':'neg'}
@@ -1096,6 +1131,54 @@ document.getElementById('sf-list').addEventListener('click', function(e){
   if(delBtn) deleteSF(delBtn.dataset.sfid);
 });
 
+/* ── ADD DAY MODAL ── */
+function closeAddDayModal(){var m=document.getElementById('add-day-modal');if(m)m.remove();}
+function openAddDayModal(prefillDate){
+  var isEn=localStorage.getItem('app_lang')==='en';
+  var existing=document.getElementById('add-day-modal');
+  if(existing)existing.remove();
+  var goals=getUserGoals();
+  if(!goals.length){toast(isEn?'No goals set yet':'Brak celów');return;}
+  var dateVal=prefillDate||today();
+  var goalsHtml=goals.map(function(g){
+    var checked=false;
+    if(prefillDate){var d=load('journal_goals_'+prefillDate,{});checked=!!d[g.id];}
+    return '<label style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer">'+
+      '<input type="checkbox" data-gid="'+g.id+'" '+(checked?'checked':'')+' style="width:16px;height:16px;accent-color:#63e18e;cursor:pointer">'+
+      '<span style="font-size:13px;color:var(--text)">'+esc(g.label)+'</span>'+
+    '</label>';
+  }).join('');
+  var modal=document.createElement('div');
+  modal.id='add-day-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  modal.innerHTML='<div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;width:100%;max-width:420px;position:relative">'+
+    '<button onclick="closeAddDayModal()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:6px;width:28px;height:28px;color:var(--muted);cursor:pointer;font-size:16px">×</button>'+
+    '<div style="font-size:14px;font-weight:700;margin-bottom:4px">'+(isEn?'Add / Edit Day':'Dodaj / Edytuj dzień')+'</div>'+
+    '<div style="font-size:11px;color:var(--muted);margin-bottom:16px">'+(isEn?'Select date and mark goals':'Wybierz datę i zaznacz cele')+'</div>'+
+    '<div style="margin-bottom:14px"><label style="font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px">'+(isEn?'Date':'Data')+'</label>'+
+    '<input type="date" id="add-day-date" value="'+dateVal+'" style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px"></div>'+
+    '<div style="font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">'+(isEn?'Goals completed':'Ukończone cele')+'</div>'+
+    '<div id="add-day-goals" style="margin-bottom:20px">'+goalsHtml+'</div>'+
+    '<button onclick="saveAddDay()" style="width:100%;height:42px;background:var(--gold);border:none;border-radius:8px;color:#1a1209;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--font)">'+(isEn?'Save day':'Zapisz dzień')+'</button>'+
+  '</div>';
+  document.body.appendChild(modal);
+}
+
+function saveAddDay(){
+  var isEn=localStorage.getItem('app_lang')==='en';
+  var date=document.getElementById('add-day-date').value;
+  if(!date){toast(isEn?'Select a date':'Wybierz datę');return;}
+  var goals=getUserGoals();
+  var data={};
+  document.querySelectorAll('#add-day-goals input[type=checkbox]').forEach(function(cb){
+    data[cb.dataset.gid]=cb.checked;
+  });
+  save('journal_goals_'+date,data);
+  document.getElementById('add-day-modal').remove();
+  toast(isEn?'Day saved ✓':'Dzień zapisany ✓');
+  renderDailyStatus();
+}
+
 /* ── DAILY STATUS ── */
 function renderDailyStatus(){
   const c=document.getElementById('ds-list');if(!c)return;
@@ -1124,6 +1207,7 @@ function renderDailyStatus(){
           '<span style="font-size:11px;color:'+color+'">'+completed+'/'+total+'</span>'+
         '</div>'+
       '</div>'+
+      '<button onclick="openAddDayModal(&quot;'+date+'&quot;)" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 9px;font-size:10px;color:var(--muted);cursor:pointer;font-family:var(--font);flex-shrink:0">✏️</button>'+
     '</div>';
   });
   // Avg score across all days (always out of 100)
@@ -1374,6 +1458,7 @@ function setLang(lang){
   renderCalendar();
   // Daily status sub
   var sds=document.getElementById('sub-dailystatus');if(sds)sds.textContent=lang==='en'?'Readiness history — every day':'Historia Readiness punktów — każdy dzień';
+  var bad=document.getElementById('btn-add-day');if(bad)bad.textContent=lang==='en'?'+ Add day':'+ Dodaj dzień';
   var tgm=document.getElementById('tag-goalmaxxing');if(tgm)tgm.textContent='Goalmaxxing';
   // ── TRAINING SECTION (view-connect) ──
   var tmw=document.getElementById('title-my-workouts');if(tmw)tmw.textContent=lang==='en'?'My Workouts':'Moje treningi';
@@ -2118,11 +2203,11 @@ function deleteHistoryDay(date){
   keys.forEach(function(k){
     localStorage.removeItem(k);
     // Delete from Supabase
-    if(sbToken && sbUserId){
-      var fullKey=sbUserId+'_'+k;
-      fetch(SUPA_URL+'/rest/v1/journal_data?user_id=eq.'+sbUserId+'&data_key=eq.'+encodeURIComponent(fullKey),{
+    if(sbToken() && sbUserId()){
+      var fullKey=sbUserId()+'_'+k;
+      fetch(SUPA_URL+'/rest/v1/journal_data?user_id=eq.'+sbUserId()+'&data_key=eq.'+encodeURIComponent(fullKey),{
         method:'DELETE',
-        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+sbToken}
+        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+sbToken()}
       }).catch(function(){});
     }
   });
@@ -2191,7 +2276,11 @@ function boot(){
   if(nickEl&&savedNick)nickEl.textContent=savedNick;
   loadCustomEmotions();loadCustomWorkoutTypes();loadCustomFeelings();loadCriteria();
   setDefaultDates();renderGoals();renderDash();renderStats();renderCalendar();toggleWorkoutExtra();renderStravaLinkArea();var _bl=localStorage.getItem('app_lang')||'pl';setLang(_bl);renderWeeklyStats();}
-async function startApp(){await sbSyncFromServer();boot();}startApp();
+async function startApp(){
+  await sbSyncFromServer();
+  boot();
+}
+startApp();
 </script>
 <script>
 /* ══════════════════════════════════════════
