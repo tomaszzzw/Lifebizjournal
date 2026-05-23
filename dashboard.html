@@ -766,8 +766,8 @@ function saveNote(id){
   }
   toast('Zapisano ✓');
 }
-function saveDay(){const date=$('#dDate').value||today();save('journal_new_'+date,{date,dayRating:getPick('dRating'),notes:$('#dNotes').value.trim(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Dzień zapisany ✓','Day saved ✓');renderDash();}
-function saveTrade(){const date=$('#tDate').value||today();const _rules=getPick('tRules');const _pnl=$('#tPnl').value;save('journal_trading_'+date,{date,pair:$('#tPair').value.trim(),pnl:_pnl,rr:$('#tRr').value.trim(),rules:_rules,emotions:getPick('tEmotions'),sessionRating:getPick('tSession'),chartUrl:$('#tChartUrl').value.trim(),notes:$('#tNotes').value.trim(),criteria:getSelectedCriteria(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Trading zapisany ✓','Trading saved ✓');renderDash();renderCalendar();renderStats();setTimeout(function(){checkRulesAfterSave({date:date,rules:_rules,pnl:_pnl});},800);}
+function saveDay(){const date=$('#dDate').value||today();save('journal_new_'+date,{date,dayRating:getPick('dRating'),notes:$('#dNotes').value.trim(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Dzień zapisany ✓','Day saved ✓');window._isEditMode=false;renderDash();}
+function saveTrade(){const date=$('#tDate').value||today();const _rules=getPick('tRules');const _pnl=$('#tPnl').value;save('journal_trading_'+date,{date,pair:$('#tPair').value.trim(),pnl:_pnl,rr:$('#tRr').value.trim(),rules:_rules,emotions:getPick('tEmotions'),sessionRating:getPick('tSession'),chartUrl:$('#tChartUrl').value.trim(),notes:$('#tNotes').value.trim(),criteria:getSelectedCriteria(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Trading zapisany ✓','Trading saved ✓');renderDash();renderCalendar();renderStats();if(!window._isEditMode){setTimeout(function(){checkRulesAfterSave({date:date,rules:_rules,pnl:_pnl});},800);}window._isEditMode=false;}
 
 function toggleOtherField(btn){
   var field=document.getElementById('other-type-field');
@@ -778,7 +778,7 @@ function toggleOtherField(btn){
 }
 
 function toggleWorkoutExtra(){const did=getPick('wDid');const el=$('#workoutExtra');if(el)el.classList.toggle('open',did==='yes')}
-function saveWorkout(){const date=$('#wDate').value||today();const did=getPick('wDid');if(!did){toast('Zaznacz czy trenowałeś','Select if you trained');return}const otherType=$('#wOtherType')?$('#wOtherType').value.trim():'';save('journal_workout_'+date,{date,did:did==='yes',rest:did==='rest',types:did==='yes'?getPick('wTypes'):[],otherType:otherType||null,duration:did==='yes'?$('#wDuration').value.trim():'',intensity:did==='yes'?getPick('wIntensity'):null,difficulty:did==='yes'?getPick('wRpe'):null,feeling:did==='yes'?getPick('wFeeling'):null,notes:did==='yes'?$('#wNotes').value.trim():'',savedAt:Date.now()});clearDirty();resetLogForm();toast('Trening zapisany ✓','Workout saved ✓');renderDash();renderStats();}
+function saveWorkout(){const date=$('#wDate').value||today();const did=getPick('wDid');if(!did){toast('Zaznacz czy trenowałeś','Select if you trained');return}const otherType=$('#wOtherType')?$('#wOtherType').value.trim():'';save('journal_workout_'+date,{date,did:did==='yes',rest:did==='rest',types:did==='yes'?getPick('wTypes'):[],otherType:otherType||null,duration:did==='yes'?$('#wDuration').value.trim():'',intensity:did==='yes'?getPick('wIntensity'):null,difficulty:did==='yes'?getPick('wRpe'):null,feeling:did==='yes'?getPick('wFeeling'):null,notes:did==='yes'?$('#wNotes').value.trim():'',savedAt:Date.now()});clearDirty();resetLogForm();toast('Trening zapisany ✓','Workout saved ✓');window._isEditMode=false;renderDash();renderStats();}
 function renderDash(){
   const day=today(), nd=load('journal_new_'+day), td=load('journal_trading_'+day), wd=load('journal_workout_'+day);
   var _gl=getUserGoals().length;var _gd=load('journal_goals_'+day,{});var _done=getUserGoals().filter(function(g){return _gd[g.id];}).length;const gp=_gl>0?Math.min(100,Math.round(_done/_gl*100)):0;$('#goalCount').textContent=_done+' / '+_gl+' complete';$('#dayProgress').style.width=gp+'%';
@@ -944,6 +944,7 @@ function editHistoryDay(date){
   $('#dDate').value=date;setPick('dRating',nd.dayRating);$('#dNotes').value=nd.notes||'';
   $('#tDate').value=date;$('#tPair').value=td.pair||'';$('#tPnl').value=td.pnl||'';$('#tRr').value=td.rr||'';setPick('tRules',td.rules);setMultiPick('tEmotions',td.emotions||[]);setPick('tSession',td.sessionRating);$('#tChartUrl').value=td.chartUrl||'';$('#tNotes').value=td.notes||'';
   $('#wDate').value=date;setPick('wDid',wd.did===false?'no':(wd.did?'yes':null));setMultiPick('wTypes',wd.types||[]);$('#wDuration').value=wd.duration||'';setPick('wIntensity',wd.intensity);setPick('wFeeling',wd.feeling);setPick('wRpe',wd.difficulty);$('#wNotes').value=wd.notes||'';toggleWorkoutExtra();
+  window._isEditMode=true;
   setView('log');setTab('day');toast('Dane dnia zaladowane do edycji');
 }
 function renderStats(){
@@ -2713,7 +2714,7 @@ window.saveWorkout=function(){
   _origSaveWorkout2();
   var date=document.getElementById('wDate')?document.getElementById('wDate').value||today():today();
   var data=load('journal_workout_'+date)||{};
-  checkWorkoutAfterSave(data);
+  if(!window._isEditMode) checkWorkoutAfterSave(data);
 };
 /* Goals notifications disabled */
 
