@@ -839,7 +839,7 @@ async function doLogin(){
       localStorage.setItem('sb_refresh_token',data.refresh_token);
       localStorage.setItem('sb_user_id',data.user.id);
       localStorage.setItem('sb_user_email',data.user.email);
-      closeModal();window.location.href='dashboard.html';
+      closeModal();window.location.href='/dashboard';
     }else{showAuthError('login-error','Invalid email or password.');}
   }catch(e){showAuthError('login-error','Connection error. Try again.');}
   setAuthLoading('login-btn',false);
@@ -874,7 +874,7 @@ async function doSignup(){
         if(checkout.url){window.location.href=checkout.url;return;}
       }catch(e){}
       // Fallback if Stripe fails - go to dashboard
-      closeModal();window.location.href='dashboard.html';
+      closeModal();window.location.href='/dashboard';
     }else if(data.id||(data.user&&data.user.id)){
       closeModal();showToast('Account created! Check your email to confirm, then subscribe to get access. ✓');
     }else{
@@ -894,7 +894,7 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape')closeModal();
 });
 
-if(localStorage.getItem('sb_access_token')){window.location.href='dashboard.html';}
+if(localStorage.getItem('sb_access_token')){window.location.href='/dashboard';}
 
 function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
 
