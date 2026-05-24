@@ -483,7 +483,6 @@ footer{
     <a href="#features" data-i18n="nav-features">Features</a>
     <a href="#pricing" data-i18n="nav-pricing">Pricing</a>
     <a href="#support" data-i18n="nav-support">Support</a>
-    <a href="#privacy" data-i18n="nav-privacy">Privacy</a>
   </div>
   <div class="nav-right">
     <button class="btn-ghost" onclick="openModal('login')">Log in</button>
@@ -503,9 +502,9 @@ footer{
   </div>
 
   <div class="hero-stats fade-in">
-    <div class="hstat"><div class="hstat-num">$10</div><div class="hstat-lbl">Per month</div></div>
-    <div class="hstat"><div class="hstat-num">3-in-1</div><div class="hstat-lbl">Trading · Workout · Goals</div></div>
-    <div class="hstat"><div class="hstat-num">AI</div><div class="hstat-lbl">Personalized coach</div></div>
+    <div class="hstat"><div class="hstat-num">$10</div><div class="hstat-lbl" id="hstat-permonth">Per month</div></div>
+    <div class="hstat"><div class="hstat-num">3-in-1</div><div class="hstat-lbl" id="hstat-3in1">Trading · Workout · Goals</div></div>
+    <div class="hstat"><div class="hstat-num">AI</div><div class="hstat-lbl" id="hstat-coach">Personalized coach</div></div>
   </div>
 
   <div class="preview fade-in">
@@ -625,77 +624,6 @@ footer{
   </div>
 </section>
 
-<div class="divider"></div>
-
-<!-- SURVEY -->
-<section id="survey">
-  <div class="fade-in">
-    <span class="sec-eyebrow" data-i18n="sur-label">Survey</span>
-    <h2 class="sec-title" data-i18n="sur-title">Help us build a better product.</h2>
-    <p class="sec-sub" data-i18n="sur-sub">Your feedback is invaluable. It takes 2 minutes — we promise.</p>
-  </div>
-  <div class="survey-wrap fade-in">
-    <div class="survey-progress"><div class="survey-progress-bar" id="survey-bar" style="width:20%"></div></div>
-    <div class="survey-step active" id="sq-1">
-      <div class="survey-q" data-i18n="sq1">1 / 5 — How long have you been trading?</div>
-      <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq1-opt1">Just starting out (0-6 months)</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq1-opt2">Over a year</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq1-opt3b">3-5 years</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq1-opt4">Over 5 years — veteran 🧙</span></button>
-      </div>
-      <div class="survey-nav"><span></span><button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Next →</span></button></div>
-    </div>
-    <div class="survey-step" id="sq-2">
-      <div class="survey-q" data-i18n="sq2">2 / 5 — Which market do you mainly trade?</div>
-      <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq2-opt1">Futures / Contracts</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq2-opt2">Forex</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq2-opt3">Crypto</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq2-opt4">Stocks / Options</span></button>
-      </div>
-      <div class="survey-nav"><button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Back</span></button><button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Next →</span></button></div>
-    </div>
-    <div class="survey-step" id="sq-3">
-      <div class="survey-q" data-i18n="sq3">3 / 5 — What is your biggest challenge?</div>
-      <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq3-opt1">Discipline and sticking to the plan</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq3-opt2">Managing emotions during trades</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq3-opt3">Analyzing mistakes and learning from them</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq3-opt4">Consistent routine and work-life balance</span></button>
-      </div>
-      <div class="survey-nav"><button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Back</span></button><button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Next →</span></button></div>
-    </div>
-    <div class="survey-step" id="sq-4">
-      <div class="survey-q" data-i18n="sq4">4 / 5 — Is physical activity part of your routine?</div>
-      <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq4-opt1">Yes, regularly (4+ times a week)</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq4-opt2">Sometimes (1-3 times)</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq4-opt3">Rarely, but I want to change that</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq4-opt4">No — trading is my sport 😅</span></button>
-      </div>
-      <div class="survey-nav"><button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Back</span></button><button class="survey-next" onclick="surveyNext()"><span data-i18n="sq-next">Next →</span></button></div>
-    </div>
-    <div class="survey-step" id="sq-5">
-      <div class="survey-q" data-i18n="sq5">5 / 5 — What do you expect most from flojournal?</div>
-      <div class="survey-opts">
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq5-opt1">Better analysis of my trades</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq5-opt2">Habit system and routine</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq5-opt3">Tracking emotions and psychology</span></button>
-        <button class="survey-opt" onclick="selectOpt(this)"><span class="check"></span><span data-i18n="sq5-opt4">Holistic view: trading + life</span></button>
-      </div>
-      <div class="survey-nav"><button class="survey-back" onclick="surveyBack()"><span data-i18n="sq-back">← Back</span></button><button class="survey-next" onclick="surveySubmit()"><span data-i18n="sq-submit">Submit 🚀</span></button></div>
-    </div>
-    <div class="survey-step" id="sq-done">
-      <div class="survey-done">
-        <div class="big">🏆</div>
-        <h3 data-i18n="sq-thanks">Thank you for your feedback!</h3>
-        <p data-i18n="sq-thanks-sub">Your answers will help us build a tool that truly meets your needs. We give 110%.</p>
-        <button class="btn-hero primary" style="margin-top:24px" onclick="openModal('signup')"><span data-i18n="sq-join">Join now →</span></button>
-      </div>
-    </div>
-  </div>
-</section>
 
 <div class="divider"></div>
 
@@ -723,7 +651,7 @@ footer{
         <div class="price-item"><span class="ck">✓</span><span data-i18n="pr7">Bilingual interface (PL/EN)</span></div>
       </div>
       <button class="price-cta" onclick="openModal('signup')"><span data-i18n="price-cta">Start now →</span></button>
-      <div class="price-note" data-i18n="price-note">Secure payment · No commitment</div>
+      <div class="price-note" id="price-note-el" data-i18n="price-note">Secure payment · No commitment</div>
     </div>
   </div>
 </section>
@@ -742,7 +670,7 @@ footer{
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq2-q">Which markets can I trade?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq2-a">flojournal is market-agnostic — you can log trades on Forex, futures, crypto, stocks and options. Your data matters, not the broker.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq3-q">Is my data secure?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq3-a">Absolutely. Data is encrypted and stored locally in your browser. We never sell or share your data with third parties.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq4-q">Will there be modules beyond trading?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq4-a">Yes! We plan to expand for other entrepreneurs — e-commerce, freelancers, startup founders. For now we focus on perfecting the trading module.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq5-q">How do I contact support?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq5-a">Write to us via the form or send an email to support@flojournal.app. We usually reply within 24h.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span data-i18n="faq5-q">How do I contact support?</span><span class="arr">+</span></div><div class="faq-a" data-i18n="faq5-a">Write to us via the form or send an email to flojournalhelp@gmail.com. We usually reply within 24h.</div></div>
     </div>
     <div class="contact-card">
       <h3 data-i18n="sup-contact-title">Contact us</h3>
@@ -756,22 +684,6 @@ footer{
   </div>
 </section>
 
-<div class="divider"></div>
-
-<!-- PRIVACY -->
-<section id="privacy" style="max-width:800px">
-  <div class="fade-in">
-    <span class="sec-eyebrow" data-i18n="priv-label">Privacy policy</span>
-    <h2 class="sec-title" data-i18n="priv-title">Your data,<br>your property.</h2>
-  </div>
-  <div class="priv-grid fade-in">
-    <div class="priv-item"><h3 data-i18n="prv1-title">📦 What we collect</h3><p data-i18n="prv1-desc">We only collect data you enter yourself — trading entries, workout logs, notes and goals. We use Supabase for login (email + password). We do not collect device data or browsing behavior, and we never sell your data.</p></div>
-    <div class="priv-item"><h3 data-i18n="prv2-title">🔒 How we store data</h3><p data-i18n="prv2-desc">Data is stored in Supabase — European infrastructure, encrypted at rest and in transit. Local data (goals, settings) is stored in your localStorage and never leaves your browser.</p></div>
-    <div class="priv-item"><h3 data-i18n="prv3-title">🤖 AI Coach and Strava</h3><p data-i18n="prv3-desc">AI Coach uses the Anthropic API — your data is sent for analysis but is not used to train models. Strava integration works via OAuth — you can disconnect it anytime from the dashboard.</p></div>
-    <div class="priv-item"><h3 data-i18n="prv4-title">🗑️ Account deletion</h3><p data-i18n="prv4-desc">You can delete your account and all data at any time by contacting us via email. Data will be permanently deleted within 7 business days.</p></div>
-    <div class="priv-item"><h3 data-i18n="prv5-title">📧 Contact</h3><p>Privacy questions: <a href="mailto:support@flojournal.app" style="color:var(--gold2);text-decoration:none">support@flojournal.app</a><br>Last updated: May 2026</p></div>
-  </div>
-</section>
 
 <div class="divider"></div>
 
@@ -787,7 +699,7 @@ footer{
     <a href="#features" data-i18n="nav-features">Features</a>
     <a href="#pricing" data-i18n="nav-pricing">Pricing</a>
     <a href="#support" data-i18n="nav-support">Support</a>
-    <a href="#privacy" data-i18n="nav-privacy">Privacy</a>
+    <button id="footer-privacy-btn" onclick="openPrivacyModal()" style="background:none;border:none;color:var(--soft);font-size:12px;font-weight:300;cursor:pointer;font-family:inherit;padding:0">Privacy Policy</button>
   </div>
   <div class="footer-copy">© 2026 flojournal</div>
 </footer>
@@ -884,9 +796,22 @@ async function doSignup(){
       localStorage.setItem('sb_refresh_token',data.refresh_token);
       localStorage.setItem('sb_user_id',data.user.id);
       localStorage.setItem('sb_user_email',data.user.email);
+      // Redirect to Stripe checkout immediately after signup
+      const btn=document.getElementById('signup-btn');
+      if(btn){btn.textContent='Redirecting to payment...';btn.disabled=true;}
+      try{
+        const res=await fetch('/api/create-checkout',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({userId:data.user.id,email:data.user.email})
+        });
+        const checkout=await res.json();
+        if(checkout.url){window.location.href=checkout.url;return;}
+      }catch(e){}
+      // Fallback if Stripe fails - go to dashboard
       closeModal();window.location.href='dashboard.html';
     }else if(data.id||(data.user&&data.user.id)){
-      closeModal();showToast('Account created! Check your email to confirm. ✓');
+      closeModal();showToast('Account created! Check your email to confirm, then subscribe to get access. ✓');
     }else{
       showAuthError('signup-error',data.msg||data.message||data.error_description||'Registration error.');
     }
@@ -1045,7 +970,7 @@ var LANDING_TRANSLATIONS={
   'faq2-a':{pl:'flojournal jest agnostyczny względem rynku — możesz logować trady na Forex, futures, crypto, akcjach i opcjach.',en:'flojournal is market-agnostic — you can log trades on Forex, futures, crypto, stocks and options. Your data matters, not the broker.'},
   'faq3-a':{pl:'Absolutnie. Dane są szyfrowane. Nie sprzedajemy ani nie udostępniamy żadnych danych osobom trzecim.',en:'Absolutely. Data is encrypted and stored securely. We never sell or share your data with third parties.'},
   'faq4-a':{pl:'Tak! Planujemy rozszerzenie dla innych przedsiębiorców.',en:'Yes! We plan to expand for other entrepreneurs — e-commerce, freelancers, startup founders.'},
-  'faq5-a':{pl:'Napisz do nas przez formularz obok lub wyślij email na support@flojournal.app.',en:'Write to us via the form or send an email to support@flojournal.app. We usually reply within 24h.'},
+  'faq5-a':{pl:'Napisz do nas przez formularz obok lub wyślij email na flojournalhelp@gmail.com.',en:'Write to us via the form or send an email to flojournalhelp@gmail.com. We usually reply within 24h.'},
   'sq1':{pl:'1 / 5 — Jak długo traderujesz?',en:'1 / 5 — How long have you been trading?'},
   'sq2':{pl:'2 / 5 — Na jakim rynku głównie handlujesz?',en:'2 / 5 — Which market do you mainly trade?'},
   'sq3':{pl:'3 / 5 — Co jest dla Ciebie największym wyzwaniem?',en:'3 / 5 — What is your biggest challenge?'},
@@ -1075,6 +1000,13 @@ function setLandingLang(lang){
   localStorage.setItem('landing_lang',lang);
   var plBtn=document.getElementById('lang-pl-btn');
   var enBtn=document.getElementById('lang-en-btn');
+  // Fix elements not covered by data-i18n
+  var pn=document.getElementById('price-note-el');if(pn)pn.textContent=lang==='en'?'Secure payment · No commitment':'Bezpieczna płatność · Bez zobowiązań';
+  var hpm=document.getElementById('hstat-permonth');if(hpm)hpm.textContent=lang==='en'?'Per month':'Za miesiąc';
+  var hco=document.getElementById('hstat-coach');if(hco)hco.textContent=lang==='en'?'Personalized coach':'Spersonalizowany coach';
+  var h3i=document.getElementById('hstat-3in1');if(h3i)h3i.textContent=lang==='en'?'Trading · Workout · Goals':'Trading · Trening · Cele';
+  // Update privacy footer button text
+  var pfb=document.querySelector('#footer-privacy-btn');if(pfb)pfb.textContent=lang==='en'?'Privacy Policy':'Polityka prywatności';
   if(plBtn){plBtn.classList.toggle('active',lang==='pl');}
   if(enBtn){enBtn.classList.toggle('active',lang==='en');}
   document.querySelectorAll('[data-i18n]').forEach(function(el){
@@ -1102,5 +1034,82 @@ document.addEventListener('DOMContentLoaded',function(){
   setLandingLang(saved);
 });
 </script>
+
+<!-- PRIVACY MODAL -->
+<div id="privacy-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;overflow-y:auto;backdrop-filter:blur(8px)" onclick="if(event.target.id==='privacy-modal')closePrivacyModal()">
+  <div style="max-width:680px;margin:60px auto;background:#161410;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px;position:relative">
+    <button onclick="closePrivacyModal()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:32px;height:32px;color:#7a7060;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+    <div id="pm-eyebrow" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#c8843a;margin-bottom:12px">Privacy Policy</div>
+    <h2 id="pm-title" style="font-family:'DM Serif Display',serif;font-size:32px;font-weight:400;margin-bottom:6px;color:#f0ebe2">Your data,<br>your property.</h2>
+    <p id="pm-updated" style="font-size:12px;color:#4e4840;margin-bottom:32px">Last updated: May 2026</p>
+
+    <div style="display:grid;gap:8px">
+      <div style="background:#0e0d0b;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:18px 20px">
+        <div id="pm-s1-title" style="font-size:13px;font-weight:500;color:#f0ebe2;margin-bottom:6px">📦 What we collect</div>
+        <p id="pm-s1-body" style="font-size:12px;color:#7a7060;line-height:1.75">We only collect data you enter yourself — trading entries, workout logs, notes and goals. For login we use Supabase (email + password). We do not collect device data, IP addresses or browsing behavior, and we never sell your data.</p>
+      </div>
+      <div style="background:#0e0d0b;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:18px 20px">
+        <div id="pm-s2-title" style="font-size:13px;font-weight:500;color:#f0ebe2;margin-bottom:6px">🔒 How we store data</div>
+        <p id="pm-s2-body" style="font-size:12px;color:#7a7060;line-height:1.75">All data is stored in Supabase — European infrastructure (Frankfurt, Germany), encrypted at rest and in transit. Local settings are stored in your browser\'s localStorage and never leave your device.</p>
+      </div>
+      <div style="background:#0e0d0b;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:18px 20px">
+        <div id="pm-s3-title" style="font-size:13px;font-weight:500;color:#f0ebe2;margin-bottom:6px">💳 Payments via Stripe</div>
+        <p id="pm-s3-body" style="font-size:12px;color:#7a7060;line-height:1.75">All payments are processed securely by Stripe. We never store your credit card details — all payment data is handled directly by Stripe. You can cancel your subscription at any time and retain access until the end of the billing period.</p>
+      </div>
+      <div style="background:#0e0d0b;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:18px 20px">
+        <div id="pm-s4-title" style="font-size:13px;font-weight:500;color:#f0ebe2;margin-bottom:6px">🤖 AI Coach</div>
+        <p id="pm-s4-body" style="font-size:12px;color:#7a7060;line-height:1.75">The AI Coach uses the Anthropic API (Claude). Your recent data is sent to Anthropic only to generate your response — it is not used to train AI models.</p>
+      </div>
+      <div style="background:#0e0d0b;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:18px 20px">
+        <div id="pm-s5-title" style="font-size:13px;font-weight:500;color:#f0ebe2;margin-bottom:6px">🍪 Cookies</div>
+        <p id="pm-s5-body" style="font-size:12px;color:#7a7060;line-height:1.75">We use only essential cookies required for authentication. We do not use advertising cookies, tracking pixels or analytics tools that share data with third parties.</p>
+      </div>
+      <div style="background:#0e0d0b;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:18px 20px">
+        <div id="pm-s6-title" style="font-size:13px;font-weight:500;color:#f0ebe2;margin-bottom:6px">🗑️ Account deletion</div>
+        <p id="pm-s6-body" style="font-size:12px;color:#7a7060;line-height:1.75">You can request deletion of your account and all data at any time. All data will be permanently deleted within 7 business days. This action is irreversible.</p>
+      </div>
+      <div style="background:#0e0d0b;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:18px 20px">
+        <div id="pm-s7-title" style="font-size:13px;font-weight:500;color:#f0ebe2;margin-bottom:6px">📧 Contact & Help</div>
+        <p id="pm-s7-body" style="font-size:12px;color:#7a7060;line-height:1.75">For any privacy questions, account deletion requests or support:<br><a href="mailto:flojournalhelp@gmail.com" style="color:#e8a84e;text-decoration:none">flojournalhelp@gmail.com</a><br>We aim to respond within 48 hours.</p>
+      </div>
+    </div>
+
+    <button id="pm-close-btn" onclick="closePrivacyModal()" style="margin-top:24px;width:100%;height:44px;background:#c8843a;border:none;border-radius:8px;color:#0e0d0b;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">Close</button>
+  </div>
+</div>
+<script>
+function openPrivacyModal(){
+  var isEn=localStorage.getItem('landing_lang')==='en';
+  var m=document.getElementById('privacy-modal');
+  // Update all translatable elements
+  var els={
+    'pm-title': isEn?'Your data,<br>your property.':'Twoje dane,<br>Twoja własność.',
+    'pm-eyebrow': isEn?'Privacy Policy':'Polityka prywatności',
+    'pm-updated': isEn?'Last updated: May 2026':'Ostatnia aktualizacja: maj 2026',
+    'pm-s1-title': isEn?'📦 What we collect':'📦 Co zbieramy',
+    'pm-s1-body': isEn?'We only collect data you enter yourself — trading entries, workout logs, notes and goals. For login we use Supabase (email + password). We do not collect device data, IP addresses or browsing behavior, and we never sell your data.':'Zbieramy tylko dane które sam wprowadzasz — wpisy tradingowe, treningowe, notatki i cele. Do logowania używamy Supabase (email + hasło). Nie zbieramy danych urządzenia, adresów IP ani zachowań przeglądania. Nigdy nie sprzedajemy Twoich danych.',
+    'pm-s2-title': isEn?'🔒 How we store data':'🔒 Jak przechowujemy dane',
+    'pm-s2-body': isEn?'All data is stored in Supabase — European infrastructure (Frankfurt, Germany), encrypted at rest and in transit. Local settings are stored in your browser\'s localStorage and never leave your device.':'Dane są przechowywane w Supabase — europejska infrastruktura (Frankfurt, Niemcy), szyfrowanie w spoczynku i w tranzycie. Lokalne ustawienia są w localStorage i nigdy nie opuszczają Twojego urządzenia.',
+    'pm-s3-title': isEn?'💳 Payments via Stripe':'💳 Płatności przez Stripe',
+    'pm-s3-body': isEn?'All payments are processed securely by Stripe. We never store your credit card details — all payment data is handled directly by Stripe. You can cancel your subscription at any time and retain access until the end of the billing period.':'Wszystkie płatności są obsługiwane przez Stripe. Nigdy nie przechowujemy danych karty — wszystko obsługuje bezpośrednio Stripe. Możesz anulować subskrypcję w dowolnym momencie i zachowujesz dostęp do końca okresu rozliczeniowego.',
+    'pm-s4-title': isEn?'🤖 AI Coach':'🤖 AI Coach',
+    'pm-s4-body': isEn?'The AI Coach uses the Anthropic API (Claude). Your recent data is sent to Anthropic only to generate your response — it is not used to train AI models.':'AI Coach używa Anthropic API (Claude). Twoje dane są wysyłane do Anthropic tylko w celu wygenerowania odpowiedzi — nie są używane do trenowania modeli AI.',
+    'pm-s5-title': isEn?'🍪 Cookies':'🍪 Cookies',
+    'pm-s5-body': isEn?'We use only essential cookies required for authentication. We do not use advertising cookies, tracking pixels or analytics tools that share data with third parties.':'Używamy tylko niezbędnych plików cookie wymaganych do uwierzytelnienia. Nie używamy reklamowych cookies, pikseli śledzących ani narzędzi analitycznych udostępniających dane osobom trzecim.',
+    'pm-s6-title': isEn?'🗑️ Account deletion':'🗑️ Usuwanie konta',
+    'pm-s6-body': isEn?'You can request deletion of your account and all data at any time. All data will be permanently deleted within 7 business days. This action is irreversible.':'Możesz zażądać usunięcia konta i wszystkich danych w dowolnym momencie. Dane zostaną trwale usunięte w ciągu 7 dni roboczych. Ta operacja jest nieodwracalna.',
+    'pm-s7-title': isEn?'📧 Contact & Help':'📧 Kontakt i pomoc',
+    'pm-s7-body': isEn?'For any privacy questions, account deletion requests or support:<br><a href="mailto:flojournalhelp@gmail.com" style="color:#e8a84e;text-decoration:none">flojournalhelp@gmail.com</a><br>We aim to respond within 48 hours.':'W przypadku pytań dotyczących prywatności, żądań usunięcia konta lub wsparcia:<br><a href="mailto:flojournalhelp@gmail.com" style="color:#e8a84e;text-decoration:none">flojournalhelp@gmail.com</a><br>Staramy się odpowiedzieć w ciągu 48 godzin.',
+    'pm-close-btn': isEn?'Close':'Zamknij'
+  };
+  Object.keys(els).forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=els[id];});
+  m.style.display='block';document.body.style.overflow='hidden';
+}
+function closePrivacyModal(){document.getElementById('privacy-modal').style.display='none';document.body.style.overflow='';}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closePrivacyModal();});
+// i18n for privacy footer link
+var _origSetLandingLang=typeof setLandingLang==='function'?setLandingLang:null;
+</script>
+
 </body>
 </html>
