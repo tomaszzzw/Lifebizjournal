@@ -2279,6 +2279,9 @@ function boot(){
   setDefaultDates();renderGoals();renderDash();renderStats();renderCalendar();toggleWorkoutExtra();renderStravaLinkArea();var _bl=localStorage.getItem('app_lang')||'pl';setLang(_bl);renderWeeklyStats();}
 async function checkSubscription(){
   if(!sbToken()||!sbUserId()) return false;
+  // Owner bypass - always has access
+  var OWNER_IDS=['00e88d36-6c70-4f73-96b6-f78e7d4f56ac','5944a341-415b-4691-9254-321c39fd3a9c'];
+  if(OWNER_IDS.indexOf(sbUserId())!==-1) return true;
   try{
     var res=await fetch('https://hnhvewxfwdpcdcxkxbdw.supabase.co/rest/v1/subscriptions?user_id=eq.'+sbUserId()+'&select=status&limit=1',{
       headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaHZld3hmd2RwY2RjeGt4YmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjI5MjYsImV4cCI6MjA5NDA5ODkyNn0.113ebL6tBa3BgoKGSciqllCszw4BWb9En51BhGW08ng','Authorization':'Bearer '+sbToken()}
