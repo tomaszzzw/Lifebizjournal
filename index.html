@@ -748,6 +748,26 @@ footer{
 
 <div class="toast" id="toast"></div>
 
+<!-- RESET PASSWORD MODAL -->
+<div id="reset-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+  <div style="max-width:420px;width:94%;background:#161410;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:36px;position:relative">
+    <div style="font-family:Georgia,serif;font-size:13px;color:#c8843a;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px">flojournal</div>
+    <h2 style="font-family:Georgia,serif;font-size:24px;font-weight:400;color:#f0ebe2;margin:0 0 8px">Set new password</h2>
+    <p style="color:#7a7060;font-size:13px;margin:0 0 24px;line-height:1.6">Choose a strong password for your account.</p>
+    <div style="margin-bottom:14px">
+      <label style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7a7060;font-weight:600;display:block;margin-bottom:6px">New password</label>
+      <input type="password" id="reset-password" placeholder="Min. 8 characters" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#f0ebe2;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7a7060;font-weight:600;display:block;margin-bottom:6px">Confirm password</label>
+      <input type="password" id="reset-password2" placeholder="Repeat password" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#f0ebe2;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box">
+    </div>
+    <div id="reset-error" style="color:#d95f4b;font-size:12px;margin-bottom:12px;display:none"></div>
+    <div id="reset-success" style="color:#7ab648;font-size:12px;margin-bottom:12px;display:none"></div>
+    <button id="reset-btn" onclick="doResetPassword()" style="width:100%;background:#c8843a;border:none;border-radius:8px;color:#0e0d0b;font-weight:700;font-size:14px;padding:14px;cursor:pointer;font-family:inherit">Set new password →</button>
+  </div>
+</div>
+
 <script>
 // Modal
 function openModal(type){document.getElementById('modal').classList.add('open');switchTab(type);}
@@ -1162,6 +1182,66 @@ function closePrivacyModal(){document.getElementById('privacy-modal').style.disp
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closePrivacyModal();});
 // i18n for privacy footer link
 var _origSetLandingLang=typeof setLandingLang==='function'?setLandingLang:null;
+
+// Handle password reset token from URL
+(function(){
+  var hash=window.location.hash;
+  if(!hash)return;
+  var params=new URLSearchParams(hash.replace('#',''));
+  var type=params.get('type');
+  var token=params.get('access_token');
+  if(type==='recovery'&&token){
+    window._resetToken=token;
+    var m=document.getElementById('reset-modal');
+    if(m)m.style.display='flex';
+    history.replaceState(null,'',window.location.pathname);
+  }
+})();
+
+async function doResetPassword(){
+  var lang=localStorage.getItem('landing_lang')||'en';
+  var p1=document.getElementById('reset-password').value;
+  var p2=document.getElementById('reset-password2').value;
+  var errEl=document.getElementById('reset-error');
+  var okEl=document.getElementById('reset-success');
+  var btn=document.getElementById('reset-btn');
+  errEl.style.display='none';okEl.style.display='none';
+  if(!p1||p1.length<8){
+    errEl.textContent=lang==='pl'?'Hasło musi mieć min. 8 znaków.':'Password must be at least 8 characters.';
+    errEl.style.display='block';return;
+  }
+  if(p1!==p2){
+    errEl.textContent=lang==='pl'?'Hasła nie są identyczne.':'Passwords do not match.';
+    errEl.style.display='block';return;
+  }
+  btn.disabled=true;btn.textContent=lang==='pl'?'Zapisywanie...':'Saving...';
+  try{
+    var res=await fetch(SUPA_URL+'/auth/v1/user',{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+window._resetToken},
+      body:JSON.stringify({password:p1})
+    });
+    var data=await res.json();
+    if(res.ok){
+      okEl.textContent=lang==='pl'?'Hasło zmienione! Możesz się teraz zalogować.':'Password changed! You can now log in.';
+      okEl.style.display='block';
+      document.getElementById('reset-password').value='';
+      document.getElementById('reset-password2').value='';
+      setTimeout(function(){
+        document.getElementById('reset-modal').style.display='none';
+        openModal('login');
+      },2000);
+    }else{
+      errEl.textContent=lang==='pl'?'Błąd: '+(data.message||'Spróbuj ponownie.'):'Error: '+(data.message||'Please try again.');
+      errEl.style.display='block';
+    }
+  }catch(e){
+    errEl.textContent=lang==='pl'?'Błąd połączenia.':'Connection error.';
+    errEl.style.display='block';
+  }finally{
+    btn.disabled=false;btn.textContent=lang==='pl'?'Zapisz nowe hasło →':'Set new password →';
+  }
+}
 </script>
 
 </body>
