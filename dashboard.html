@@ -2800,7 +2800,8 @@ function buildCoachContext(){
   var goals=getUserGoals();
   var gd=load('journal_goals_'+today(),{});
   var done=goals.filter(function(g){return gd[g.id];}).length;
-  return 'You are an elite trading psychology and performance coach. Be direct, concise, no fluff. Max 100 words per response.\n\nUser data (last 7 days):\n'+lines.join('\n')+'\nGoals today: '+done+'/'+goals.length+'\nRules streak: '+getRulesStreak()+' days\nWorkout streak: '+getWorkoutStreak()+' days\nLoss streak: '+getLossStreak()+'\n\nRespond in '+(isEn?'English':'Polish')+'.';
+  var dataSection = lines.length > 0 ? '\n\nUser trading & workout data (last 7 days):\n'+lines.join('\n')+'\nGoals today: '+done+'/'+goals.length+'\nRules streak: '+getRulesStreak()+' days\nWorkout streak: '+getWorkoutStreak()+' days' : '';
+  return 'You are a friendly and supportive trading coach and life mentor. Talk naturally like a good friend who happens to know about trading and psychology. Rules:\n- Never use markdown: no **bold**, no *italic*, no bullet points with -, no # headers\n- Use emojis naturally 😊\n- Write short friendly paragraphs\n- First respond to what the user actually said, then if relevant mention their trading data\n- Be warm, encouraging and human\n- Max 3 short paragraphs\n- Always respond in the same language the user writes in'+dataSection;
 }
 function addCoachMsg(role,html){
   var c=document.getElementById('coach-messages');
