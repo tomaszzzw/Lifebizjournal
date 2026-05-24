@@ -829,7 +829,26 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape')closeModal();
 });
 
-if(localStorage.getItem('sb_access_token')){window.location.href='dashboard.html';}
+(async function(){
+  var token=localStorage.getItem('sb_access_token');
+  var refresh=localStorage.getItem('sb_refresh_token');
+  if(!token && !refresh) return;
+  if(refresh){
+    try{
+      var res=await fetch('https://hnhvewxfwdpcdcxkxbdw.supabase.co/auth/v1/token?grant_type=refresh_token',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaHZld3hmd2RwY2RjeGt4YmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjI5MjYsImV4cCI6MjA5NDA5ODkyNn0.113ebL6tBa3BgoKGSciqllCszw4BWb9En51BhGW08ng'},
+        body:JSON.stringify({refresh_token:refresh})
+      });
+      var data=await res.json();
+      if(data.access_token){
+        localStorage.setItem('sb_access_token',data.access_token);
+        if(data.refresh_token)localStorage.setItem('sb_refresh_token',data.refresh_token);
+      }
+    }catch(e){}
+  }
+  if(localStorage.getItem('sb_access_token')) window.location.href='dashboard.html';
+})();
 
 function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
 
