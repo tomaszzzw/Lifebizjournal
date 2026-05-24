@@ -2625,7 +2625,7 @@ async function loadDayModalAI(date, td, wd, gd, goals, goalsDone, score, isEn){
   }
 
   var sys=isEn
-    ?'You are an elite performance coach. Write a personalized daily analysis in 4-6 sentences. Cover: 1) overall day quality, 2) trading assessment (rules + profit/loss - if profit with broken rules warn strongly about building bad habits), 3) fitness/recovery, 4) one specific actionable advice for tomorrow. Be direct, warm but honest. Use **bold** for key phrases.'
+    ?'You are a warm and supportive coach. Write a short friendly analysis in 3-4 sentences. Use emojis naturally. No markdown, no bold, no bullet points. Be encouraging and positive. Write in the same language as the data.'
     :'Jesteś elitarnym coachem wydajności. Napisz spersonalizowaną analizę dnia w 4-6 zdaniach. Uwzględnij: 1) ogólna jakość dnia, 2) ocenę tradingu (zasady + zysk/strata - jeśli zysk przy złamaniu zasad ostrzeż mocno o budowaniu złych nawyków), 3) aktywność fizyczna/regeneracja, 4) jedna konkretna rada na jutro. Bądź bezpośredni, ciepły ale uczciwy. Używaj **bold** dla kluczowych fraz.';
 
   try{
@@ -2800,8 +2800,8 @@ function buildCoachContext(){
   var goals=getUserGoals();
   var gd=load('journal_goals_'+today(),{});
   var done=goals.filter(function(g){return gd[g.id];}).length;
-  var dataSection = lines.length > 0 ? '\n\nUser trading & workout data (last 7 days):\n'+lines.join('\n')+'\nGoals today: '+done+'/'+goals.length+'\nRules streak: '+getRulesStreak()+' days\nWorkout streak: '+getWorkoutStreak()+' days' : '';
-  return 'You are a friendly and supportive trading coach and life mentor. Talk naturally like a good friend who happens to know about trading and psychology. Rules:\n- Never use markdown: no **bold**, no *italic*, no bullet points with -, no # headers\n- Use emojis naturally 😊\n- Write short friendly paragraphs\n- First respond to what the user actually said, then if relevant mention their trading data\n- Be warm, encouraging and human\n- Max 3 short paragraphs\n- Always respond in the same language the user writes in'+dataSection;
+  var dataSection = lines.length > 0 ? '\n\nContext (use only if relevant): '+lines.join(', ')+'\nGoals today: '+done+'/'+goals.length+'\nRules streak: '+getRulesStreak()+' days' : '';
+  return 'You are a warm friendly coach and supportive friend. IMPORTANT RULES:\n1. NEVER use markdown - no **bold**, no *italic*, no - bullet points, no # headers\n2. Use emojis naturally like a friend texting 😊🔥💪\n3. First reply to exactly what the user said - like a normal conversation\n4. Only mention trading data if the user asks about it\n5. Keep it short - max 2-3 sentences\n6. Be positive, warm and human\n7. Always write in the SAME LANGUAGE the user writes in (if Polish - write Polish, if English - write English)'+dataSection;
 }
 function addCoachMsg(role,html){
   var c=document.getElementById('coach-messages');
