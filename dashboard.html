@@ -1402,6 +1402,13 @@ function setLang(lang){
   var ss=document.getElementById('summary-sub');if(ss)ss.textContent=lang==='en'?'Your day history — AI analysis':'Historia Twoich dni — AI analiza';
   var ct=document.getElementById('coach-chat-title');if(ct)ct.textContent='AI Coach';
   var cs=document.getElementById('coach-chat-sub');if(cs)cs.textContent=lang==='en'?'Write about your trading problems':'Napisz o swoich problemach tradingowych';
+  // Coach chat — reset and re-render in new language
+  var coachMsgs = document.getElementById('coach-messages');
+  if (coachMsgs) {
+    coachMsgs.innerHTML = '';
+    if (typeof coachHistory !== 'undefined') coachHistory = [];
+    initCoachChat();
+  }
   // Coach title (re-render)
   renderDash();
   // Struggles placeholder
@@ -2831,7 +2838,7 @@ function initCoachChat(){
   var gd=load('journal_goals_'+today(),{});
   var done=goals.filter(function(g){return gd[g.id];}).length;
   var txt=isEn
-    ?'Hey. I\'m your AI Coach. I see your data:<br><br>📋 Rules streak: <b>'+rs+' days</b><br>💪 Workout streak: <b>'+ws+' days</b><br>🎯 Goals today: <b>'+done+'/'+goals.length+'</b><br><br>What\'s on your mind?'
+    ?'Hey! 👋 I\'m your personal AI Coach — here to help you grow as a trader and stay on track.<br><br>Here\'s where you stand today:<br>📋 Rules streak: <b>'+rs+' day'+(rs===1?'':'s')+'</b> — keep the discipline going!<br>💪 Workout streak: <b>'+ws+' day'+(ws===1?'':'s')+'</b> — body fuels the mind.<br>🎯 Goals completed: <b>'+done+' of '+goals.length+'</b> for today<br><br>What\'s on your mind? I\'m here to listen 🤝'
     :'Hej. Jestem Twoim AI Coachem. Widzę Twoje dane:<br><br>📋 Seria zasad: <b>'+rs+' dni</b><br>💪 Seria treningów: <b>'+ws+' dni</b><br>🎯 Cele dziś: <b>'+done+'/'+goals.length+'</b><br><br>Co Cię trapi?';
   addCoachMsg('ai',txt);
   var btn=document.getElementById('coach-send-btn');
