@@ -2277,8 +2277,69 @@ function boot(){
   if(nickEl&&savedNick)nickEl.textContent=savedNick;
   loadCustomEmotions();loadCustomWorkoutTypes();loadCustomFeelings();loadCriteria();
   setDefaultDates();renderGoals();renderDash();renderStats();renderCalendar();toggleWorkoutExtra();renderStravaLinkArea();var _bl=localStorage.getItem('app_lang')||'pl';setLang(_bl);renderWeeklyStats();}
+async function checkSubscription(){
+  if(!sbToken()||!sbUserId()) return false;
+  try{
+    var res=await fetch('https://hnhvewxfwdpcdcxkxbdw.supabase.co/rest/v1/subscriptions?user_id=eq.'+sbUserId()+'&select=status&limit=1',{
+      headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaHZld3hmd2RwY2RjeGt4YmR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjI5MjYsImV4cCI6MjA5NDA5ODkyNn0.113ebL6tBa3BgoKGSciqllCszw4BWb9En51BhGW08ng','Authorization':'Bearer '+sbToken()}
+    });
+    var data=await res.json();
+    return Array.isArray(data)&&data.length>0&&data[0].status==='active';
+  }catch(e){return false;}
+}
+
+async function startStripeCheckout(){
+  var email=localStorage.getItem('sb_user_email')||'';
+  var userId=sbUserId()||'';
+  try{
+    var res=await fetch('/api/create-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({userId:userId,email:email})
+    });
+    var data=await res.json();
+    if(data.url) window.location.href=data.url;
+    else alert('Error creating checkout. Please try again.');
+  }catch(e){alert('Error. Please try again.');}
+}
+
+function showSubscribeWall(){
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  var wall=document.createElement('div');
+  wall.id='subscribe-wall';
+  wall.style.cssText='position:fixed;inset:0;background:rgba(10,9,7,.96);z-index:99999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px)';
+  wall.innerHTML='<div style="text-align:center;max-width:420px;padding:48px 32px;background:#161410;border:1px solid rgba(200,132,58,.3);border-radius:20px;box-shadow:0 32px 80px rgba(0,0,0,.7)">'
+    +'<div style="font-size:40px;margin-bottom:16px">🔐</div>'
+    +'<div style="font-family:serif;font-size:28px;font-weight:400;color:#f0ebe2;margin-bottom:10px">'+(isEn?'Start your journey':'Zacznij swoją podróż')+'</div>'
+    +'<div style="font-size:14px;color:#7a7060;line-height:1.7;margin-bottom:32px">'+(isEn?'Get full access to flojournal — trading journal, AI coach, workout tracking and daily goals.':'Uzyskaj pełny dostęp do flojournal — dziennik tradingowy, AI coach, śledzenie treningów i cele.')+'</div>'
+    +'<div style="font-size:52px;font-weight:700;color:#f0ebe2;margin-bottom:4px">$10</div>'
+    +'<div style="font-size:13px;color:#7a7060;margin-bottom:28px">'+(isEn?'per month · cancel anytime':'miesięcznie · anuluj kiedy chcesz')+'</div>'
+    +'<button onclick="startStripeCheckout()" style="width:100%;height:52px;background:#c8843a;border:none;border-radius:10px;color:#0e0d0b;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px">'+(isEn?'Subscribe now →':'Subskrybuj teraz →')+'</button>'
+    +'<button onclick="doLogout()" style="width:100%;height:40px;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#4e4840;font-size:12px;cursor:pointer;font-family:inherit">'+(isEn?'Log out':'Wyloguj')+'</button>'
+  +'</div>';
+  document.body.appendChild(wall);
+}
+
 async function startApp(){
   await sbSyncFromServer();
+  // Check subscription
+  var hasSub=await checkSubscription();
+  if(!hasSub){
+    boot();
+    showSubscribeWall();
+    return;
+  }
+  // Handle success/cancel from Stripe
+  var params=new URLSearchParams(window.location.search);
+  if(params.get('sub')==='success'){
+    history.replaceState({},'',window.location.pathname);
+    setTimeout(function(){
+      var lang=localStorage.getItem('app_lang')||'pl';
+      var t=lang==='en'?'Subscription active! Welcome 🎉':'Subskrypcja aktywna! Witaj 🎉';
+      if(typeof toast==='function')toast(t);
+    },1000);
+  }
   boot();
 }
 startApp();
