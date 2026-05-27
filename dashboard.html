@@ -570,10 +570,10 @@ function shouldSync(k){
 
 // Push to Supabase (upsert)
 async function sbPush(k, v) {
-  if(!sbToken()||!sbUserId()) return;
+  if(!sbToken()||!sbUserId()) return false;
   const fullKey = sbUserId()+'_'+k;
   try{
-    await fetch(SUPA_URL+'/rest/v1/journal_data',{
+    var res=await fetch(SUPA_URL+'/rest/v1/journal_data',{
       method:'POST',
       headers:{
         'apikey':SUPA_KEY,
@@ -583,7 +583,8 @@ async function sbPush(k, v) {
       },
       body:JSON.stringify({user_id:sbUserId(),data_key:fullKey,data_value:JSON.stringify(v)})
     });
-  }catch(e){}
+    return res.ok;
+  }catch(e){ console.warn('sbPush error:',k,e); return false; }
 }
 
 // Delete from Supabase
@@ -598,10 +599,10 @@ async function sbDelete(k){
   }catch(e){}
 }
 
-// Save: localStorage (instant) + Supabase (sync)
-var save=function(k,v){
+// Save: localStorage (instant) + Supabase (sync, awaited)
+var save=async function(k,v){
   localStorage.setItem(k,JSON.stringify(v));
-  if(shouldSync(k)) sbPush(k,v);
+  if(shouldSync(k)) await sbPush(k,v);
 };
 
 // Full sync - Supabase is source of truth for ALL devices
@@ -766,8 +767,24 @@ function saveNote(id){
   }
   toast('Zapisano ✓');
 }
-function saveDay(){const date=$('#dDate').value||today();save('journal_new_'+date,{date,dayRating:getPick('dRating'),notes:$('#dNotes').value.trim(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Dzień zapisany ✓','Day saved ✓');window._isEditMode=false;renderDash();}
-function saveTrade(){const date=$('#tDate').value||today();const _rules=getPick('tRules');const _pnl=$('#tPnl').value;save('journal_trading_'+date,{date,pair:$('#tPair').value.trim(),pnl:_pnl,rr:$('#tRr').value.trim(),rules:_rules,emotions:getPick('tEmotions'),sessionRating:getPick('tSession'),chartUrl:$('#tChartUrl').value.trim(),notes:$('#tNotes').value.trim(),criteria:getSelectedCriteria(),savedAt:Date.now()});clearDirty();resetLogForm();toast('Trading zapisany ✓','Trading saved ✓');renderDash();renderCalendar();renderStats();if(!window._isEditMode){setTimeout(function(){checkRulesAfterSave({date:date,rules:_rules,pnl:_pnl});},800);}window._isEditMode=false;}
+async function saveDay(){
+  var btn=document.getElementById('btn-saveday');
+  if(btn){btn.disabled=true;btn.textContent='...';}
+  const date=$('#dDate').value||today();
+  await save('journal_new_'+date,{date,dayRating:getPick('dRating'),notes:$('#dNotes').value.trim(),savedAt:Date.now()});
+  clearDirty();resetLogForm();toast('Dzień zapisany ✓','Day saved ✓');window._isEditMode=false;renderDash();
+  if(btn){btn.disabled=false;btn.textContent='Zapisz dzień';}
+}
+async function saveTrade(){
+  var btn=document.getElementById('btn-savetrading');
+  if(btn){btn.disabled=true;btn.textContent='...';}
+  const date=$('#tDate').value||today();const _rules=getPick('tRules');const _pnl=$('#tPnl').value;
+  await save('journal_trading_'+date,{date,pair:$('#tPair').value.trim(),pnl:_pnl,rr:$('#tRr').value.trim(),rules:_rules,emotions:getPick('tEmotions'),sessionRating:getPick('tSession'),chartUrl:$('#tChartUrl').value.trim(),notes:$('#tNotes').value.trim(),criteria:getSelectedCriteria(),savedAt:Date.now()});
+  clearDirty();resetLogForm();toast('Trading zapisany ✓','Trading saved ✓');renderDash();renderCalendar();renderStats();
+  if(!window._isEditMode){setTimeout(function(){checkRulesAfterSave({date:date,rules:_rules,pnl:_pnl});},800);}
+  window._isEditMode=false;
+  if(btn){btn.disabled=false;btn.textContent='Zapisz trading';}
+}
 
 function toggleOtherField(btn){
   var field=document.getElementById('other-type-field');
@@ -778,7 +795,16 @@ function toggleOtherField(btn){
 }
 
 function toggleWorkoutExtra(){const did=getPick('wDid');const el=$('#workoutExtra');if(el)el.classList.toggle('open',did==='yes')}
-function saveWorkout(){const date=$('#wDate').value||today();const did=getPick('wDid');if(!did){toast('Zaznacz czy trenowałeś','Select if you trained');return}const otherType=$('#wOtherType')?$('#wOtherType').value.trim():'';save('journal_workout_'+date,{date,did:did==='yes',rest:did==='rest',types:did==='yes'?getPick('wTypes'):[],otherType:otherType||null,duration:did==='yes'?$('#wDuration').value.trim():'',intensity:did==='yes'?getPick('wIntensity'):null,difficulty:did==='yes'?getPick('wRpe'):null,feeling:did==='yes'?getPick('wFeeling'):null,notes:did==='yes'?$('#wNotes').value.trim():'',savedAt:Date.now()});clearDirty();resetLogForm();toast('Trening zapisany ✓','Workout saved ✓');window._isEditMode=false;renderDash();renderStats();}
+async function saveWorkout(){
+  const did=getPick('wDid');if(!did){toast('Zaznacz czy trenowałeś','Select if you trained');return;}
+  var btn=document.getElementById('btn-saveworkout');
+  if(btn){btn.disabled=true;btn.textContent='...';}
+  const date=$('#wDate').value||today();
+  const otherType=$('#wOtherType')?$('#wOtherType').value.trim():'';
+  await save('journal_workout_'+date,{date,did:did==='yes',rest:did==='rest',types:did==='yes'?getPick('wTypes'):[],otherType:otherType||null,duration:did==='yes'?$('#wDuration').value.trim():'',intensity:did==='yes'?getPick('wIntensity'):null,difficulty:did==='yes'?getPick('wRpe'):null,feeling:did==='yes'?getPick('wFeeling'):null,notes:did==='yes'?$('#wNotes').value.trim():'',savedAt:Date.now()});
+  clearDirty();resetLogForm();toast('Trening zapisany ✓','Workout saved ✓');window._isEditMode=false;renderDash();renderStats();
+  if(btn){btn.disabled=false;btn.textContent='Zapisz trening';}
+}
 function renderDash(){
   const day=today(), nd=load('journal_new_'+day), td=load('journal_trading_'+day), wd=load('journal_workout_'+day);
   var _gl=getUserGoals().length;var _gd=load('journal_goals_'+day,{});var _done=getUserGoals().filter(function(g){return _gd[g.id];}).length;const gp=_gl>0?Math.min(100,Math.round(_done/_gl*100)):0;$('#goalCount').textContent=_done+' / '+_gl+' complete';$('#dayProgress').style.width=gp+'%';
@@ -2774,8 +2800,8 @@ function checkGoalsAfterSave(){
 }
 /* Hook saveWorkout */
 var _origSaveWorkout2=window.saveWorkout;
-window.saveWorkout=function(){
-  _origSaveWorkout2();
+window.saveWorkout=async function(){
+  await _origSaveWorkout2();
   var date=document.getElementById('wDate')?document.getElementById('wDate').value||today():today();
   var data=load('journal_workout_'+date)||{};
   if(!window._isEditMode) checkWorkoutAfterSave(data);
