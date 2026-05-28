@@ -2815,19 +2815,25 @@ function buildCoachContext(){
   var isEn=lang==='en';
   var lines=[];
   var d=new Date();
+  var dayNames=isEn
+    ?['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    :['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+  var now=new Date();
+  var todayStr=now.toLocaleDateString(isEn?'en-GB':'pl-PL',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   for(var i=0;i<7;i++){
     var ds=d.toISOString().slice(0,10);
+    var dayName=dayNames[d.getDay()];
     var td=load('journal_trading_'+ds);
-    if(td)lines.push('Trading '+ds+': PNL='+(td.pnl||'?')+' Rules='+(td.rules||'?')+' Session='+(td.sessionRating||'?'));
+    if(td)lines.push('Trading '+ds+' ('+dayName+'): PNL='+(td.pnl||'?')+' Rules='+(td.rules||'?')+' Session='+(td.sessionRating||'?'));
     var wd=load('journal_workout_'+ds);
-    if(wd&&wd.did)lines.push('Workout '+ds+': '+(Array.isArray(wd.types)?wd.types.join(','):'')+' RPE='+(wd.difficulty||'?'));
+    if(wd&&wd.did)lines.push('Workout '+ds+' ('+dayName+'): '+(Array.isArray(wd.types)?wd.types.join(','):'')+' RPE='+(wd.difficulty||'?'));
     d.setDate(d.getDate()-1);
   }
   var goals=getUserGoals();
   var gd=load('journal_goals_'+today(),{});
   var done=goals.filter(function(g){return gd[g.id];}).length;
   var dataSection = lines.length > 0 ? '\n\nContext (use only if relevant): '+lines.join(', ')+'\nGoals today: '+done+'/'+goals.length+'\nRules streak: '+getRulesStreak()+' days' : '';
-  return 'You are a warm friendly coach and supportive friend. IMPORTANT RULES:\n1. NEVER use markdown - no **bold**, no *italic*, no - bullet points, no # headers\n2. Use emojis naturally like a friend texting 😊🔥💪\n3. First reply to exactly what the user said - like a normal conversation\n4. Only mention trading data if the user asks about it\n5. Keep it short - max 2-3 sentences\n6. Be positive, warm and human\n7. Always write in the SAME LANGUAGE the user writes in (if Polish - write Polish, if English - write English)'+dataSection;
+  return 'You are a warm friendly coach and supportive friend. IMPORTANT RULES:\n1. NEVER use markdown - no **bold**, no *italic*, no - bullet points, no # headers\n2. Use emojis naturally like a friend texting 😊🔥💪\n3. First reply to exactly what the user said - like a normal conversation\n4. Only mention trading data if the user asks about it\n5. Keep it short - max 2-3 sentences\n6. Be positive, warm and human\n7. Always write in the SAME LANGUAGE the user writes in (if Polish - write Polish, if English - write English)\n8. TODAY is: '+todayStr+' — ALWAYS use this as date reference, never guess or invent day names'+dataSection;
 }
 function addCoachMsg(role,html){
   var c=document.getElementById('coach-messages');
