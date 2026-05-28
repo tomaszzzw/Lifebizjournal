@@ -527,7 +527,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
 <script>
 const $=s=>document.querySelector(s);
 const $$=(s,root=document)=>Array.from(root.querySelectorAll(s));
-const today=()=>{const d=new Date();return d.toISOString().slice(0,10)};
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const fmt=d=>d?d.split('-').reverse().join('.'):'-';
 const load=(k,f=null)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}};
 const _saveLoc=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
@@ -2818,22 +2818,30 @@ function buildCoachContext(){
   var dayNames=isEn
     ?['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
     :['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
-  var now=new Date();
-  var todayStr=now.toLocaleDateString(isEn?'en-GB':'pl-PL',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  var todayStr=d.toLocaleDateString(isEn?'en-GB':'pl-PL',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   for(var i=0;i<7;i++){
-    var ds=d.toISOString().slice(0,10);
+    // Use local date, not UTC
+    var ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     var dayName=dayNames[d.getDay()];
+    var label=i===0?(isEn?'TODAY':'DZIŚ'):i===1?(isEn?'YESTERDAY':'WCZORAJ'):dayName;
     var td=load('journal_trading_'+ds);
-    if(td)lines.push('Trading '+ds+' ('+dayName+'): PNL='+(td.pnl||'?')+' Rules='+(td.rules||'?')+' Session='+(td.sessionRating||'?'));
+    if(td)lines.push(label+' '+ds+': PNL='+(td.pnl||'brak')+', Zasady='+(td.rules||'brak')+', Sesja='+(td.sessionRating||'brak'));
     var wd=load('journal_workout_'+ds);
-    if(wd&&wd.did)lines.push('Workout '+ds+' ('+dayName+'): '+(Array.isArray(wd.types)?wd.types.join(','):'')+' RPE='+(wd.difficulty||'?'));
+    if(wd&&(wd.did||wd.rest))lines.push(label+' trening: '+(wd.rest?'odpoczynek':(Array.isArray(wd.types)&&wd.types.length?wd.types.join(', '):'tak'))+' RPE='+(wd.difficulty||'?'));
     d.setDate(d.getDate()-1);
   }
   var goals=getUserGoals();
   var gd=load('journal_goals_'+today(),{});
   var done=goals.filter(function(g){return gd[g.id];}).length;
-  var dataSection = lines.length > 0 ? '\n\nContext (use only if relevant): '+lines.join(', ')+'\nGoals today: '+done+'/'+goals.length+'\nRules streak: '+getRulesStreak()+' days' : '';
-  return 'You are a warm friendly coach and supportive friend. IMPORTANT RULES:\n1. NEVER use markdown - no **bold**, no *italic*, no - bullet points, no # headers\n2. Use emojis naturally like a friend texting 😊🔥💪\n3. First reply to exactly what the user said - like a normal conversation\n4. Only mention trading data if the user asks about it\n5. Keep it short - max 2-3 sentences\n6. Be positive, warm and human\n7. Always write in the SAME LANGUAGE the user writes in (if Polish - write Polish, if English - write English)\n8. TODAY is: '+todayStr+' — ALWAYS use this as date reference, never guess or invent day names'+dataSection;
+  var rulesStreak=getRulesStreak();
+  var workoutStreak=getWorkoutStreak();
+  var dataSection=lines.length>0
+    ?'\n\nDANE UŻYTKOWNIKA (ostatnie 7 dni, używaj TYLKO gdy użytkownik pyta o dane):\n'+lines.join('\n')+'\nCele dziś: '+done+'/'+goals.length+'\nSeria zasad: '+rulesStreak+' dni\nSeria treningów: '+workoutStreak+' dni'
+    :'';
+  return (isEn
+    ?'You are a professional trading psychology coach. Rules:\n1. NEVER use markdown — no **bold**, no *italic*, no bullet points with -, no # headers\n2. Use emojis naturally 😊\n3. Write in short friendly paragraphs\n4. Be encouraging and honest\n5. Max 3 short paragraphs per response\n6. ONLY reference trading data when the user explicitly asks about it — do not volunteer it\n7. Do not invent or assume data that is not provided\n8. Always respond in ENGLISH if user writes in English\n9. TODAY IS: '+todayStr+' — use ONLY this as date reference'
+    :'Jesteś profesjonalnym coachem psychologii tradingu. Zasady:\n1. NIGDY nie używaj markdown — żadnego **bold**, *italic*, myślników jako listy, # nagłówków\n2. Używaj emoji naturalnie 😊\n3. Pisz krótkimi przyjaznymi akapitami\n4. Bądź zachęcający i szczery\n5. Max 3 krótkie akapity na odpowiedź\n6. Odnoś się do danych tradingowych TYLKO gdy użytkownik o to wyraźnie prosi — nie wspominaj ich samodzielnie\n7. Nie wymyślaj ani nie zakładaj danych których nie ma\n8. Zawsze odpowiadaj PO POLSKU gdy użytkownik pisze po polsku\n9. DZIŚ JEST: '+todayStr+' — używaj TYLKO tej daty jako punktu odniesienia'
+  )+dataSection;
 }
 function addCoachMsg(role,html){
   var c=document.getElementById('coach-messages');
