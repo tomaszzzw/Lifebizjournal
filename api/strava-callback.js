@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   const { code, state, error } = req.query;
 
   if (error) {
-    return res.redirect('https://lifebizjournal.vercel.app/dashboard.html?strava_error=1');
+    return res.redirect('https://flojournal.xyz/dashboard?strava_error=1');
   }
 
   if (!code) {
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     const data = await tokenRes.json();
 
     if (!data.access_token) {
-      return res.redirect('https://lifebizjournal.vercel.app/dashboard.html?strava_error=1');
+      return res.redirect('https://flojournal.xyz/dashboard?strava_error=1');
     }
 
     const athlete = encodeURIComponent(JSON.stringify({
@@ -34,10 +34,10 @@ export default async function handler(req, res) {
     }));
 
     return res.redirect(
-      `https://lifebizjournal.vercel.app/dashboard.html?strava_connected=1&access_token=${data.access_token}&refresh_token=${data.refresh_token}&athlete=${athlete}`
+      `https://flojournal.xyz/dashboard?strava_connected=1&access_token=${data.access_token}&refresh_token=${data.refresh_token}&athlete=${athlete}`
     );
 
   } catch (e) {
-    return res.redirect('https://lifebizjournal.vercel.app/dashboard.html?strava_error=1');
+    return res.redirect('https://flojournal.xyz/dashboard?strava_error=1');
   }
 }
