@@ -619,12 +619,25 @@ async function sbSyncFromServer(){
     rows.forEach(function(r){
       var localKey=r.data_key.replace(sbUserId()+'_','');
       serverKeys.add(localKey);
-      localStorage.setItem(localKey,r.data_value);
+      // Merge: server wins only if local doesn't have it OR server is newer
+      var localRaw=localStorage.getItem(localKey);
+      if(!localRaw){
+        localStorage.setItem(localKey,r.data_value);
+      } else {
+        try{
+          var localData=JSON.parse(localRaw);
+          var serverData=JSON.parse(r.data_value);
+          // If server data has newer savedAt, use server version
+          var localTs=localData&&localData.savedAt?localData.savedAt:0;
+          var serverTs=serverData&&serverData.savedAt?serverData.savedAt:0;
+          if(serverTs>localTs) localStorage.setItem(localKey,r.data_value);
+        }catch(e){
+          localStorage.setItem(localKey,r.data_value);
+        }
+      }
     });
-    // Remove keys deleted on other devices
-    Object.keys(localStorage).forEach(function(k){
-      if(shouldSync(k)&&!serverKeys.has(k)) localStorage.removeItem(k);
-    });
+    // NEVER delete local data that server doesn't have — it may not have synced yet
+    // Only delete if explicitly deleted by user (handled by sbDelete)
   }catch(e){ console.log('Sync error:',e); }
 }
 
@@ -2351,6 +2364,8 @@ function showSubscribeWall(){
 }
 
 async function startApp(){
+  // Wait briefly to let any pending saves from previous session complete
+  await new Promise(function(r){setTimeout(r,1500);});
   await sbSyncFromServer();
   // Check subscription
   var hasSub=await checkSubscription();
