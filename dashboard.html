@@ -1239,9 +1239,9 @@ function renderDailyStatus(){
   const rows=goalKeys.map(k=>{
     const date=k.replace('journal_goals_','');
     const data=load(k,{});
-    // Count how many goals were checked that day (keys with true value)
-    var checkedIds=Object.keys(data).filter(function(id){return data[id];});
-    var total=Object.keys(data).length||getUserGoals().length;
+    // Count how many goals were checked that day (keys with true value, exclude _savedAt)
+    var checkedIds=Object.keys(data).filter(function(id){return id!=='_savedAt'&&data[id]===true;});
+    var total=getUserGoals().length;
     var completed=checkedIds.length;
     // Score is always out of 100, capped
     var score=total>0?Math.min(100,Math.round(completed/total*100)):0;
