@@ -619,25 +619,12 @@ async function sbSyncFromServer(){
     rows.forEach(function(r){
       var localKey=r.data_key.replace(sbUserId()+'_','');
       serverKeys.add(localKey);
-      // Merge: server wins only if local doesn't have it OR server is newer
-      var localRaw=localStorage.getItem(localKey);
-      if(!localRaw){
-        localStorage.setItem(localKey,r.data_value);
-      } else {
-        try{
-          var localData=JSON.parse(localRaw);
-          var serverData=JSON.parse(r.data_value);
-          // If server data has newer savedAt, use server version
-          var localTs=localData&&localData.savedAt?localData.savedAt:0;
-          var serverTs=serverData&&serverData.savedAt?serverData.savedAt:0;
-          if(serverTs>localTs) localStorage.setItem(localKey,r.data_value);
-        }catch(e){
-          localStorage.setItem(localKey,r.data_value);
-        }
-      }
+      localStorage.setItem(localKey,r.data_value);
     });
-    // NEVER delete local data that server doesn't have — it may not have synced yet
-    // Only delete if explicitly deleted by user (handled by sbDelete)
+    // Remove keys deleted on other devices
+    Object.keys(localStorage).forEach(function(k){
+      if(shouldSync(k)&&!serverKeys.has(k)) localStorage.removeItem(k);
+    });
   }catch(e){ console.log('Sync error:',e); }
 }
 
@@ -2319,7 +2306,7 @@ function boot(){
 async function checkSubscription(){
   if(!sbToken()||!sbUserId()) return false;
   // Owner bypass - always has access
-  var OWNER_IDS=['00e88d36-6c70-4f73-96b6-f78e7d4f56ac','5944a341-415b-4691-9254-321c39fd3a9c'];
+  var OWNER_IDS=['00e88d36-6c70-4f73-96b6-f78e7d4f56ac','5944a341-415b-4691-9254-321c39fd3a9c','193af164-bb68-47ad-98e7-b2af30624301'];
   if(OWNER_IDS.indexOf(sbUserId())!==-1) return true;
   try{
     var res=await fetch('https://hnhvewxfwdpcdcxkxbdw.supabase.co/rest/v1/subscriptions?user_id=eq.'+sbUserId()+'&select=status&limit=1',{
@@ -2364,8 +2351,6 @@ function showSubscribeWall(){
 }
 
 async function startApp(){
-  // Wait briefly to let any pending saves from previous session complete
-  await new Promise(function(r){setTimeout(r,1500);});
   await sbSyncFromServer();
   // Check subscription
   var hasSub=await checkSubscription();
