@@ -619,11 +619,30 @@ async function sbSyncFromServer(){
     rows.forEach(function(r){
       var localKey=r.data_key.replace(sbUserId()+'_','');
       serverKeys.add(localKey);
-      localStorage.setItem(localKey,r.data_value);
+      // Merge: server wins only if local doesn't have it OR server data is newer
+      var localRaw=localStorage.getItem(localKey);
+      if(!localRaw){
+        localStorage.setItem(localKey,r.data_value);
+      } else {
+        try{
+          var localData=JSON.parse(localRaw);
+          var serverData=JSON.parse(r.data_value);
+          var localTs=localData&&localData.savedAt?localData.savedAt:0;
+          var serverTs=serverData&&serverData.savedAt?serverData.savedAt:0;
+          if(serverTs>=localTs) localStorage.setItem(localKey,r.data_value);
+        }catch(e){ localStorage.setItem(localKey,r.data_value); }
+      }
     });
-    // Remove keys deleted on other devices
+    // Remove local keys not on server (deleted on another device)
+    // Safety: only remove if data is older than 30s (avoids deleting pending saves)
     Object.keys(localStorage).forEach(function(k){
-      if(shouldSync(k)&&!serverKeys.has(k)) localStorage.removeItem(k);
+      if(shouldSync(k)&&!serverKeys.has(k)){
+        try{
+          var d=JSON.parse(localStorage.getItem(k));
+          var ts=d&&d.savedAt?d.savedAt:0;
+          if(!ts||(Date.now()-ts)>30000) localStorage.removeItem(k);
+        }catch(e){ localStorage.removeItem(k); }
+      }
     });
   }catch(e){ console.log('Sync error:',e); }
 }
@@ -1103,7 +1122,10 @@ function deleteSF(id){
   const lang=localStorage.getItem('app_lang')||'pl';
   const isEn=lang==='en';
   if(!confirm(isEn?'Delete this workout?':'Usunąć ten trening?'))return;
-  localStorage.removeItem('sf_entry_'+id);renderSFList();
+  var k='sf_entry_'+id;
+  localStorage.removeItem(k);
+  sbDelete(k).catch(function(){});
+  renderSFList();
 }
 function renderSFList(){
   const c=document.getElementById('sf-list');if(!c)return;
