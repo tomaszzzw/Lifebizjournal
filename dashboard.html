@@ -282,6 +282,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
       <button data-view="dailystatus" data-i18n="nav_daily">📈 Dzienny Status</button>
       <button data-view="summary" data-i18n="nav_summary">📝 Podsumowanie dnia</button>
       <button data-view="coach" data-i18n="nav_coach">🤖 AI Coach</button>
+      <button data-view="plans" data-i18n="nav_plans">📋 Plany</button>
     </nav>
     <div class="side-bottom">
       <!-- Theme + Language -->
@@ -520,6 +521,18 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
         </div>
       </div>
     </section>
+    <section class="view" id="view-plans">
+      <div class="card" style="max-width:680px;margin:0 auto">
+        <div class="card-head">
+          <div>
+            <div class="title" id="plans-title">Plany</div>
+            <div class="sub" id="plans-sub">Zaplanuj jutro — wróć i odhaczyć</div>
+          </div>
+          <span class="tag" id="plans-tag">Tomorrow</span>
+        </div>
+        <div id="plans-content"></div>
+      </div>
+    </section>
   </main>
 </div>
 <div class="toast" id="toast"></div>
@@ -665,7 +678,7 @@ function setView(v){
   }
   $$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));
   $$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
-  if(v==='history')renderHistory();if(v==='stats')renderStats();if(v==='weekly'){renderWeeklyStats();}if(v==='calendar')renderCalendar();if(v==='connect')loadStravaActivities();renderDash();
+  if(v==='history')renderHistory();if(v==='stats')renderStats();if(v==='weekly'){renderWeeklyStats();}if(v==='calendar')renderCalendar();if(v==='connect')loadStravaActivities();if(v==='plans')renderPlans();renderDash();
 }
 function setTab(t){$$('.form-panel').forEach(x=>x.classList.toggle('active',x.id==='tab-'+t));$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t))}
 $$('.nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
@@ -1288,6 +1301,7 @@ window.setView=function(v){
   if(v==='coach')initCoachChat();
   if(v==='summary')renderSummaryList();
   if(v==='weekly'){renderWeeklyStats();setTimeout(renderWeeklyStats,1500);}
+  if(v==='plans')renderPlans();
 };
 $$('.nav button').forEach(b=>b.onclick=()=>window.setView(b.dataset.view));
 
@@ -1332,7 +1346,7 @@ function toggleTheme(){
 const TRANSLATIONS = {
   pl: {
     nav_dash:'🏠 Dashboard', nav_new:'✏️ Nowy wpis', nav_history:'📖 Historia', nav_cal:'📅 Kalendarz', nav_stats:'📊 Statystyki', nav_weekly:'📅 Tygodniowe staty',
-    nav_train:'🏃 Trening', nav_daily:'📈 Dzienny Status', nav_summary:'📝 Podsumowanie dnia', nav_coach:'🤖 AI Coach',
+    nav_train:'🏃 Trening', nav_daily:'📈 Dzienny Status', nav_summary:'📝 Podsumowanie dnia', nav_coach:'🤖 AI Coach', nav_plans:'📋 Plany',
     tab_day:'Dzień', tab_trade:'Trading', tab_workout:'Trening', tab_tomorrow:'Plan jutro',
     coach_title_default:'Log the session, then move.',
     coach_sub:'Zapisz dzisiaj trening, stan głowy i trading. Małe dane codziennie tworzą brutalnie dobry obraz tego, czy naprawdę idziesz w stronę formy.',
@@ -1347,7 +1361,7 @@ const TRANSLATIONS = {
   },
   en: {
     nav_dash:'🏠 Dashboard', nav_new:'✏️ New entry', nav_history:'📖 History', nav_cal:'📅 Calendar', nav_stats:'📊 Statistics', nav_weekly:'📅 Weekly Stats',
-    nav_train:'🏃 Training', nav_daily:'📈 Daily Status', nav_summary:'📝 Summary', nav_coach:'🤖 AI Coach',
+    nav_train:'🏃 Training', nav_daily:'📈 Daily Status', nav_summary:'📝 Summary', nav_coach:'🤖 AI Coach', nav_plans:'📋 Plans',
     tab_day:'Day', tab_trade:'Trading', tab_workout:'Workout', tab_tomorrow:'Plan tomorrow',
     coach_title_default:'Log the session, then move.',
     coach_sub:'Log your workout, mindset and trading today. Small data daily builds a brutally clear picture.',
@@ -1368,7 +1382,7 @@ function setLang(lang){
   var t=TRANSLATIONS[lang];
   // Nav
   var navBtns=document.querySelectorAll('.nav button[data-view]');
-  var navKeys=['nav_dash','nav_new','nav_history','nav_cal','nav_stats','nav_weekly','nav_train','nav_daily','nav_summary','nav_coach'];
+  var navKeys=['nav_dash','nav_new','nav_history','nav_cal','nav_stats','nav_weekly','nav_train','nav_daily','nav_summary','nav_coach','nav_plans'];
   navBtns.forEach(function(b){var k=b.dataset.i18n;if(k&&t[k])b.textContent=t[k];});
   // Tabs
   var tabs=document.querySelectorAll('.tab[data-tab]');
@@ -3075,6 +3089,110 @@ function renderWeeklyStats(){
   tryObserve();
 })();
 
+/* ── PLANY ── */
+function plansKey(date){ return 'journal_plans_'+date; }
+function plansTomorrow(){ var d=new Date(); d.setDate(d.getDate()+1); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+function renderPlans(){
+  var lang=localStorage.getItem('app_lang')||'pl';
+  var isEn=lang==='en';
+  var c=document.getElementById('plans-content');
+  if(!c)return;
+  var allKeys=[];
+  for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('journal_plans_'))allKeys.push(k);}
+  allKeys.sort().reverse();
+  var tomorrow=plansTomorrow();
+  var todayDate=today();
+  var sub=document.getElementById('plans-sub');
+  var tag=document.getElementById('plans-tag');
+  if(sub)sub.textContent=isEn?'Plan for tomorrow — check off when done':'Zaplanuj jutro — wróć i odhaczyć';
+  if(tag)tag.textContent=isEn?'Tomorrow':'Jutro';
+  var html='';
+
+  // Tomorrow - add tasks
+  html+='<div style="margin-bottom:28px">';
+  html+='<div style="font-size:10px;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:14px;text-transform:uppercase">'+(isEn?'📋 Plan for tomorrow ('+fmt(tomorrow)+')':'📋 Plan na jutro ('+fmt(tomorrow)+')')+'</div>';
+  var tomorrowData=load(plansKey(tomorrow),{items:[]});
+  var items=Array.isArray(tomorrowData.items)?tomorrowData.items:[];
+  items.forEach(function(item,idx){
+    html+='<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;margin-bottom:8px">';
+    html+='<span style="color:var(--muted);font-size:13px">'+String(idx+1).padStart(2,'0')+'</span>';
+    html+='<span style="flex:1;font-size:13px;color:var(--text)">'+item.text+'</span>';
+    html+='<button data-date="'+tomorrow+'" data-idx="'+idx+'" onclick="deletePlanItem(this.dataset.date,+this.dataset.idx)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 6px">&#215;</button>';
+    html+='</div>';
+  });
+  html+='<div style="display:flex;gap:8px;margin-top:10px">';
+  html+='<input id="plan-input" type="text" placeholder="'+(isEn?'Add task for tomorrow...':'Dodaj zadanie na jutro...')+'" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text);padding:10px 14px;font-size:13px;font-family:var(--font);outline:none" onkeydown="if(event.key===&quot;Enter&quot;)addPlanItem()">';
+  html+='<button onclick="addPlanItem()" style="background:rgba(214,154,83,.2);border:1px solid rgba(214,154,83,.4);border-radius:8px;padding:10px 18px;color:var(--gold2);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">'+(isEn?'Add':'Dodaj')+'</button>';
+  html+='</div></div>';
+
+  // Today - check off
+  var todayData=load(plansKey(todayDate),{items:[]});
+  var todayItems=Array.isArray(todayData.items)?todayData.items:[];
+  if(todayItems.length){
+    html+='<div style="margin-bottom:28px">';
+    html+='<div style="font-size:10px;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:14px;text-transform:uppercase">'+(isEn?'Today ('+fmt(todayDate)+')':'Dziś ('+fmt(todayDate)+')')+'</div>';
+    todayItems.forEach(function(item,idx){
+      var done=!!item.done;
+      html+='<div data-date="'+todayDate+'" data-idx="'+idx+'" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:'+(done?'rgba(99,225,142,.07)':'rgba(255,255,255,.03)')+';border:1px solid '+(done?'rgba(99,225,142,.2)':'rgba(255,255,255,.07)')+';border-radius:8px;margin-bottom:8px;cursor:pointer" onclick="togglePlanItem(this.dataset.date,+this.dataset.idx)">';
+      html+='<div style="width:20px;height:20px;border-radius:50%;border:2px solid '+(done?'#63e18e':'rgba(255,255,255,.2)')+';background:'+(done?'#63e18e':'transparent')+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(done?'<span style="color:#0e0d0b;font-size:11px;font-weight:900">&#10003;</span>':'')+'</div>';
+      html+='<span style="flex:1;font-size:13px;color:'+(done?'var(--muted)':'var(--text)')+(done?';text-decoration:line-through':'')+'">'+ item.text+'</span>';
+      html+='</div>';
+    });
+    var doneCount=todayItems.filter(function(i){return i.done;}).length;
+    html+='<div style="font-size:12px;color:var(--muted);margin-top:8px">'+doneCount+' / '+todayItems.length+' '+(isEn?'completed':'ukończone')+'</div>';
+    html+='</div>';
+  }
+
+  // Past plans
+  var pastKeys=allKeys.filter(function(k){var d=k.replace('journal_plans_','');return d!==tomorrow&&d!==todayDate;}).slice(0,7);
+  if(pastKeys.length){
+    html+='<div><div style="font-size:10px;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:14px;text-transform:uppercase">'+(isEn?'Previous plans':'Poprzednie plany')+'</div>';
+    pastKeys.forEach(function(k){
+      var d=k.replace('journal_plans_','');
+      var pd=load(k,{items:[]});
+      var pitems=Array.isArray(pd.items)?pd.items:[];
+      var pdone=pitems.filter(function(i){return i.done;}).length;
+      html+='<div style="padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;margin-bottom:8px">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:12px;color:var(--muted)">'+fmt(d)+'</span><span style="font-size:11px;color:'+(pdone===pitems.length&&pitems.length>0?'#63e18e':'var(--muted)')+'">'+pdone+'/'+pitems.length+'</span></div>';
+      pitems.forEach(function(item){html+='<div style="font-size:12px;color:'+(item.done?'var(--muted)':'var(--text)')+(item.done?';text-decoration:line-through':'')+';padding:2px 0">'+(item.done?'&#10003; ':'&#9675; ')+item.text+'</div>';});
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+  c.innerHTML=html;
+}
+
+function addPlanItem(){
+  var input=document.getElementById('plan-input');
+  if(!input||!input.value.trim())return;
+  var tomorrow=plansTomorrow();
+  var data=load(plansKey(tomorrow),{items:[]});
+  if(!Array.isArray(data.items))data.items=[];
+  data.items.push({text:input.value.trim(),done:false});
+  data.savedAt=Date.now();
+  save(plansKey(tomorrow),data);
+  input.value='';
+  renderPlans();
+}
+
+function deletePlanItem(date,idx){
+  var data=load(plansKey(date),{items:[]});
+  if(!Array.isArray(data.items))return;
+  data.items.splice(idx,1);
+  data.savedAt=Date.now();
+  save(plansKey(date),data);
+  renderPlans();
+}
+
+function togglePlanItem(date,idx){
+  var data=load(plansKey(date),{items:[]});
+  if(!Array.isArray(data.items))return;
+  data.items[idx].done=!data.items[idx].done;
+  data.savedAt=Date.now();
+  save(plansKey(date),data);
+  renderPlans();
+}
 
 </script>
 
