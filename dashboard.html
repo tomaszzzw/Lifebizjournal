@@ -627,8 +627,8 @@ async function sbSyncFromServer(){
         try{
           var localData=JSON.parse(localRaw);
           var serverData=JSON.parse(r.data_value);
-          var localTs=localData&&localData.savedAt?localData.savedAt:0;
-          var serverTs=serverData&&serverData.savedAt?serverData.savedAt:0;
+          var localTs=(localData&&(localData.savedAt||localData._savedAt))||(localData&&localData.savedAt)||0;
+          var serverTs=(serverData&&(serverData.savedAt||serverData._savedAt))||(serverData&&serverData.savedAt)||0;
           if(serverTs>=localTs) localStorage.setItem(localKey,r.data_value);
         }catch(e){ localStorage.setItem(localKey,r.data_value); }
       }
@@ -639,7 +639,7 @@ async function sbSyncFromServer(){
       if(shouldSync(k)&&!serverKeys.has(k)){
         try{
           var d=JSON.parse(localStorage.getItem(k));
-          var ts=d&&d.savedAt?d.savedAt:0;
+          var ts=(d&&(d.savedAt||d._savedAt))||0;
           if(!ts||(Date.now()-ts)>30000) localStorage.removeItem(k);
         }catch(e){ localStorage.removeItem(k); }
       }
@@ -713,7 +713,7 @@ function renderGoals(){
   var goals=getUserGoals(),day=today(),saved=load('journal_goals_'+day,{});
   var pts=pointsPerGoal(goals.length);
   $('#goals').innerHTML=goals.map(function(g){return '<label class="goal"><input type="checkbox" data-goal="'+g.id+'" '+(saved[g.id]?'checked':'')+'><span>'+g.label+'</span><em>'+g.cat+'</em></label>';}).join('');
-  $$('#goals input').forEach(function(i){i.onchange=function(){var data={};$$('#goals input').forEach(function(x){data[x.dataset.goal]=x.checked;});save('journal_goals_'+day,data);renderDash();};});
+  $$('#goals input').forEach(function(i){i.onchange=function(){var data={};$$('#goals input').forEach(function(x){data[x.dataset.goal]=x.checked;});data._savedAt=Date.now();save('journal_goals_'+day,data).then(function(){renderDash();});};});
 }
 function goalProgress(){var goals=getUserGoals(),d=load('journal_goals_'+today(),{});var done=goals.filter(function(g){return d[g.id];}).length;return goals.length>0?Math.min(100,Math.round(done/goals.length*100)):0;}
 function openGoalEditor(){
@@ -1222,7 +1222,7 @@ function saveAddDay(){
   document.querySelectorAll('#add-day-goals input[type=checkbox]').forEach(function(cb){
     data[cb.dataset.gid]=cb.checked;
   });
-  save('journal_goals_'+date,data);
+  data._savedAt=Date.now();save('journal_goals_'+date,data);
   document.getElementById('add-day-modal').remove();
   toast(isEn?'Day saved ✓':'Dzień zapisany ✓');
   renderDailyStatus();
