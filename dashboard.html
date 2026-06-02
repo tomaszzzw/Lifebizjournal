@@ -728,7 +728,7 @@ function renderGoals(){
   var goals=getUserGoals(),day=today(),saved=load('journal_goals_'+day,{});
   var pts=pointsPerGoal(goals.length);
   $('#goals').innerHTML=goals.map(function(g){return '<label class="goal"><input type="checkbox" data-goal="'+g.id+'" '+(saved[g.id]?'checked':'')+'><span>'+g.label+'</span><em>'+g.cat+'</em></label>';}).join('');
-  $$('#goals input').forEach(function(i){i.onchange=function(){var data={};$$('#goals input').forEach(function(x){data[x.dataset.goal]=x.checked;});data._savedAt=Date.now();save('journal_goals_'+day,data).then(function(){renderDash();});};});
+  $$('#goals input').forEach(function(i){i.onchange=function(){var data={};$$('#goals input').forEach(function(x){data[x.dataset.goal]=x.checked;});data.savedAt=Date.now();save('journal_goals_'+day,data).then(function(){renderDash();});};});
 }
 function goalProgress(){var goals=getUserGoals(),d=load('journal_goals_'+today(),{});var done=goals.filter(function(g){return d[g.id];}).length;return goals.length>0?Math.min(100,Math.round(done/goals.length*100)):0;}
 function openGoalEditor(){
@@ -1228,16 +1228,18 @@ function openAddDayModal(prefillDate){
   document.body.appendChild(modal);
 }
 
-function saveAddDay(){
+async function saveAddDay(){
   var isEn=localStorage.getItem('app_lang')==='en';
   var date=document.getElementById('add-day-date').value;
   if(!date){toast(isEn?'Select a date':'Wybierz datę');return;}
-  var goals=getUserGoals();
+  var btn=document.querySelector('#add-day-modal button[onclick="saveAddDay()"]');
+  if(btn){btn.disabled=true;btn.textContent='...';}
   var data={};
   document.querySelectorAll('#add-day-goals input[type=checkbox]').forEach(function(cb){
     data[cb.dataset.gid]=cb.checked;
   });
-  data._savedAt=Date.now();save('journal_goals_'+date,data);
+  data.savedAt=Date.now();
+  await save('journal_goals_'+date,data);
   document.getElementById('add-day-modal').remove();
   toast(isEn?'Day saved ✓':'Dzień zapisany ✓');
   renderDailyStatus();
@@ -1255,7 +1257,7 @@ function renderDailyStatus(){
     const date=k.replace('journal_goals_','');
     const data=load(k,{});
     // Count how many goals were checked that day (keys with true value, exclude _savedAt)
-    var checkedIds=Object.keys(data).filter(function(id){return id!=='_savedAt'&&data[id]===true;});
+    var checkedIds=Object.keys(data).filter(function(id){return id!=='_savedAt'&&id!=='savedAt'&&data[id]===true;});
     var total=getUserGoals().length;
     var completed=checkedIds.length;
     // Score is always out of 100, capped
@@ -2233,8 +2235,6 @@ function resetLogForm(){
   var tNotes=$('#tNotes');if(tNotes)tNotes.value='';
   $$('[data-pick="tRules"] button,[data-pick="tEmotions"] button,[data-pick="tSession"] button').forEach(function(b){b.classList.remove('selected');});
   $$('#criteria-seg button.selected').forEach(function(b){b.classList.remove('selected');});
-  // Deselect all custom emotion buttons
-  $$('[data-custom-emotion] button').forEach(function(b){b.classList.remove('selected');});
   // Also deselect custom emotion wrappers
   $$('[data-custom-emotion]').forEach(function(w){w.classList.remove('selected');$$('button',w).forEach(function(b){b.classList.remove('selected');});});
   // Reset Workout tab
