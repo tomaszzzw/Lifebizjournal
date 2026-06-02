@@ -622,7 +622,7 @@ var save=async function(k,v){
 async function sbSyncFromServer(){
   if(!sbToken()||!sbUserId()) return;
   try{
-    var res=await fetch(SUPA_URL+'/rest/v1/journal_data?user_id=eq.'+sbUserId()+'&select=data_key,data_value&limit=2000',{
+    var res=await fetch(SUPA_URL+'/rest/v1/journal_data?user_id=eq.'+sbUserId()+'&select=data_key,data_value,updated_at&limit=2000',{
       headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+sbToken()}
     });
     if(!res.ok) return;
@@ -632,22 +632,24 @@ async function sbSyncFromServer(){
     rows.forEach(function(r){
       var localKey=r.data_key.replace(sbUserId()+'_','');
       serverKeys.add(localKey);
-      // Merge: server wins only if local doesn't have it OR server data is newer
       var localRaw=localStorage.getItem(localKey);
       if(!localRaw){
+        // No local data — take from server
         localStorage.setItem(localKey,r.data_value);
       } else {
         try{
           var localData=JSON.parse(localRaw);
           var serverData=JSON.parse(r.data_value);
-          var localTs=(localData&&(localData.savedAt||localData._savedAt))||(localData&&localData.savedAt)||0;
-          var serverTs=(serverData&&(serverData.savedAt||serverData._savedAt))||(serverData&&serverData.savedAt)||0;
-          if(serverTs>=localTs) localStorage.setItem(localKey,r.data_value);
+          var localTs=(localData&&(localData.savedAt||localData._savedAt))||0;
+          var serverTs=(serverData&&(serverData.savedAt||serverData._savedAt))||0;
+          // Use Supabase updated_at as fallback if no savedAt in data
+          if(!serverTs&&r.updated_at) serverTs=new Date(r.updated_at).getTime();
+          // Server wins ONLY if strictly newer — ties go to local (just saved)
+          if(serverTs>localTs) localStorage.setItem(localKey,r.data_value);
         }catch(e){ localStorage.setItem(localKey,r.data_value); }
       }
     });
     // Remove local keys not on server (deleted on another device)
-    // Safety: only remove if data is older than 30s (avoids deleting pending saves)
     Object.keys(localStorage).forEach(function(k){
       if(shouldSync(k)&&!serverKeys.has(k)){
         try{
