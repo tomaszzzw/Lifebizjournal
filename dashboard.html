@@ -1973,6 +1973,20 @@ function deleteCustomEmotion(val, wrapper){
   save('custom_emotions', custom);
 }
 
+function deduplicateCustomEmotions(){
+  var custom=load('custom_emotions',[]);
+  var seen={};
+  var deduped=custom.filter(function(e){
+    var key=e.name.toLowerCase().replace(/\s+/g,'');
+    if(seen[key])return false;
+    seen[key]=true;
+    return true;
+  });
+  if(deduped.length!==custom.length){
+    save('custom_emotions',deduped);
+  }
+}
+
 function loadCustomEmotions(){
   var custom = load('custom_emotions', []);
   var seg = document.getElementById('emotions-seg');
@@ -2369,7 +2383,7 @@ function boot(){
   var savedNick=localStorage.getItem('user_nick');
   var nickEl=document.getElementById('user-nick');
   if(nickEl&&savedNick)nickEl.textContent=savedNick;
-  loadCustomEmotions();loadCustomWorkoutTypes();loadCustomFeelings();loadCriteria();
+  deduplicateCustomEmotions();loadCustomEmotions();loadCustomWorkoutTypes();loadCustomFeelings();loadCriteria();
   setDefaultDates();renderGoals();renderDash();renderStats();renderCalendar();toggleWorkoutExtra();renderStravaLinkArea();var _bl=localStorage.getItem('app_lang')||'pl';setLang(_bl);renderWeeklyStats();}
 async function checkSubscription(){
   if(!sbToken()||!sbUserId()) return false;
