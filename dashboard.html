@@ -998,7 +998,7 @@ function closeHistoryModal(){
   document.getElementById('history-detail-modal').style.display='none';
 }
 function setPick(name,val){const wrap=document.querySelector('[data-pick="'+name+'"]');if(!wrap)return;$$('button',wrap).forEach(b=>b.classList.toggle('selected',b.dataset.val===val))}
-function setMultiPick(name,vals){const wrap=document.querySelector('[data-pick="'+name+'"]');if(!wrap)return;vals=vals||[];$$('button',wrap).forEach(b=>b.classList.toggle('selected',vals.includes(b.dataset.val)))}
+function setMultiPick(name,vals){const wrap=document.querySelector('[data-pick="'+name+'"]');if(!wrap)return;vals=(vals||[]).map(function(v){return String(v).toLowerCase();});$$('button',wrap).forEach(b=>b.classList.toggle('selected',vals.includes((b.dataset.val||'').toLowerCase())))}
 function editHistoryDay(date){
   const nd=load('journal_new_'+date)||{},td=load('journal_trading_'+date)||{},wd=load('journal_workout_'+date)||{};
   $('#dDate').value=date;setPick('dRating',nd.dayRating);$('#dNotes').value=nd.notes||'';
@@ -2234,7 +2234,7 @@ function resetLogForm(){
   $$('[data-pick="tRules"] button,[data-pick="tEmotions"] button,[data-pick="tSession"] button').forEach(function(b){b.classList.remove('selected');});
   $$('#criteria-seg button.selected').forEach(function(b){b.classList.remove('selected');});
   // Also deselect custom emotion wrappers
-  $$('[data-custom-emotion]').forEach(function(w){w.classList.remove('selected');var btn=w.querySelector('button:first-child');if(btn)btn.classList.remove('selected');});
+  $$('[data-custom-emotion]').forEach(function(w){w.classList.remove('selected');$$('button',w).forEach(function(b){b.classList.remove('selected');});});
   // Reset Workout tab
   var wNotes=$('#wNotes');if(wNotes)wNotes.value='';
   var wDuration=$('#wDuration');if(wDuration)wDuration.value='';
