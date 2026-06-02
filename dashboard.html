@@ -1924,17 +1924,22 @@ function saveCustomEmotion(){
   var seg = document.getElementById('emotions-seg');
   var addBtn = seg.querySelector('[onclick="openAddEmotion()"]');
   var wrapper = document.createElement('span');
-  wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:2px;border-radius:999px;border:1px solid '+border+';background:'+bg;
+  wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:2px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:transparent';
   wrapper.dataset.customEmotion = name.toLowerCase();
   var newBtn = document.createElement('button');
   newBtn.dataset.val = name.toLowerCase();
   newBtn.textContent = name;
-  newBtn.style.cssText = 'border:none;background:transparent;color:'+color+';padding:6px 8px 6px 14px;cursor:pointer;font-family:var(--font);font-size:13px;border-radius:999px';
-  newBtn.onclick = function(){ newBtn.classList.toggle('selected'); };
+  newBtn.style.cssText = 'border:none;background:transparent;color:var(--muted,#7a7060);padding:6px 8px 6px 14px;cursor:pointer;font-family:var(--font);font-size:13px;border-radius:999px';
+  newBtn.onclick = (function(btn,w,c,b,bg2){return function(){
+    var sel=btn.classList.toggle('selected');
+    btn.style.color=sel?c:'var(--muted,#7a7060)';
+    w.style.borderColor=sel?b:'rgba(255,255,255,.15)';
+    w.style.background=sel?bg2:'transparent';
+  };})(newBtn,wrapper,color,border,bg);
   var delBtn = document.createElement('button');
   delBtn.textContent = '×';
   delBtn.title = 'Usuń';
-  delBtn.style.cssText = 'border:none;background:transparent;color:'+color+';opacity:0.6;padding:4px 10px 4px 2px;cursor:pointer;font-size:14px;line-height:1;font-family:var(--font)';
+  delBtn.style.cssText = 'border:none;background:transparent;color:var(--muted,#7a7060);opacity:0.6;padding:4px 10px 4px 2px;cursor:pointer;font-size:14px;line-height:1;font-family:var(--font)';
   delBtn.onclick = function(e){ e.stopPropagation(); deleteCustomEmotion(name.toLowerCase(), wrapper); };
   wrapper.appendChild(newBtn);
   wrapper.appendChild(delBtn);
@@ -1970,17 +1975,22 @@ function loadCustomEmotions(){
     var border = isPositive ? 'rgba(99,225,142,.4)' : 'rgba(239,122,104,.4)';
     var bg = isPositive ? 'rgba(99,225,142,.1)' : 'rgba(239,122,104,.1)';
     var wrapper = document.createElement('span');
-    wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:2px;border-radius:999px;border:1px solid '+border+';background:'+bg;
+    wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:2px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:transparent';
     wrapper.dataset.customEmotion = e.name.toLowerCase();
     var btn = document.createElement('button');
     btn.dataset.val = e.name.toLowerCase();
     btn.textContent = e.name;
-    btn.style.cssText = 'border:none;background:transparent;color:'+color+';padding:6px 8px 6px 14px;cursor:pointer;font-family:var(--font);font-size:13px;border-radius:999px';
-    btn.onclick = function(){ btn.classList.toggle('selected'); };
+    btn.style.cssText = 'border:none;background:transparent;color:var(--muted,#7a7060);padding:6px 8px 6px 14px;cursor:pointer;font-family:var(--font);font-size:13px;border-radius:999px';
+    btn.onclick = (function(b,w,c,bo,bg2){return function(){
+      var sel=b.classList.toggle('selected');
+      b.style.color=sel?c:'var(--muted,#7a7060)';
+      w.style.borderColor=sel?bo:'rgba(255,255,255,.15)';
+      w.style.background=sel?bg2:'transparent';
+    };})(btn,wrapper,color,border,bg);
     var delBtn = document.createElement('button');
     delBtn.textContent = '×';
     delBtn.title = 'Usuń';
-    delBtn.style.cssText = 'border:none;background:transparent;color:'+color+';opacity:0.6;padding:4px 10px 4px 2px;cursor:pointer;font-size:14px;line-height:1;font-family:var(--font)';
+    delBtn.style.cssText = 'border:none;background:transparent;color:var(--muted,#7a7060);opacity:0.6;padding:4px 10px 4px 2px;cursor:pointer;font-size:14px;line-height:1;font-family:var(--font)';
     (function(n,w){delBtn.onclick = function(e2){ e2.stopPropagation(); deleteCustomEmotion(n, w); };})(e.name.toLowerCase(), wrapper);
     wrapper.appendChild(btn);
     wrapper.appendChild(delBtn);
@@ -2235,6 +2245,10 @@ function resetLogForm(){
   var tNotes=$('#tNotes');if(tNotes)tNotes.value='';
   $$('[data-pick="tRules"] button,[data-pick="tEmotions"] button,[data-pick="tSession"] button').forEach(function(b){b.classList.remove('selected');});
   $$('#criteria-seg button.selected').forEach(function(b){b.classList.remove('selected');});
+  $$('[data-custom-emotion]').forEach(function(w){
+    w.style.borderColor='rgba(255,255,255,.15)';w.style.background='transparent';
+    $$('button',w).forEach(function(b){b.classList.remove('selected');b.style.color='var(--muted,#7a7060)';});
+  });
   // Also deselect custom emotion wrappers
   $$('[data-custom-emotion]').forEach(function(w){w.classList.remove('selected');$$('button',w).forEach(function(b){b.classList.remove('selected');});});
   // Reset Workout tab
