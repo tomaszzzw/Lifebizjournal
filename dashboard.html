@@ -2233,6 +2233,8 @@ function resetLogForm(){
   var tNotes=$('#tNotes');if(tNotes)tNotes.value='';
   $$('[data-pick="tRules"] button,[data-pick="tEmotions"] button,[data-pick="tSession"] button').forEach(function(b){b.classList.remove('selected');});
   $$('#criteria-seg button.selected').forEach(function(b){b.classList.remove('selected');});
+  // Deselect all custom emotion buttons
+  $$('[data-custom-emotion] button').forEach(function(b){b.classList.remove('selected');});
   // Also deselect custom emotion wrappers
   $$('[data-custom-emotion]').forEach(function(w){w.classList.remove('selected');$$('button',w).forEach(function(b){b.classList.remove('selected');});});
   // Reset Workout tab
