@@ -378,7 +378,7 @@ body.theme-blue #theme-toggle { color:#81d4fa; }
               <div class="field"><label>Risk:Reward</label><input class="input" id="tRr" placeholder="1:2.5"></div>
             </div>
             <div class="field"><label>Zasady</label><div class="seg" data-pick="tRules" id="rules-seg"><button data-val="tak" data-pl="Tak" data-en="Yes">Tak</button><button data-val="czesciowo" data-pl="Częściowo" data-en="Partially">Częściowo</button><button data-val="nie" data-pl="Nie" data-en="No">Nie</button></div></div>
-            <div class="field"><label>Emocje podczas trade (mozesz wybrac kilka)</label><div class="seg multi" data-pick="tEmotions" id="emotions-seg"><button data-val="spokojny" data-pl="Spokojny" data-en="Calm">Spokojny</button><button data-val="pewny siebie" data-pl="Pewny siebie" data-en="Confident">Pewny siebie</button><button data-val="zdyscyplinowany" data-pl="Zdyscyplinowany" data-en="Disciplined">Zdyscyplinowany</button><button data-val="zmotywowany" data-pl="Zmotywowany" data-en="Motivated">Zmotywowany</button><button data-val="cierpliwy" data-pl="Cierpliwy" data-en="Patient">Cierpliwy</button><button data-val="zdenerwowany" data-pl="Zdenerwowany" data-en="Nervous">Zdenerwowany</button><button data-val="FOMO">FOMO</button><button data-val="zbyt agresywny" data-pl="Zbyt agresywny" data-en="Too aggressive">Zbyt agresywny</button><button data-val="revenge trading" data-pl="Revenge trading" data-en="Revenge trading">Revenge trading</button><button data-val="overtrade" data-pl="Overtrade" data-en="Overtrade">Overtrade</button><button data-val="neutralny" data-pl="Neutralny" data-en="Neutral">Neutralny</button><button onclick="openAddEmotion()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font)" id="btn-add-emotion" title="Dodaj emocję">+ Dodaj</button></div></div>
+            <div class="field"><label>Emocje podczas trade (mozesz wybrac kilka)</label><div class="seg multi" data-pick="tEmotions" id="emotions-seg"><button data-val="spokojny" data-pl="Spokojny" data-en="Calm">Spokojny</button><button data-val="pewny siebie" data-pl="Pewny siebie" data-en="Confident">Pewny siebie</button><button data-val="zdyscyplinowany" data-pl="Zdyscyplinowany" data-en="Disciplined">Zdyscyplinowany</button><button data-val="zmotywowany" data-pl="Zmotywowany" data-en="Motivated">Zmotywowany</button><button data-val="cierpliwy" data-pl="Cierpliwy" data-en="Patient">Cierpliwy</button><button data-val="zdenerwowany" data-pl="Zdenerwowany" data-en="Nervous">Zdenerwowany</button><button data-val="FOMO">FOMO</button><button data-val="zbyt agresywny" data-pl="Zbyt agresywny" data-en="Too aggressive">Zbyt agresywny</button><button data-val="revenge trading" data-pl="Revenge trading" data-en="Revenge trading">Revenge trading</button><button data-val="overtrade" data-pl="Overtrade" data-en="Overtrade">Overtrade</button><button data-val="neutralny" data-pl="Neutralny" data-en="Neutral">Neutralny</button><button onclick="openAddEmotion()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font)" id="btn-add-emotion" title="Dodaj emocję">+ Dodaj</button> <button onclick="openManageEmotions()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:6px 12px;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--font)" title="Zarządzaj emocjami">⚙</button></div></div>
             <div class="field"><label>Ocena sesji</label><div class="seg" data-pick="tSession" id="session-rating-seg"><button data-val="excellent" data-pl="Swietna" data-en="Excellent">Swietna</button><button data-val="good" data-pl="Dobra" data-en="Good">Dobra</button><button data-val="ok" data-pl="Przecietna" data-en="Average">Przecietna</button><button data-val="bad" data-pl="Slaba" data-en="Poor">Slaba</button><button data-val="blowup" data-pl="Bledy / FOMO" data-en="Errors / FOMO">Bledy / FOMO</button></div></div>
             <div class="field"><label>Link do wykresu</label><input class="input" type="url" id="tChartUrl" placeholder="https://tradingview.com/chart/..."></div>
 
@@ -3121,6 +3121,43 @@ function renderWeeklyStats(){
   tryObserve();
 })();
 
+/* ── MANAGE EMOTIONS ── */
+function openManageEmotions(){
+  var custom=load('custom_emotions',[]);
+  var list=document.getElementById('manage-emotions-list');
+  var modal=document.getElementById('manage-emotions-modal');
+  if(!list||!modal)return;
+  if(!custom.length){
+    list.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Brak custom emocji</div>';
+  } else {
+    list.innerHTML=custom.map(function(e,i){
+      var color=e.type==='positive'?'#63e18e':'#ef7a68';
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;margin-bottom:8px">'
+        +'<span style="font-size:13px;color:'+color+'">'+e.name+'</span>'
+        +'<button onclick="removeEmotionByIndex('+i+')" style="background:rgba(239,122,104,.15);border:1px solid rgba(239,122,104,.3);border-radius:6px;color:#ef7a68;font-size:12px;padding:4px 10px;cursor:pointer;font-family:var(--font)">Usuń</button>'
+        +'</div>';
+    }).join('');
+  }
+  modal.style.display='flex';
+}
+
+function removeEmotionByIndex(idx){
+  var custom=load('custom_emotions',[]);
+  var removed=custom[idx];
+  if(!removed)return;
+  custom.splice(idx,1);
+  save('custom_emotions',custom);
+  // Remove from DOM
+  var seg=document.getElementById('emotions-seg');
+  if(seg){
+    var wrappers=seg.querySelectorAll('[data-custom-emotion]');
+    wrappers.forEach(function(w){
+      if(w.dataset.customEmotion===removed.name.toLowerCase()) w.remove();
+    });
+  }
+  openManageEmotions();
+}
+
 /* ── PLANY ── */
 function plansKey(date){ return 'journal_plans_'+date; }
 function plansTomorrow(){ var d=new Date(); d.setDate(d.getDate()+1); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -3340,6 +3377,14 @@ function togglePlanItem(date,idx){
   <div class="cn-footer">
     <button class="cn-btn cn-close" onclick="closeCoachNotify()">Zamknij</button>
     <button class="cn-btn cn-open" onclick="closeCoachNotify();window.setView('coach')">Porozmawiaj →</button>
+  </div>
+</div>
+<div id="manage-emotions-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10000;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+  <div style="background:#161410;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:28px;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;position:relative">
+    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">Moje emocje</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:20px">Kliknij X żeby usunąć</div>
+    <div id="manage-emotions-list"></div>
+    <button onclick="document.getElementById('manage-emotions-modal').style.display='none'" style="width:100%;margin-top:16px;height:40px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer;font-family:var(--font)">Zamknij</button>
   </div>
 </div>
 </body>
